@@ -1,33 +1,33 @@
-# Radar V2 — Legacy Forensic Postmortem Agenda
+# Radar V4 — Legacy Forensic Postmortem Agenda
 
 ## Status
 
 **ON THE BOOKS — NOT YET STARTED**
 
-This agenda records the approved future review sequence for understanding why the legacy Radar efforts failed, what evidence supports those conclusions, and how the findings should shape Radar V2.
+This agenda records the approved future review sequence for understanding why the legacy Radar efforts failed, what evidence supports those conclusions, and how the findings should shape Radar V4.
 
 It does not authorize code reuse, implementation, backtesting, live data, trading, execution, or automatic migration.
 
-Todd retains final authority over timing, scope, evidence acceptance, phase advancement, and all future Radar V2 decisions.
+Todd retains final authority over timing, scope, evidence acceptance, phase advancement, and all future Radar V4 decisions.
 
 ## Core question
 
-> What did the legacy Radar systems claim or intend to do, what did they actually do, why did the gap occur, and what requirements must Radar V2 adopt to avoid repeating those failures?
+> What did legacy Radar V1 and legacy Radar V2 claim or intend to do, what did they actually do, why did the gap occur, and what requirements must Radar V4 adopt to avoid repeating those failures?
 
 ## Review objective
 
 The review will reconstruct:
 
-1. what the old systems were intended to do;
-2. what the code and configuration actually did;
-3. what logs, outputs, and runtime evidence show happened;
-4. which failures were technical;
-5. which failures were methodological;
-6. which failures were statistical or ML-related;
-7. which failures were architectural;
-8. which failures were governance-related;
+1. what V1 was intended to do;
+2. what V1 actually did;
+3. what V2 changed;
+4. what V2 actually did;
+5. which V1 failures V2 fixed;
+6. which V1 failures V2 repeated;
+7. which new failures V2 introduced;
+8. which failures were technical, methodological, statistical, architectural, or governance-related;
 9. which components should be reused, rebuilt, or permanently rejected;
-10. what the new Radar V2 roadmap must require before implementation.
+10. what the Radar V4 roadmap must require before implementation.
 
 ## Evidence sources
 
@@ -73,8 +73,9 @@ This lane will:
 
 - classify findings;
 - separate symptoms from root causes;
+- compare V1 and V2 directly;
 - connect findings to ML, mathematics, validation, systems, and governance principles;
-- convert findings into Radar V2 requirements;
+- convert findings into Radar V4 requirements;
 - design the targeted learning curriculum;
 - draft the replacement roadmap;
 - define reuse, rebuild, and reject decisions for Todd's approval.
@@ -111,6 +112,7 @@ Each finding must include:
 
 ```text
 Finding ID:
+Legacy version: V1 / V2 / both
 Observed symptom:
 Direct evidence:
 Source repository/path:
@@ -121,8 +123,9 @@ Root cause:
 Failure category:
 Confidence:
 Impact:
+Was this repeated, fixed, or introduced in V2?:
 Reuse / rebuild / reject:
-Radar V2 requirement created:
+Radar V4 requirement created:
 Open question:
 ```
 
@@ -133,14 +136,19 @@ The postmortem package will eventually contain:
 ```text
 postmortem/
   LEGACY_EVIDENCE_INDEX.md
+  V1_INTENT_VS_OPERATION.md
+  V2_INTENT_VS_OPERATION.md
+  V1_TO_V2_CHANGE_MAP.md
+  REPEATED_FAILURES.md
+  IMPROVEMENTS_THAT_WORKED.md
   FAILURE_TAXONOMY.md
   CLAIMS_VS_OPERATION.md
   ROOT_CAUSE_REGISTER.md
   REUSE_REBUILD_REJECT.md
-  LESSONS_FOR_RADAR_V2.md
-  RADAR_V2_REQUIREMENTS.md
+  LESSONS_FOR_RADAR_V4.md
+  RADAR_V4_REQUIREMENTS.md
   TARGETED_LEARNING_CURRICULUM.md
-  REPLACEMENT_ROADMAP.md
+  RADAR_V4_REPLACEMENT_ROADMAP.md
 ```
 
 ## Targeted learning connection
@@ -161,13 +169,15 @@ Examples:
 ## Sequence
 
 ```text
-Legacy evidence collection
+V1 evidence collection
+→ V2 evidence collection
+→ V1-to-V2 comparison
 → forensic postmortem
 → root-cause register
 → reuse / rebuild / reject decisions
-→ Radar V2 requirements
+→ Radar V4 requirements
 → targeted ML and math curriculum
-→ replacement roadmap
+→ Radar V4 replacement roadmap
 → bounded offline method
 → implementation only after separate authorization
 ```
@@ -189,7 +199,7 @@ The first question is not, “What can we reuse?”
 
 The first question is:
 
-> What failed, why did it fail, and what evidence supports that conclusion?
+> What failed, why did it fail, what changed from V1 to V2, and what evidence supports each conclusion?
 
 ## Start gate
 
@@ -199,13 +209,15 @@ The agenda is recorded, but execution begins only when Todd explicitly authorize
 
 - Agenda: RECORDED
 - Phase 1 inspection: NOT YET STARTED
+- V1 review: PLANNED
+- V2 review: PLANNED
 - Legacy code reuse: NOT AUTHORIZED
 - Learning corpus design: WAITING ON POSTMORTEM FINDINGS
-- Replacement roadmap: WAITING ON ROOT-CAUSE EVIDENCE
+- Radar V4 replacement roadmap: WAITING ON ROOT-CAUSE EVIDENCE
 
 ## Governing principle
 
-> Turn the old failure into verified requirements before building the new system.
+> Use V1 and V2 as evidence, compare them honestly, and let verified lessons shape Radar V4.
 
 Learning and Earning It.  
 Stay on course.  
