@@ -47,7 +47,7 @@ Deliverables:
 
 - `README.md`
 - `ROADMAP.md`
-- future `GOVERNANCE.md`
+- `GOVERNANCE.md`
 - prohibited-use list
 - authority record
 
@@ -58,7 +58,7 @@ Exit criteria:
 - trading and execution boundaries are explicit;
 - Todd's authority is explicit.
 
-**Status:** IN PROGRESS
+**Status:** COMPLETE
 
 # Phase 1 — Legacy evidence inventory
 
@@ -199,7 +199,15 @@ No code, schema, live data, ranking logic, backtest, signal, edge claim, or lega
 
 ## Immediate next action
 
-Create `GOVERNANCE.md` only when Todd deliberately chooses to continue foundation work in this repository.
+Pause Radar V2 after Phase 0. Any move into Phase 1 requires a separate deliberate authorization to inspect legacy repositories.
+
+## Current roadmap status
+
+- Phase 0: COMPLETE
+- Phase 1: NOT STARTED
+- Phase 2: NOT STARTED
+- Phase 3: NOT STARTED
+- Phases 4–6: NOT AUTHORIZED
 
 Learning and Earning It.  
 Stay on course.  
