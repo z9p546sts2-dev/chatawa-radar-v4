@@ -1,6 +1,5 @@
 # Radar V4 Engineering Requirements
 
-**Status:** Accepted with reduction  
 **Scope:** Evidence-backed engineering requirements only  
 **Implementation authorized:** No  
 **Methodology defined:** No
