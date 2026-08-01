@@ -1,7 +1,7 @@
 # Radar V4 Engineering Requirements
 
-**Status:** Foundation documentation  
-**Scope:** Engineering requirements only  
+**Status:** Accepted with reduction  
+**Scope:** Evidence-backed engineering requirements only  
 **Implementation authorized:** No  
 **Methodology defined:** No
 
@@ -9,7 +9,7 @@
 
 ## 1. Purpose
 
-This document defines the minimum engineering qualities Radar V4 must satisfy if implementation is later authorized.
+This document defines only the minimum engineering qualities directly supported by the verified V1/V2 forensic findings.
 
 It does not define:
 
@@ -20,9 +20,10 @@ It does not define:
 - a market-data vendor;
 - a dashboard;
 - a broker connection;
-- an autonomous trader.
+- an autonomous trader;
+- a future derivative system.
 
-The requirements below are derived from verified V1/V2 failures and strengths.
+Reasonable defaults that were not directly established by the postmortem are identified separately and are not treated as forensic requirements.
 
 ---
 
@@ -43,56 +44,21 @@ A single generic `SUCCESS` or `HEALTHY` state is not sufficient.
 
 ---
 
-## 3. Language posture
+## 3. Operational defaults not derived from the postmortem
 
-### Initial language
+The following may be sensible future defaults, but they are not presented as findings earned from V1/V2:
 
-Python is the default initial language because Radar V4’s first engineering needs are:
+- Python may be used as the initial implementation language because both legacy systems were Python and the ecosystem supports inspectable research and testing.
+- General security hygiene and dependency review remain necessary engineering practice.
+- Conservative failure behavior is a reasonable design preference.
 
-- inspectability;
-- testability;
-- reproducibility;
-- data analysis;
-- historical replay;
-- clear failure diagnosis.
-
-### Restrictions
-
-- No C++ or Rust component may be introduced without a measured requirement.
-- No multi-language architecture may be introduced for prestige or theoretical speed.
-- A new language requires a written bottleneck or reliability case, measured evidence, and explicit approval.
-
-### Stop condition
-
-A proposed language addition is rejected when the same requirement can be met clearly and safely in the existing language without a demonstrated performance or safety deficit.
+These points require separate operational approval if implementation is ever authorized. They do not carry the same evidentiary status as the requirements below.
 
 ---
 
-## 4. Repository and change discipline
+## 4. Entry-point integrity
 
-Any future codebase must include:
-
-- protected primary branch;
-- reviewable commits;
-- clear commit messages;
-- no direct secret storage;
-- no unexplained generated files;
-- no unreviewed binary artifacts;
-- versioned configuration;
-- release notes tied to actual changes.
-
-Every change must be traceable to one of:
-
-- a verified requirement;
-- a documented defect;
-- an approved experiment;
-- an approved operational need.
-
-No change may be justified only by “making the system smarter,” “adding capability,” or “improving confidence.”
-
----
-
-## 5. Entry-point integrity
+**Evidence basis:** V1 contained a primary entrypoint that failed to parse and multiple unresolved imports across both entrypoints.
 
 Every executable entrypoint must:
 
@@ -105,21 +71,19 @@ Every executable entrypoint must:
 
 A repository is not considered runnable merely because individual modules parse in isolation.
 
+**Stop condition:** Any syntax error, unresolved import, or non-loading entrypoint blocks promotion.
+
 ---
 
-## 6. Configuration discipline
+## 5. Configuration discipline
 
-Configuration must be separated from code.
+**Evidence basis:** V2 embedded unevidenced methodological thresholds directly in code.
 
-Every configuration value must identify:
+Configuration must be separated from code, and each value must identify whether it is:
 
-- name;
-- type;
-- default behavior;
-- allowed range where applicable;
-- whether it is operational or methodological;
-- source of authority;
-- whether changing it requires evidence.
+- operational;
+- architectural;
+- methodological.
 
 Methodological values must not be hidden inside ordinary operational configuration.
 
@@ -129,9 +93,13 @@ Examples:
 - Data interval: architectural configuration with cadence implications.
 - Score threshold: methodological configuration requiring evidence.
 
+**Stop condition:** An unexplained methodological value may not be introduced through ordinary configuration.
+
 ---
 
-## 7. Shared data-access layer
+## 6. Shared data-access layer
+
+**Evidence basis:** V2 used inconsistent vendors and fallback behavior across adjacent pipelines, and the later shared price client fixed only part of that problem.
 
 All market-data retrieval must pass through a shared access layer.
 
@@ -153,9 +121,13 @@ No feature, regime, outcome, or reporting module may independently implement hid
 
 Fallback must be visible. A fallback response may not silently masquerade as primary-source data.
 
+**Stop condition:** A new pipeline may not introduce independent vendor or fallback logic outside the shared layer.
+
 ---
 
-## 8. Data provenance and integrity
+## 7. Data provenance and integrity
+
+**Evidence basis:** V2 contained an outcome file whose live, synthetic, fixture, or replay status could not be established and whose timing conflicted with the system’s own rule.
 
 Every stored dataset must carry provenance sufficient to distinguish:
 
@@ -179,13 +151,17 @@ Data must be validated for:
 - impossible timing;
 - provenance completeness.
 
-Invalid data must be quarantined rather than silently repaired and accepted.
+Invalid data must be quarantined rather than silently accepted.
 
-Any repair or transformation must produce a new versioned artifact rather than overwriting the original evidence.
+Any repair or transformation must produce a new versioned artifact rather than overwrite the original evidence.
+
+**Stop condition:** Provenance-unknown or internally contradictory data may not enter research, reporting, or validation.
 
 ---
 
-## 9. Cadence enforcement
+## 8. Cadence enforcement
+
+**Evidence basis:** V1 and V2 operated at intraday scan cadence while core feature and regime inputs remained daily-resolution.
 
 The system must distinguish:
 
@@ -201,12 +177,16 @@ The system must block or degrade output when:
 
 - feature age exceeds its declared limit;
 - source interval is coarser than the approved use;
-- a daily context value is being used as an intraday decision input without approval;
+- a daily context value is used as an intraday decision input without approval;
 - price freshness and feature freshness materially diverge.
+
+**Stop condition:** Decision cadence may not outrun the cadence of load-bearing data or features.
 
 ---
 
-## 10. Determinism and reproducibility
+## 9. Determinism and reproducibility
+
+**Evidence basis:** V2’s frozen replay test provided real regression value, while also demonstrating that determinism is not market validity.
 
 Given the same:
 
@@ -231,7 +211,9 @@ A regression replay confirms consistency. It does not confirm market validity.
 
 ---
 
-## 11. Persistence and recovery
+## 10. Persistence and recovery
+
+**Evidence basis:** V2’s V25.2 atomicity fix addressed the risk of partially applied database operations.
 
 Persistence must be atomic for every logical operation.
 
@@ -250,13 +232,15 @@ Minimum future tests must include:
 - restart after failure;
 - duplicate request;
 - replay of already processed input;
-- corrupted record handling.
+- corrupted-record handling.
 
-Storage technology must remain proportional to scale. A larger database is not automatically a better database.
+Storage technology must remain proportional to scale.
 
 ---
 
-## 12. Structured logging
+## 11. Structured logging
+
+**Evidence basis:** V2’s structured logging made operational state and failures more visible than V1.
 
 Logs must be machine-readable and human-readable.
 
@@ -274,18 +258,11 @@ Every material event should include:
 - reason;
 - error details without secrets.
 
-Logs must never contain:
-
-- API keys;
-- passwords;
-- tokens;
-- broker credentials;
-- private certificates;
-- unrestricted personal data.
-
 ---
 
-## 13. Honest health states
+## 12. Honest health states
+
+**Evidence basis:** V2’s V25.3 fix distinguished a process running from a scan actually succeeding.
 
 Health must be component-specific.
 
@@ -303,7 +280,7 @@ At minimum, a future running system must separately report:
 
 A process may be operational while the output is invalid.
 
-The overall state must therefore support at least:
+The overall state must support at least:
 
 - `HEALTHY`;
 - `DEGRADED`;
@@ -311,27 +288,29 @@ The overall state must therefore support at least:
 - `FAILED`;
 - `NOT EVALUATED`.
 
-No overall `HEALTHY` state may be emitted when any load-bearing input is stale, missing, invalid, or provenance-unknown.
+No overall `HEALTHY` state may be emitted when a load-bearing input is stale, missing, invalid, or provenance-unknown.
 
 ---
 
-## 14. Failure behavior
+## 13. Failure behavior
 
-Radar V4 must fail visibly and conservatively.
+**Evidence basis:** Legacy failures remained hidden or appeared healthy because failure states were not consistently surfaced across pipelines.
 
-When a critical dependency fails, the default response is:
+When a critical dependency fails, the system must:
 
-1. stop the affected output;
+1. stop or block the affected output;
 2. record the reason;
-3. preserve the available evidence;
-4. avoid substituting stale or lower-quality data without disclosure;
+3. preserve available evidence;
+4. disclose any fallback or degraded input;
 5. require human review when the failure changes decision meaning.
 
-The system must not invent continuity by silently changing vendors, intervals, symbols, or assumptions.
+The system must not silently change vendors, intervals, symbols, or assumptions to preserve the appearance of continuity.
 
 ---
 
-## 15. Test architecture
+## 14. Test architecture
+
+**Evidence basis:** V2’s 89 passing tests established software correctness and regression discipline, but zero tests established statistical validity or market correctness.
 
 Tests must be labeled by category:
 
@@ -370,107 +349,49 @@ Reserved for future authorized methodology work. Passing software and data tests
 
 Every status report must show results by category.
 
----
-
-## 16. Security baseline
-
-Before any external data or unattended operation, the system must include:
-
-- secrets outside source control;
-- least-privilege credentials;
-- separate development and operational credentials;
-- credential rotation plan;
-- dependency review;
-- audit logging for configuration changes;
-- no broker credentials in Radar V4.
-
-Radar V4 is not authorized to hold execution authority.
+**Stop condition:** No report may state only that “all tests passed” without identifying which categories were covered.
 
 ---
 
-## 17. Dependency discipline
+## 15. Evidence-backed non-goals
 
-Every dependency must have:
-
-- a stated purpose;
-- version control or lock file;
-- license review where relevant;
-- maintenance status review;
-- security review proportional to risk;
-- removal path.
-
-No dependency may be added solely because it is popular or convenient.
-
-Prefer the standard library and small, well-understood dependencies where practical.
-
----
-
-## 18. Documentation required before implementation
-
-Before any future code is authorized, the following must exist and agree:
-
-1. `RADAR_V1_V2_FINAL_FINDINGS.md`
-2. `V4_CONTROL_REQUIREMENTS.md`
-3. `V4_ENGINEERING_REQUIREMENTS.md`
-4. a bounded statement of purpose;
-5. an explicit non-goals list;
-6. an approved first engineering unit;
-7. a stop condition for that unit.
-
-This list does not authorize the first engineering unit. It defines readiness documentation only.
-
----
-
-## 19. Non-goals
-
-Radar V4 engineering must not initially optimize for:
+Radar V4 must not initially optimize for capabilities that do not address any verified V1/V2 failure, including:
 
 - ultra-low latency;
 - high-frequency trading;
-- autonomous execution;
 - distributed systems;
 - multi-cloud deployment;
 - unlimited provider abstraction;
 - advanced user interfaces;
-- broad asset-class coverage;
 - maximum feature count;
-- model complexity.
+- maximum model complexity.
 
-The initial optimization target is correctness, traceability, reproducibility, and honest failure behavior.
+The evidence-backed optimization targets are:
 
----
-
-## 20. Future relationship to Chatawa Labs AI Trader
-
-Radar V4 must remain an independent, human-controlled intelligence system.
-
-A future Chatawa Labs AI Trader may be created only from a frozen, approved V4 release and must exist in a separate repository with separate governance.
-
-Radar V4 must not contain:
-
-- broker adapters;
-- order placement;
-- portfolio authority;
-- autonomous capital allocation;
-- execution credentials.
-
-The future trader may inherit only components that have independently earned approval.
+- correctness;
+- traceability;
+- reproducibility;
+- cadence alignment;
+- visible failure;
+- accurate test claims.
 
 ---
 
-## 21. Current disposition
+## 16. Current disposition
 
 ```text
 Legacy postmortem: CLOSED
 V4 control requirements: DOCUMENTED
-V4 engineering requirements: DOCUMENTED
-V4 purpose refinement: NEXT ELIGIBLE DOCUMENTATION UNIT
+V4 engineering requirements: ACCEPTED WITH REDUCTION
+Further V4 documentation: PAUSED
 V4 methodology: NOT DEFINED
 V4 implementation: NOT AUTHORIZED
 V4 code: NOT STARTED
 V4 data ingestion: NOT STARTED
-Chatawa Labs AI Trader: FUTURE, SEPARATE, NOT STARTED
+Sebastian methodological gate: PRIORITY
 ```
+
+No fourth V4 foundation document is authorized at this time.
 
 ---
 
