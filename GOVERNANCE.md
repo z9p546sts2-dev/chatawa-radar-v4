@@ -1,16 +1,16 @@
-# Chatawa Radar V2 Governance
+# Chatawa Radar V4 Governance
 
 ## Status
 
 **PARKED — FOUNDATION DOCUMENTATION ONLY**
 
-This document defines the future governance of Radar V2 without activating implementation.
+This document defines the future governance of Radar V4 without activating implementation.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, pilot approval, deployment, shutdown, and any future operational role.
 
 ## Purpose
 
-Radar V2 may eventually become a human-controlled intelligence and opportunity-ranking system that:
+Radar V4 may eventually become a human-controlled intelligence and opportunity-ranking system that:
 
 - organizes verified evidence;
 - compares expectations with observed outcomes;
@@ -53,7 +53,7 @@ Todd alone controls:
 
 Tools and assistants may:
 
-- inspect repositories;
+- inspect repositories after explicit authorization;
 - inventory files and components;
 - draft documentation;
 - identify unsupported claims;
@@ -63,7 +63,7 @@ Tools and assistants may:
 
 Tools and assistants may not independently:
 
-- activate Radar V2;
+- activate Radar V4;
 - create ranking logic;
 - connect live data;
 - migrate legacy code;
@@ -80,8 +80,9 @@ Authorized now:
 1. README maintenance.
 2. Roadmap maintenance.
 3. Governance documentation.
-4. Future evidence requirements.
-5. High-level legacy inventory planning.
+4. Postmortem planning.
+5. Future evidence requirements.
+6. High-level legacy inventory planning.
 
 Not authorized now:
 
@@ -109,16 +110,28 @@ Not authorized now:
 9. No causal claim may be made from correlation alone.
 10. No label outruns operation.
 
-## Legacy-code rules
+## Controlled legacy-review rules
 
-The repositories `legacy-radar-v1` and `legacy-radar-v2` are historical references only.
+The repositories `legacy-radar-v1` and `legacy-radar-v2` are historical evidence sources.
 
-Before any component may be considered for reuse, the review must record:
+They may be reviewed to determine:
+
+- original intent;
+- actual operation;
+- changes from V1 to V2;
+- repeated failures;
+- improvements that worked;
+- components that may deserve reuse, rebuild, or rejection.
+
+The review must remain read-only unless Todd separately authorizes otherwise.
+
+No legacy component may be considered for reuse until the record includes:
 
 - exact repository;
 - exact path;
 - exact commit;
 - component purpose;
+- observed behavior;
 - dependencies;
 - data assumptions;
 - security concerns;
@@ -126,9 +139,26 @@ Before any component may be considered for reuse, the review must record:
 - known defects;
 - maintenance burden;
 - reason to reuse instead of rebuild;
+- rollback method;
 - Todd authorization.
 
 No file may be copied merely because it already exists.
+
+## Reuse, rebuild, reject framework
+
+### Reuse
+
+Allowed only when the component is narrowly defined, technically sound, independently testable, maintainable, and safer to reuse than rebuild.
+
+### Rebuild
+
+Used when the underlying idea remains valid but the legacy implementation is too coupled, brittle, undocumented, insecure, or untested.
+
+### Reject and preserve
+
+Used when the component should remain only as historical evidence and should not enter Radar V4.
+
+A component may not be placed into one of these categories before evidence review.
 
 ## Ranking-method rules
 
@@ -209,15 +239,16 @@ Phase 0 requirements are satisfied by:
 
 - `README.md` — purpose and current boundary;
 - `ROADMAP.md` — phased future plan and authorization limits;
-- `GOVERNANCE.md` — authority, evidence rules, prohibited uses, legacy rules, pilot rules, and stop conditions.
+- `GOVERNANCE.md` — authority, evidence rules, prohibited uses, controlled legacy-review rules, pilot rules, and stop conditions;
+- `POSTMORTEM_AGENDA.md` — future forensic review sequence.
 
 **Phase 0 result: COMPLETE**
 
-This completion does not activate Phase 1 implementation or authorize legacy inspection beyond documentation planning.
+This completion does not activate Phase 1 or authorize code reuse.
 
 ## Governing principle
 
-> Define the evidence, authority, and failure rules before building the ranking system.
+> Use V1 and V2 as evidence first; only verified components may be considered for Radar V4.
 
 Learning and Earning It.  
 Stay on course.  
