@@ -453,7 +453,6 @@ V4 code: NOT STARTED
 V4 data ingestion: NOT STARTED
 Radar V4: PARKED
 Sebastian: NOT DISPLACED
-Chatawa Labs AI Trader: FUTURE, SEPARATE, NOT STARTED
 ```
 
 ---
