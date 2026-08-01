@@ -1,16 +1,16 @@
-# Chatawa Radar V2 — Foundation Roadmap
+# Chatawa Radar V4 — Foundation Roadmap
 
 ## Status
 
 **PARKED — FOUNDATION DOCUMENTATION ONLY**
 
-This roadmap preserves the future shape of Radar V2 without authorizing implementation.
+This roadmap preserves the future shape of Radar V4 without authorizing implementation.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, deployment, and any future operational role.
 
 ## Intended purpose
 
-Radar V2 may eventually become a human-controlled intelligence and opportunity-ranking system that:
+Radar V4 may eventually become a human-controlled intelligence and opportunity-ranking system that:
 
 - organizes verified evidence;
 - compares expectations with observed outcomes;
@@ -19,7 +19,7 @@ Radar V2 may eventually become a human-controlled intelligence and opportunity-r
 - separates evidence from interpretation;
 - remains advisory rather than autonomous.
 
-Radar V2 is not:
+Radar V4 is not:
 
 - a trading engine;
 - an execution system;
@@ -60,21 +60,28 @@ Exit criteria:
 
 **Status:** COMPLETE
 
-# Phase 1 — Legacy evidence inventory
+# Phase 1 — Legacy V1 and V2 forensic evidence inventory
 
 Objective:
 
-Document the two legacy Radar repositories without promoting any component.
+Document `legacy-radar-v1` and `legacy-radar-v2` without promoting any component.
 
 Future deliverables:
 
-- legacy repository inventory;
+- V1 repository inventory;
+- V2 repository inventory;
+- V1 intent-versus-operation record;
+- V2 intent-versus-operation record;
+- V1-to-V2 change map;
+- repeated-failure register;
+- improvements-that-worked register;
 - component map;
 - data-source map;
 - schema inventory;
 - dependency inventory;
 - known defects and unsupported claims;
-- salvage-candidate register;
+- reuse-candidate register;
+- rebuild-candidate register;
 - reject-and-preserve register.
 
 No code may be copied during this phase.
@@ -128,7 +135,32 @@ No signal, edge, or predictive claim is authorized.
 
 **Status:** NOT STARTED
 
-# Phase 4 — Bounded offline pilot
+# Phase 4 — Targeted learning curriculum
+
+Objective:
+
+Build a structured ML, mathematics, market-structure, risk, systems, and governance curriculum from verified postmortem findings.
+
+The curriculum must repair demonstrated weaknesses rather than become a generic question collection.
+
+Possible categories:
+
+- probability and statistics;
+- linear algebra and calculus;
+- optimization;
+- time-series validation;
+- machine learning;
+- calibration and uncertainty;
+- market microstructure;
+- risk and simulation validity;
+- software reliability;
+- governance and stop rules.
+
+This phase does not prove a signal or edge.
+
+**Status:** NOT STARTED
+
+# Phase 5 — Bounded offline pilot
 
 Objective:
 
@@ -149,7 +181,7 @@ This phase requires separate Todd authorization.
 
 **Status:** NOT AUTHORIZED
 
-# Phase 5 — Human review interface
+# Phase 6 — Human review interface
 
 Objective:
 
@@ -167,7 +199,7 @@ No dashboard is required before method validation.
 
 **Status:** NOT AUTHORIZED
 
-# Phase 6 — Controlled live observation
+# Phase 7 — Controlled live observation
 
 Objective:
 
@@ -193,13 +225,14 @@ Only foundation documentation is authorized:
 - governance;
 - roadmap;
 - boundaries;
+- postmortem agenda;
 - future evidence requirements.
 
 No code, schema, live data, ranking logic, backtest, signal, edge claim, or legacy migration is authorized.
 
 ## Immediate next action
 
-Pause Radar V2 after Phase 0. Any move into Phase 1 requires a separate deliberate authorization to inspect legacy repositories.
+Pause Radar V4 after Phase 0. Phase 1 begins only when Todd explicitly authorizes the controlled forensic inspection of both legacy repositories.
 
 ## Current roadmap status
 
@@ -207,7 +240,8 @@ Pause Radar V2 after Phase 0. Any move into Phase 1 requires a separate delibera
 - Phase 1: NOT STARTED
 - Phase 2: NOT STARTED
 - Phase 3: NOT STARTED
-- Phases 4–6: NOT AUTHORIZED
+- Phase 4: NOT STARTED
+- Phases 5–7: NOT AUTHORIZED
 
 Learning and Earning It.  
 Stay on course.  
