@@ -2,11 +2,13 @@
 
 ## Status
 
-**PARKED — FOUNDATION DOCUMENTATION ONLY**
+**PRE-BUILD — BUILD UNIT 1 AWAITING TODD AUTHORIZATION**
 
-This document defines the future governance of Radar V4 without activating implementation.
+Radar V4 has advanced beyond foundation-only documentation through a completed legacy V1/V2 forensic review, an audited evidence-first research methodology, and a bounded Build Unit 1 proposal with authorization-readiness PASS.
 
-Todd retains final authority over activation, scope, architecture, data use, testing, pilot approval, deployment, shutdown, and any future operational role.
+Implementation is still **not authorized**.
+
+Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
 ## Purpose
 
@@ -19,19 +21,42 @@ Radar V4 may eventually become a human-controlled intelligence and opportunity-r
 - separates evidence from interpretation;
 - remains advisory rather than autonomous.
 
+## Current controlling progression
+
+The repository has earned the following progression:
+
+1. Phase 0 purpose / authority foundation — complete.
+2. Legacy V1/V2 forensic review — complete and preserved as evidence.
+3. V4 control requirements — documented.
+4. V4 engineering requirements — documented.
+5. Radar V4 evidence-first research methodology — defined and audited.
+6. Build Unit 1 proposal — complete and audited.
+7. Build Unit 1 authorization-readiness review — PASS.
+8. Build Unit 1 execution — not authorized.
+
+The current bounded candidate is:
+
+> **Build Unit 1 — Evidence Envelope and Provenance Gate**
+
+Its purpose is non-market infrastructure only. It does not define or implement features, signals, scores, thresholds, rankings, market methods, backtests, live data, brokerage, or trading.
+
 ## Prohibited interpretations
 
-The existence of this repository, roadmap, or governance document does not mean:
+The existence of this repository, roadmap, methodology, proposal, audit, or authorization-readiness PASS does not mean:
 
-- the program is active;
-- code is authorized;
+- Build Unit 1 execution is authorized;
+- market code is authorized;
 - legacy Radar code is approved for reuse;
 - a signal exists;
 - an edge has been established;
-- live data is authorized;
+- live or historical market data is authorized;
+- backtesting is authorized;
 - trading or execution is allowed;
 - a dashboard is justified;
-- production status has been earned.
+- production status has been earned;
+- a later build unit is authorized.
+
+**Ready for authorization is not authorization.**
 
 ## Authority model
 
@@ -41,6 +66,7 @@ Todd alone controls:
 
 - activation;
 - phase advancement;
+- build authorization;
 - pilot authorization;
 - data-source approval;
 - legacy component review;
@@ -51,51 +77,63 @@ Todd alone controls:
 
 ### Tools and assistants
 
-Tools and assistants may:
+Tools and assistants may, within Todd-authorized scope:
 
-- inspect repositories after explicit authorization;
+- inspect repositories;
 - inventory files and components;
-- draft documentation;
+- maintain and reconcile documentation;
 - identify unsupported claims;
-- propose bounded methods;
+- propose bounded methods or build units;
 - verify evidence;
+- perform read-only pre-build checks;
 - summarize findings.
 
 Tools and assistants may not independently:
 
 - activate Radar V4;
-- create ranking logic;
-- connect live data;
+- begin Build Unit 1 execution;
+- create market features or ranking logic;
+- connect live or historical market data;
 - migrate legacy code;
 - declare a signal or edge;
 - authorize a backtest;
 - connect to a broker;
 - make portfolio decisions;
+- authorize Build Unit 2 or later work;
 - override Todd.
 
 ## Current authorized scope
 
 Authorized now:
 
-1. README maintenance.
-2. Roadmap maintenance.
-3. Governance documentation.
-4. Postmortem planning.
-5. Future evidence requirements.
-6. High-level legacy inventory planning.
+1. README, roadmap, governance, methodology, proposal, audit, and status maintenance.
+2. Read-only repository and pre-build verification.
+3. Preservation and review of completed V1/V2 forensic evidence.
+4. Build Unit 1 planning, bounded design review, and execution-readiness verification.
+5. Future evidence requirements and non-executing research planning.
 
 Not authorized now:
 
-1. Runtime code.
-2. Schemas.
-3. Live data.
-4. Backtests.
-5. Ranking algorithms.
-6. Signals or edge claims.
-7. Brokerage integration.
-8. Trading or execution.
-9. Portfolio authority.
-10. Copying code from legacy repositories.
+1. Build Unit 1 source-code execution or code writes.
+2. Runtime code.
+3. Market-data ingestion.
+4. Live or historical market-data calls.
+5. Market schemas beyond a separately authorized build boundary.
+6. Features, indicators, ranking algorithms, scores, thresholds, or signals.
+7. Backtests or historical method validation.
+8. Brokerage integration.
+9. Trading or execution.
+10. Portfolio authority.
+11. Copying, importing, adapting, or cherry-picking legacy Radar code.
+12. Build Unit 2 or any automatic continuation after Build Unit 1.
+
+Build Unit 1 may begin only after Todd provides explicit authorization equivalent to:
+
+```text
+AUTHORIZE BUILD UNIT 1 — TC
+```
+
+That future authorization would apply only to the bounded Evidence Envelope and Provenance Gate unit and its recorded tool/write/test boundaries.
 
 ## Evidence rules
 
@@ -109,21 +147,14 @@ Not authorized now:
 8. One successful example does not establish a pattern.
 9. No causal claim may be made from correlation alone.
 10. No label outruns operation.
+11. Software correctness, data correctness, method validity, and operational resilience remain separate claim classes.
+12. `NO EDGE SHOWN`, `UNCLEAR`, `INSUFFICIENT EVIDENCE`, and honest stopping remain acceptable outcomes.
 
 ## Controlled legacy-review rules
 
 The repositories `legacy-radar-v1` and `legacy-radar-v2` are historical evidence sources.
 
-They may be reviewed to determine:
-
-- original intent;
-- actual operation;
-- changes from V1 to V2;
-- repeated failures;
-- improvements that worked;
-- components that may deserve reuse, rebuild, or rejection.
-
-The review must remain read-only unless Todd separately authorizes otherwise.
+The bounded forensic review has been completed. Its findings may inform requirements and engineering controls, but legacy implementation does not enter V4 by inheritance.
 
 No legacy component may be considered for reuse until the record includes:
 
@@ -148,7 +179,7 @@ No file may be copied merely because it already exists.
 
 ### Reuse
 
-Allowed only when the component is narrowly defined, technically sound, independently testable, maintainable, and safer to reuse than rebuild.
+Allowed only when the component is narrowly defined, technically sound, independently testable, maintainable, safer to reuse than rebuild, and separately authorized by Todd.
 
 ### Rebuild
 
@@ -158,7 +189,25 @@ Used when the underlying idea remains valid but the legacy implementation is too
 
 Used when the component should remain only as historical evidence and should not enter Radar V4.
 
-A component may not be placed into one of these categories before evidence review.
+A component may not be promoted by momentum or inheritance.
+
+## Research-method rules
+
+The controlling Radar V4 research methodology requires, as applicable:
+
+- a narrow predeclared question;
+- known dataset identity and provenance;
+- cadence and timing compatibility;
+- ordinary baseline evidence before exceptional interpretation;
+- the same measurement ruler on both sides of a comparison;
+- direction separated from magnitude;
+- threshold entitlement before parameterization;
+- no post-result rescue;
+- historical validation before method promotion;
+- replication/robustness before stronger claims;
+- explicit human promotion decisions.
+
+A research process is not a trading method, and a trading method has not been defined.
 
 ## Ranking-method rules
 
@@ -193,6 +242,8 @@ Any future pilot must be:
 
 No code changes may occur during the test window unless the test is restarted and the change is documented.
 
+A pilot requires separate Todd authorization.
+
 ## Interface rules
 
 No dashboard or review interface should be built before the underlying method is defined and tested.
@@ -221,34 +272,44 @@ The interface may not hide limitations to create confidence.
 
 ## Stop rules
 
-Work must stop when:
+Current pre-build work must stop when:
 
-- scope exceeds foundation documentation;
-- a request implies live data, code, schema, backtest, or ranking logic;
-- evidence is insufficient;
-- legacy reuse is being assumed rather than reviewed;
+- Build Unit 1 scope expands beyond the approved Evidence Envelope and Provenance Gate;
+- implementation is requested without explicit Todd authorization;
+- live or historical market data becomes necessary;
+- a feature, indicator, score, threshold, ranking, or signal is introduced;
+- legacy code reuse is assumed rather than separately authorized;
+- a new non-minimal dependency becomes necessary without review;
+- test criteria are weakened after results are seen;
+- invalid evidence would be silently repaired instead of rejected or versioned;
+- market methodology is being invented inside foundation code;
 - pressure to continue is based only on momentum;
-- a proposed step crosses into trading or execution;
-- rollback is not available.
+- rollback or write authority is ambiguous.
 
-The default response to uncertainty is preserve, document, and review.
+The default response to uncertainty is preserve, disclose, and review.
 
-## Phase 0 disposition
+## Current disposition
 
-Phase 0 requirements are satisfied by:
-
-- `README.md` — purpose and current boundary;
-- `ROADMAP.md` — phased future plan and authorization limits;
-- `GOVERNANCE.md` — authority, evidence rules, prohibited uses, controlled legacy-review rules, pilot rules, and stop conditions;
-- `POSTMORTEM_AGENDA.md` — future forensic review sequence.
-
-**Phase 0 result: COMPLETE**
-
-This completion does not activate Phase 1 or authorize code reuse.
+```text
+PHASE 0 PURPOSE / AUTHORITY — COMPLETE
+LEGACY V1/V2 FORENSIC REVIEW — COMPLETE
+V4 CONTROL REQUIREMENTS — DOCUMENTED
+V4 ENGINEERING REQUIREMENTS — DOCUMENTED
+V4 RESEARCH METHODOLOGY — DEFINED / AUDITED
+SPECIFIC MARKET METHOD — NOT DEFINED
+BUILD UNIT 1 PROPOSAL — COMPLETE / AUDITED
+BUILD UNIT 1 AUTHORIZATION READINESS — PASS
+BUILD UNIT 1 EXECUTION — NOT AUTHORIZED
+LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
+BACKTESTING — NOT AUTHORIZED
+SIGNALS / EDGE / TRADING — NOT AUTHORIZED
+```
 
 ## Governing principle
 
-> Use V1 and V2 as evidence first; only verified components may be considered for Radar V4.
+> Build the evidence container before building the market story. Ready for authorization is not authorization.
+
+**Tools verify. Todd authorizes.**
 
 Learning and Earning It.  
 Stay on course.  
