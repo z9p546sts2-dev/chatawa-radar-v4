@@ -2,11 +2,11 @@
 
 ## Status
 
-**PARKED — FOUNDATION DOCUMENTATION ONLY**
+**PRE-BUILD — BUILD UNIT 1 AWAITING TODD AUTHORIZATION**
 
-This roadmap preserves the future shape of Radar V4 without authorizing implementation.
+Radar V4 has progressed beyond the original foundation-only roadmap through completed forensic review, methodology definition, and a bounded first build proposal. Implementation remains unauthorized.
 
-Todd retains final authority over activation, scope, architecture, data use, testing, deployment, and any future operational role.
+Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, deployment, and any future operational role.
 
 ## Intended purpose
 
@@ -26,7 +26,7 @@ Radar V4 is not:
 - an autonomous portfolio manager;
 - a claim of edge;
 - permission to revive legacy Radar code;
-- an active project merely because this roadmap exists.
+- an active implementation merely because planning is mature.
 
 ## Governing principles
 
@@ -35,28 +35,27 @@ Radar V4 is not:
 3. No signal claim before a measurement rule exists.
 4. No ranking rule before failure cases are defined.
 5. No live data before a bounded test is approved.
-6. No legacy reuse without file-level review.
+6. No legacy reuse without file-level review and Todd authorization.
 7. Human authority remains explicit.
 8. Every output must preserve provenance and uncertainty.
-9. A repository is not authorization.
-10. No drift.
+9. A repository or readiness review is not implementation authorization.
+10. Software correctness is not method validity.
+11. Negative and unclear outcomes are valid.
+12. No drift.
 
 # Phase 0 — Purpose and authority
 
-Deliverables:
+Objective:
 
-- `README.md`
-- `ROADMAP.md`
-- `GOVERNANCE.md`
-- prohibited-use list
-- authority record
+Define purpose, authority, boundaries, and prohibited interpretations.
 
-Exit criteria:
+Deliverables include:
 
-- purpose is explicit;
-- implementation remains unauthorized;
-- trading and execution boundaries are explicit;
-- Todd's authority is explicit.
+- `README.md`;
+- `ROADMAP.md`;
+- `GOVERNANCE.md`;
+- prohibited-use boundaries;
+- authority model.
 
 **Status:** COMPLETE
 
@@ -64,148 +63,179 @@ Exit criteria:
 
 Objective:
 
-Document `legacy-radar-v1` and `legacy-radar-v2` without promoting any component.
+Document `legacy-radar-v1` and `legacy-radar-v2` as historical evidence without automatically promoting or reusing components.
 
-Future deliverables:
+The bounded forensic review was completed and its findings were translated into V4 controls and engineering requirements.
 
-- V1 repository inventory;
-- V2 repository inventory;
-- V1 intent-versus-operation record;
-- V2 intent-versus-operation record;
-- V1-to-V2 change map;
-- repeated-failure register;
-- improvements-that-worked register;
-- component map;
-- data-source map;
-- schema inventory;
-- dependency inventory;
-- known defects and unsupported claims;
-- reuse-candidate register;
-- rebuild-candidate register;
-- reject-and-preserve register.
+Legacy repositories remain evidence sources. Legacy implementation is not inherited by V4.
 
-No code may be copied during this phase.
+**Status:** COMPLETE
 
-**Status:** NOT STARTED
-
-# Phase 2 — Canonical intelligence record
+# Phase 2 — Evidence-first research methodology
 
 Objective:
 
-Define the minimum trustworthy record before any implementation.
+Define the research process required before stronger market claims or methods can be considered.
 
-Future record categories may include:
+The methodology now establishes:
 
-- source record;
-- claim record;
-- event record;
-- expectation record;
-- observation record;
-- outcome record;
-- contradiction record;
-- uncertainty record;
-- human-review disposition.
+- narrow question predeclaration;
+- data identity and provenance;
+- cadence and timing gates;
+- ordinary baseline discipline;
+- same-ruler comparisons;
+- separation of direction, magnitude, usefulness, and validity;
+- threshold-entitlement discipline;
+- historical validation before promotion;
+- replication and robustness before stronger claims;
+- explicit human promotion decisions.
 
-Exit criteria:
+This phase defines a research process, not a trading method.
 
-- provenance is mandatory;
-- timestamps are explicit;
-- evidence and interpretation are separated;
-- missing and conflicting evidence remain visible.
+**Status:** COMPLETE / AUDITED
 
-**Status:** NOT STARTED
-
-# Phase 3 — Ranking-method design
+# Phase 3 — Build Unit 1 proposal: Evidence Envelope and Provenance Gate
 
 Objective:
 
-Define what ranking means before building a ranking engine.
+Define the smallest non-market software foundation that can represent, validate, serialize, and fingerprint evidence identity before market logic exists.
 
-Required questions:
+Build Unit 1 is limited to:
 
-- What is being ranked?
-- For what human decision?
-- Over what time horizon?
-- With what evidence requirements?
-- How are uncertainty and missing data handled?
-- How are false positives and false confidence measured?
-- What causes an item to be excluded?
+- evidence-envelope identity fields;
+- provenance validation;
+- deterministic serialization;
+- checksum generation/verification;
+- explicit fixture/synthetic examples;
+- SOFTWARE CORRECTNESS tests;
+- DATA CORRECTNESS tests;
+- syntax/import integrity;
+- one bounded unit README.
 
-No signal, edge, or predictive claim is authorized.
+Explicitly excluded:
 
-**Status:** NOT STARTED
-
-# Phase 4 — Targeted learning curriculum
-
-Objective:
-
-Build a structured ML, mathematics, market-structure, risk, systems, and governance curriculum from verified postmortem findings.
-
-The curriculum must repair demonstrated weaknesses rather than become a generic question collection.
-
-Possible categories:
-
-- probability and statistics;
-- linear algebra and calculus;
-- optimization;
-- time-series validation;
+- live or historical market data;
+- provider selection/fallback implementation;
+- features;
+- indicators;
+- event logic;
+- ranking;
+- scores;
+- confidence;
+- thresholds;
+- signals;
+- backtesting;
 - machine learning;
-- calibration and uncertainty;
-- market microstructure;
-- risk and simulation validity;
-- software reliability;
-- governance and stop rules.
+- dashboards;
+- schedulers;
+- brokerage;
+- trading;
+- autonomous operation;
+- legacy code copy/import/adaptation.
 
-This phase does not prove a signal or edge.
+The proposal and its audit are complete. The authorization-readiness review passed.
 
-**Status:** NOT STARTED
+**Status:** READY FOR TODD AUTHORIZATION DECISION
 
-# Phase 5 — Bounded offline pilot
+**Execution:** NOT AUTHORIZED
+
+# Phase 4 — Build Unit 1 execution
 
 Objective:
 
-Test one narrow question using frozen historical material and preregistered rules.
+If and only if Todd separately authorizes it, implement the bounded Evidence Envelope and Provenance Gate exactly within the approved scope.
 
-Required controls:
+Expected minimal file boundary:
 
-- one question;
-- fixed dataset;
-- fixed ranking rule;
-- fixed review period;
-- no live trading;
-- no execution;
-- no code changes mid-test without restarting;
-- explicit stop condition.
+```text
+radar_v4/
+  __init__.py
+  evidence.py
+  validation.py
 
-This phase requires separate Todd authorization.
+tests/
+  test_evidence_software.py
+  test_evidence_data.py
+
+README_BUILD_UNIT_1.md
+```
+
+Future execution constraints:
+
+- no market-data network calls;
+- no live data;
+- no historical market data;
+- no database access;
+- no secrets;
+- no legacy code reuse;
+- no market method logic;
+- no thresholds/signals/trading;
+- unit tests plus syntax/import checks only.
+
+A successful Build Unit 1 would earn only a small evidence/provenance software foundation. It would not authorize the next unit.
 
 **Status:** NOT AUTHORIZED
 
-# Phase 6 — Human review interface
+# Phase 5 — Future data / research foundation
 
 Objective:
 
-Only after the method is proven, design a review surface that shows:
+Define and separately authorize any later work involving real historical data, data access, cadence enforcement, baseline research, or candidate market questions.
 
-- underlying evidence;
-- provenance;
-- uncertainty;
-- ranking reason;
-- counterevidence;
-- freshness;
-- human disposition.
+This phase must not begin automatically after Build Unit 1.
+
+Before any real dataset is admitted, required controls include provenance, source identity, interval/cadence semantics, timestamps, timezone, transformation identity, integrity checks, and quarantine of contradictory or unknown-provenance data.
+
+**Status:** NOT AUTHORIZED
+
+# Phase 6 — Candidate feature / method research
+
+Objective:
+
+Only after evidence/data foundations are separately earned, evaluate one narrow predeclared market question under the controlling V4 methodology.
+
+No feature, threshold, ranking, score, or method is inherited from legacy Radar.
+
+A candidate method would require ordinary baseline evidence, predeclared comparisons, threshold entitlement where applicable, historical validation, and later robustness work.
+
+**Status:** NOT AUTHORIZED
+
+# Phase 7 — Bounded offline pilot
+
+Objective:
+
+Test one separately approved method using fixed historical material and preregistered rules.
+
+Required controls include:
+
+- one question;
+- fixed dataset;
+- fixed method/ranking rule;
+- fixed review period;
+- no live trading;
+- no execution;
+- no code changes mid-test without restart;
+- explicit stop condition.
+
+**Status:** NOT AUTHORIZED
+
+# Phase 8 — Human review interface
+
+Objective:
+
+Only after a method is defined and tested, design a review surface showing underlying evidence, provenance, uncertainty, freshness, missing data, counterevidence, ranking reason, and human disposition.
 
 No dashboard is required before method validation.
 
 **Status:** NOT AUTHORIZED
 
-# Phase 7 — Controlled live observation
+# Phase 9 — Controlled live observation
 
 Objective:
 
 Observe live information without autonomous recommendations or execution.
 
-Restrictions:
+Restrictions include:
 
 - read-only;
 - advisory only;
@@ -219,29 +249,69 @@ Restrictions:
 
 ## Current authorized work
 
-Only foundation documentation is authorized:
+Authorized now:
 
-- purpose;
-- governance;
-- roadmap;
-- boundaries;
-- postmortem agenda;
-- future evidence requirements.
+- documentation/status maintenance;
+- read-only repository inspection;
+- completed forensic-evidence review and preservation;
+- methodology review and maintenance;
+- Build Unit 1 planning and execution-readiness verification;
+- bounded pre-build design dry runs.
 
-No code, schema, live data, ranking logic, backtest, signal, edge claim, or legacy migration is authorized.
+Not authorized now:
+
+- source-code writes;
+- Build Unit 1 execution;
+- schemas beyond a separately authorized unit boundary;
+- live or historical market-data ingestion;
+- backtesting;
+- market features;
+- ranking logic;
+- scores or thresholds;
+- signals or edge claims;
+- legacy code migration;
+- brokerage or trading;
+- automatic Build Unit 2.
 
 ## Immediate next action
 
-Pause Radar V4 after Phase 0. Phase 1 begins only when Todd explicitly authorizes the controlled forensic inspection of both legacy repositories.
+Do not create more foundation documentation merely to continue momentum.
+
+Before any future Build Unit 1 execution:
+
+1. confirm `main` has not materially drifted from the approved pre-build state;
+2. confirm the intended Python/runtime environment;
+3. confirm the bounded file/tool/test scope remains unchanged;
+4. obtain Todd's explicit Build Unit 1 execution authorization.
+
+The required authority remains equivalent to:
+
+```text
+AUTHORIZE BUILD UNIT 1 — TC
+```
+
+Until then, implementation remains stopped.
 
 ## Current roadmap status
 
-- Phase 0: COMPLETE
-- Phase 1: NOT STARTED
-- Phase 2: NOT STARTED
-- Phase 3: NOT STARTED
-- Phase 4: NOT STARTED
-- Phases 5–7: NOT AUTHORIZED
+```text
+PHASE 0 — PURPOSE / AUTHORITY                         COMPLETE
+PHASE 1 — LEGACY FORENSIC REVIEW                     COMPLETE
+PHASE 2 — RESEARCH METHODOLOGY                       COMPLETE / AUDITED
+PHASE 3 — BUILD UNIT 1 PROPOSAL / AUTH READINESS     COMPLETE / PASS
+PHASE 4 — BUILD UNIT 1 EXECUTION                     NOT AUTHORIZED
+PHASE 5 — DATA / RESEARCH FOUNDATION                 NOT AUTHORIZED
+PHASE 6 — FEATURE / METHOD RESEARCH                  NOT AUTHORIZED
+PHASE 7 — BOUNDED OFFLINE PILOT                      NOT AUTHORIZED
+PHASE 8 — HUMAN REVIEW INTERFACE                     NOT AUTHORIZED
+PHASE 9 — CONTROLLED LIVE OBSERVATION                NOT AUTHORIZED
+```
+
+## Governing principle
+
+> Build the evidence container before building the market story. Ready for authorization is not authorization.
+
+**Tools verify. Todd authorizes.**
 
 Learning and Earning It.  
 Stay on course.  
