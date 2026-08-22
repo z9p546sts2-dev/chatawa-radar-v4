@@ -2,9 +2,9 @@
 
 ## Status
 
-**PRE-BUILD — BUILD UNIT 1 AWAITING TODD AUTHORIZATION**
+**BUILD UNIT 1 COMPLETE WITHIN SCOPE — ACCEPTED-TC**
 
-Radar V4 has progressed beyond the original foundation-only roadmap through completed forensic review, methodology definition, and a bounded first build proposal. Implementation remains unauthorized.
+Radar V4 has a bounded evidence-envelope and provenance-gate software foundation. Todd accepted that unit on 2026-08-22. No later unit is authorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, deployment, and any future operational role.
 
@@ -133,11 +133,11 @@ Explicitly excluded:
 - autonomous operation;
 - legacy code copy/import/adaptation.
 
-The proposal and its audit are complete. The authorization-readiness review passed.
+The proposal and its audit are complete. The authorization-readiness review passed. Todd later authorized and accepted execution.
 
-**Status:** READY FOR TODD AUTHORIZATION DECISION
+**Status:** COMPLETE
 
-**Execution:** NOT AUTHORIZED
+**Execution:** ACCEPTED-TC
 
 # Phase 4 — Build Unit 1 execution
 
@@ -172,9 +172,9 @@ Future execution constraints:
 - no thresholds/signals/trading;
 - unit tests plus syntax/import checks only.
 
-A successful Build Unit 1 would earn only a small evidence/provenance software foundation. It would not authorize the next unit.
+Build Unit 1 earned only a small evidence/provenance software foundation. It does not authorize the next unit.
 
-**Status:** NOT AUTHORIZED
+**Status:** COMPLETE WITHIN SCOPE / ACCEPTED-TC
 
 # Phase 5 — Future data / research foundation
 
@@ -255,13 +255,12 @@ Authorized now:
 - read-only repository inspection;
 - completed forensic-evidence review and preservation;
 - methodology review and maintenance;
-- Build Unit 1 planning and execution-readiness verification;
-- bounded pre-build design dry runs.
+- the accepted Build Unit 1 evidence/provenance software;
+- review of that unit without expanding it.
 
 Not authorized now:
 
-- source-code writes;
-- Build Unit 1 execution;
+- Build Unit 2 or any automatic continuation;
 - schemas beyond a separately authorized unit boundary;
 - live or historical market-data ingestion;
 - backtesting;
@@ -270,27 +269,13 @@ Not authorized now:
 - scores or thresholds;
 - signals or edge claims;
 - legacy code migration;
-- brokerage or trading;
-- automatic Build Unit 2.
+- brokerage, paper trading, or simulated orders.
 
 ## Immediate next action
 
-Do not create more foundation documentation merely to continue momentum.
+Stop. Do not start Phase 5 or Build Unit 2 because Unit 1 was accepted.
 
-Before any future Build Unit 1 execution:
-
-1. confirm `main` has not materially drifted from the approved pre-build state;
-2. confirm the intended Python/runtime environment;
-3. confirm the bounded file/tool/test scope remains unchanged;
-4. obtain Todd's explicit Build Unit 1 execution authorization.
-
-The required authority remains equivalent to:
-
-```text
-AUTHORIZE BUILD UNIT 1 — TC
-```
-
-Until then, implementation remains stopped.
+A later data / research foundation requires a separate Todd authorization. Buying a market-data API, opening a paper account, or designing SaaS is not authorized by this acceptance.
 
 ## Current roadmap status
 
@@ -299,7 +284,7 @@ PHASE 0 — PURPOSE / AUTHORITY                         COMPLETE
 PHASE 1 — LEGACY FORENSIC REVIEW                     COMPLETE
 PHASE 2 — RESEARCH METHODOLOGY                       COMPLETE / AUDITED
 PHASE 3 — BUILD UNIT 1 PROPOSAL / AUTH READINESS     COMPLETE / PASS
-PHASE 4 — BUILD UNIT 1 EXECUTION                     NOT AUTHORIZED
+PHASE 4 — BUILD UNIT 1 EXECUTION                     COMPLETE WITHIN SCOPE / ACCEPTED-TC
 PHASE 5 — DATA / RESEARCH FOUNDATION                 NOT AUTHORIZED
 PHASE 6 — FEATURE / METHOD RESEARCH                  NOT AUTHORIZED
 PHASE 7 — BOUNDED OFFLINE PILOT                      NOT AUTHORIZED
@@ -309,7 +294,7 @@ PHASE 9 — CONTROLLED LIVE OBSERVATION                NOT AUTHORIZED
 
 ## Governing principle
 
-> Build the evidence container before building the market story. Ready for authorization is not authorization.
+> Build the evidence container before building the market story. Accepting Unit 1 is not authorization of Unit 2.
 
 **Tools verify. Todd authorizes.**
 

@@ -1,10 +1,10 @@
 # Chatawa Radar V4
 
-## Status: PRE-BUILD / BUILD UNIT 1 AWAITING TODD AUTHORIZATION
+## Status: BUILD UNIT 1 COMPLETE WITHIN SCOPE / ACCEPTED-TC
 
-Radar V4 has completed its legacy V1/V2 forensic foundation, defined and audited an evidence-first research methodology, and produced a bounded first build proposal with authorization-readiness PASS.
+Radar V4 has a bounded evidence-envelope and provenance-gate software foundation. Todd accepted that unit on 2026-08-22.
 
-No implementation is authorized at this time.
+No later unit is authorized. This is not a market method, data feed, signal, or trading system.
 
 ## Intended future role
 
@@ -20,9 +20,8 @@ V4 CONTROL REQUIREMENTS — DOCUMENTED
 V4 ENGINEERING REQUIREMENTS — DOCUMENTED
 V4 RESEARCH METHODOLOGY — DEFINED / AUDITED
 SPECIFIC MARKET METHOD — NOT DEFINED
-BUILD UNIT 1 PROPOSAL — COMPLETE / AUDITED
-BUILD UNIT 1 AUTHORIZATION READINESS — PASS
-BUILD UNIT 1 EXECUTION — NOT AUTHORIZED
+BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
+BUILD UNIT 2 — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED
@@ -30,13 +29,15 @@ SIGNALS / EDGE / TRADING — NOT AUTHORIZED
 
 ## Build Unit 1
 
-The current bounded first-code candidate is:
+The accepted first-code unit is:
 
 > **Evidence Envelope and Provenance Gate**
 
-Its purpose is to establish traceable evidence identity and validation before any market logic exists.
+It can represent, serialize, fingerprint, and validate evidence identity. Invalid or provenance-unknown records fail visibly and are not repaired.
 
-The unit is deliberately non-market. It does not authorize or define:
+See `README_BUILD_UNIT_1.md` and `RADAR_V4_BUILD_UNIT_1_ACCEPTANCE_TC.md`.
+
+It does not authorize or define:
 
 - live or historical market-data access;
 - features or indicators;
@@ -48,11 +49,10 @@ The unit is deliberately non-market. It does not authorize or define:
 - brokerage;
 - trading;
 - autonomous operation;
-- legacy-code reuse.
+- legacy-code reuse;
+- Build Unit 2.
 
-Build Unit 1 may begin only after Todd explicitly authorizes the bounded execution scope recorded in the repository.
-
-**Ready for authorization is not authorization.**
+Acceptance of this unit is not authorization of the next unit.
 
 ## Legacy relationship
 
@@ -75,9 +75,8 @@ No legacy source file may be copied merely because it already exists.
 
 ## Current boundary
 
-Until Todd explicitly authorizes Build Unit 1 execution:
+Until Todd explicitly authorizes a later bounded unit:
 
-- no Radar V4 source-code implementation;
 - no market-data ingestion;
 - no market features;
 - no ranking logic;
@@ -89,7 +88,7 @@ Until Todd explicitly authorizes Build Unit 1 execution:
 - no Build Unit 2;
 - no assumption that V1 or V2 behavior remains valid.
 
-The repository is pre-build ready for a bounded first-code decision. It is not a trading-system authorization.
+The repository now has a small evidence/provenance software foundation. It is not a trading-system authorization.
 
 **Tools verify. Todd authorizes.**
 

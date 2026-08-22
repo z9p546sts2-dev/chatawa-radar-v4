@@ -1,6 +1,7 @@
 # Radar V4 Build Unit 1 — Evidence Envelope and Provenance Gate
 
 **Authorization:** `AUTHORIZE BUILD UNIT 1 — TC`  
+**Disposition:** `Accepted-TC`  
 **Language:** Python 3.12, this unit only  
 **Market method:** none  
 **Dependencies added:** none

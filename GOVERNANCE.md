@@ -2,11 +2,11 @@
 
 ## Status
 
-**PRE-BUILD — BUILD UNIT 1 AWAITING TODD AUTHORIZATION**
+**BUILD UNIT 1 COMPLETE WITHIN SCOPE — ACCEPTED-TC**
 
-Radar V4 has advanced beyond foundation-only documentation through a completed legacy V1/V2 forensic review, an audited evidence-first research methodology, and a bounded Build Unit 1 proposal with authorization-readiness PASS.
+Radar V4 has a bounded evidence-envelope and provenance-gate software foundation. Todd accepted that unit on 2026-08-22.
 
-Implementation is still **not authorized**.
+No later unit is authorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -32,9 +32,9 @@ The repository has earned the following progression:
 5. Radar V4 evidence-first research methodology — defined and audited.
 6. Build Unit 1 proposal — complete and audited.
 7. Build Unit 1 authorization-readiness review — PASS.
-8. Build Unit 1 execution — not authorized.
+8. Build Unit 1 execution — complete within scope / Accepted-TC.
 
-The current bounded candidate is:
+The accepted bounded unit is:
 
 > **Build Unit 1 — Evidence Envelope and Provenance Gate**
 
@@ -42,9 +42,9 @@ Its purpose is non-market infrastructure only. It does not define or implement f
 
 ## Prohibited interpretations
 
-The existence of this repository, roadmap, methodology, proposal, audit, or authorization-readiness PASS does not mean:
+The existence of this repository, roadmap, methodology, proposal, audit, authorization-readiness PASS, or Unit 1 acceptance does not mean:
 
-- Build Unit 1 execution is authorized;
+- a later build unit is authorized;
 - market code is authorized;
 - legacy Radar code is approved for reuse;
 - a signal exists;
@@ -54,7 +54,7 @@ The existence of this repository, roadmap, methodology, proposal, audit, or auth
 - trading or execution is allowed;
 - a dashboard is justified;
 - production status has been earned;
-- a later build unit is authorized.
+- Phase 5 data work is authorized.
 
 **Ready for authorization is not authorization.**
 
@@ -107,33 +107,25 @@ Tools and assistants may not independently:
 Authorized now:
 
 1. README, roadmap, governance, methodology, proposal, audit, and status maintenance.
-2. Read-only repository and pre-build verification.
+2. Read-only repository inspection.
 3. Preservation and review of completed V1/V2 forensic evidence.
-4. Build Unit 1 planning, bounded design review, and execution-readiness verification.
+4. The accepted Build Unit 1 evidence/provenance software.
 5. Future evidence requirements and non-executing research planning.
 
 Not authorized now:
 
-1. Build Unit 1 source-code execution or code writes.
-2. Runtime code.
-3. Market-data ingestion.
-4. Live or historical market-data calls.
-5. Market schemas beyond a separately authorized build boundary.
-6. Features, indicators, ranking algorithms, scores, thresholds, or signals.
-7. Backtests or historical method validation.
-8. Brokerage integration.
-9. Trading or execution.
-10. Portfolio authority.
-11. Copying, importing, adapting, or cherry-picking legacy Radar code.
-12. Build Unit 2 or any automatic continuation after Build Unit 1.
+1. Build Unit 2 or any automatic continuation after Build Unit 1.
+2. Market-data ingestion.
+3. Live or historical market-data calls.
+4. Market schemas beyond a separately authorized build boundary.
+5. Features, indicators, ranking algorithms, scores, thresholds, or signals.
+6. Backtests or historical method validation.
+7. Brokerage, paper trading, or simulated orders.
+8. Trading or execution.
+9. Portfolio authority.
+10. Copying, importing, adapting, or cherry-picking legacy Radar code.
 
-Build Unit 1 may begin only after Todd provides explicit authorization equivalent to:
-
-```text
-AUTHORIZE BUILD UNIT 1 — TC
-```
-
-That future authorization would apply only to the bounded Evidence Envelope and Provenance Gate unit and its recorded tool/write/test boundaries.
+A later unit may begin only after Todd provides a new explicit authorization. `Accepted-TC` applies to Build Unit 1 only.
 
 ## Evidence rules
 
@@ -297,9 +289,8 @@ V4 CONTROL REQUIREMENTS — DOCUMENTED
 V4 ENGINEERING REQUIREMENTS — DOCUMENTED
 V4 RESEARCH METHODOLOGY — DEFINED / AUDITED
 SPECIFIC MARKET METHOD — NOT DEFINED
-BUILD UNIT 1 PROPOSAL — COMPLETE / AUDITED
-BUILD UNIT 1 AUTHORIZATION READINESS — PASS
-BUILD UNIT 1 EXECUTION — NOT AUTHORIZED
+BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
+BUILD UNIT 2 — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED
