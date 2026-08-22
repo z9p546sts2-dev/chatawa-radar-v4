@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from radar_v4.dataset_pack import DatasetPackReport, load_dataset_pack
-from radar_v4.ruler import require_ruler
+from radar_v4.ruler import RulerMismatchError, require_ruler
 from radar_v4.session import SessionResult, run_dataset_session
 from radar_v4.snapshot import DatasetSnapshot
 from radar_v4.snapshot_files import read_snapshot_file
@@ -35,9 +35,13 @@ def run_session_from_snapshot_file(
     return run_session_from_snapshot(read_snapshot_file(path), expected_ruler)
 
 
-def run_session_from_pack(directory: str | Path) -> LocalSessionResult:
+def run_session_from_pack(
+    directory: str | Path,
+    require_manifest: bool = False,
+    expected_ruler: str | None = None,
+) -> LocalSessionResult:
     """Load a FIXTURE/SYNTHETIC pack and run a dataset session if usable."""
-    pack = load_dataset_pack(directory)
+    pack = load_dataset_pack(directory, require_manifest=require_manifest)
     if not pack.usable():
         return LocalSessionResult(
             pack=pack,
@@ -45,6 +49,15 @@ def run_session_from_pack(directory: str | Path) -> LocalSessionResult:
             error_code="PACK_NOT_USABLE",
         )
     assert pack.declaration is not None
+    if expected_ruler is not None:
+        try:
+            require_ruler(pack.declaration, expected_ruler)
+        except RulerMismatchError:
+            return LocalSessionResult(
+                pack=pack,
+                session=None,
+                error_code="RULER_MISMATCH",
+            )
     observations = pack.observation_intake.accepted
     envelopes = tuple(item.envelope for item in observations)
     session = run_dataset_session(pack.declaration, envelopes, observations)

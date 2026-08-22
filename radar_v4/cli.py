@@ -12,7 +12,12 @@ from radar_v4.checksum_sidecar import verify_checksum_sidecar, write_checksum_si
 from radar_v4.declaration_json import intake_declaration_json
 from radar_v4.local_session import run_session_from_pack, run_session_from_snapshot_file
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
-from radar_v4.pack_manifest import PackManifestError, verify_pack_manifest, write_pack_manifest
+from radar_v4.pack_manifest import (
+    PackManifestError,
+    compare_pack_manifests,
+    verify_pack_manifest,
+    write_pack_manifest,
+)
 from radar_v4.quarantine_journal import write_quarantine_journal_file
 from radar_v4.reason_codes import REASON_CODES
 from radar_v4.registry import EvidenceRegistry
@@ -47,6 +52,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="write a .sha256 sidecar next to --snapshot",
     )
+    session.add_argument(
+        "--require-manifest",
+        action="store_true",
+        help="refuse a pack that has no manifest.json",
+    )
+    session.add_argument("--expect-ruler", help="optional ruler checksum to require")
 
     replay = sub.add_parser("replay", help="replay a local snapshot file")
     replay.add_argument("--snapshot", required=True, help="snapshot file to replay")
@@ -102,10 +113,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     show_ruler.add_argument("--pack", help="local dataset pack directory")
     show_ruler.add_argument("--snapshot", help="snapshot file")
 
+    pack_compare = sub.add_parser("pack-compare", help="compare two pack manifests")
+    pack_compare.add_argument("--left", required=True, help="left pack directory")
+    pack_compare.add_argument("--right", required=True, help="right pack directory")
+
     args = parser.parse_args(list(argv) if argv is not None else None)
     if args.command == "session":
         return _run_session(
-            args.pack, args.snapshot, args.report, args.journal, args.sidecar
+            args.pack,
+            args.snapshot,
+            args.report,
+            args.journal,
+            args.sidecar,
+            args.require_manifest,
+            args.expect_ruler,
         )
     if args.command == "replay":
         return _run_replay(args.snapshot, args.report, args.expect_ruler)
@@ -127,6 +148,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run_pack_manifest(args.pack)
     if args.command == "pack-verify":
         return _run_pack_verify(args.pack)
+    if args.command == "pack-compare":
+        return _run_pack_compare(args.left, args.right)
     return _run_show_ruler(args.pack, args.snapshot)
 
 
@@ -136,8 +159,12 @@ def _run_session(
     report_path: str | None,
     journal_path: str | None,
     write_sidecar: bool,
+    require_manifest: bool = False,
+    expected_ruler: str | None = None,
 ) -> int:
-    result = run_session_from_pack(pack)
+    result = run_session_from_pack(
+        pack, require_manifest=require_manifest, expected_ruler=expected_ruler
+    )
     if result.session is None:
         sys.stderr.write(f"{result.error_code or 'PACK_NOT_USABLE'}\n")
         if result.pack is not None:
@@ -319,3 +346,13 @@ def _run_show_ruler(pack: str | None, snapshot_path: str | None) -> int:
         return 2
     sys.stdout.write(serialize_ruler(parsed.declaration) + "\n")
     return 0
+
+
+def _run_pack_compare(left: str, right: str) -> int:
+    try:
+        comparison = compare_pack_manifests(left, right)
+    except PackManifestError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    sys.stdout.write(comparison.serialize() + "\n")
+    return 0 if comparison.equal else 1

@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from json import JSONDecodeError, dumps, loads
 from pathlib import Path
 
+from radar_v4.atomic_write import write_text_atomic
 from radar_v4.evidence import EvidenceEnvelope
 from radar_v4.intake import IntakeRecord
 from radar_v4.registry import EvidenceRegistry
@@ -43,12 +44,11 @@ def write_registry_file(path: str | Path, registry: EvidenceRegistry) -> Path:
             for record in registry.quarantined_records()
         ],
     }
-    target.write_text(
+    return write_text_atomic(
+        target,
         dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
         + "\n",
-        encoding="utf-8",
     )
-    return target
 
 
 def read_registry_file(path: str | Path) -> EvidenceRegistry:

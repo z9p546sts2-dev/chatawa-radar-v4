@@ -43,7 +43,9 @@ class DatasetPackReport:
         return self.declaration is not None and len(self.pack_issues) == 0
 
 
-def load_dataset_pack(directory: str | Path) -> DatasetPackReport:
+def load_dataset_pack(
+    directory: str | Path, require_manifest: bool = False
+) -> DatasetPackReport:
     """Read declaration.json plus observation JSON files from one directory.
 
     HISTORICAL and LIVE labels are quarantined here even if identity-valid.
@@ -70,6 +72,7 @@ def load_dataset_pack(directory: str | Path) -> DatasetPackReport:
     pack_issues: list[ValidationIssue] = []
     unreadable: list[UnreadableDocument] = []
     declaration: DatasetDeclaration | None = None
+    _apply_manifest_gate(root, pack_issues, require_manifest)
     declaration_path = root / DECLARATION_FILENAME
     if not declaration_path.is_file():
         pack_issues.append(
@@ -199,3 +202,26 @@ def _apply_identity_gate(
         by_identity[identity] = item
         kept.append(item)
     return kept, quarantined
+
+
+def _apply_manifest_gate(
+    root: Path, pack_issues: list[ValidationIssue], require_manifest: bool
+) -> None:
+    """If a manifest exists, it must match. A missing manifest is optional."""
+    from radar_v4.pack_manifest import MANIFEST_FILENAME, PackManifestError, verify_pack_manifest
+
+    manifest_path = root / MANIFEST_FILENAME
+    if not manifest_path.is_file():
+        if require_manifest:
+            pack_issues.append(
+                ValidationIssue(
+                    "MANIFEST_REQUIRED",
+                    "pack has no manifest.json and a manifest was required",
+                    "manifest",
+                )
+            )
+        return
+    try:
+        verify_pack_manifest(root)
+    except PackManifestError as exc:
+        pack_issues.append(ValidationIssue(exc.code, exc.reason, "manifest"))

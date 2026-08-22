@@ -4,6 +4,7 @@ This package does not implement market methods, features, signals,
 thresholds, data access, or trading.
 """
 
+from radar_v4.atomic_write import write_text_atomic
 from radar_v4.baseline import BaselineReport, CloseToCloseChange, close_to_close_changes
 from radar_v4.change_continuity import inspect_change_records
 from radar_v4.checksum_sidecar import (
@@ -35,8 +36,10 @@ from radar_v4.observation_json import (
 from radar_v4.observation_validation import validate_observation
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
 from radar_v4.pack_manifest import (
+    ManifestComparison,
     PackManifest,
     PackManifestError,
+    compare_pack_manifests,
     verify_pack_manifest,
     write_pack_manifest,
 )
@@ -97,6 +100,7 @@ __all__ = [
     "DeclarationIntakeReport",
     "SnapshotComparison",
     "LocalSessionResult",
+    "ManifestComparison",
     "SeriesReport",
     "Observation",
     "ObservationIntakeRecord",
@@ -124,6 +128,7 @@ __all__ = [
     "RESULT_STATUSES",
     "admit_to_dataset",
     "close_to_close_changes",
+    "compare_pack_manifests",
     "compare_snapshot_files",
     "compare_snapshots",
     "declaration_ruler",
@@ -166,4 +171,5 @@ __all__ = [
     "write_quarantine_journal_file",
     "write_ruler_sidecar",
     "write_registry_file",
+    "write_text_atomic",
 ]

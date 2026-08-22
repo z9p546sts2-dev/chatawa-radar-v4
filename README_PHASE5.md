@@ -42,6 +42,11 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Unit 40** — verify a pack against its manifest
 - **Unit 41** — ruler sidecar + CLI `show-ruler`
 - **Unit 42** — session report `document_kind` / `report_version`
+- **Unit 43** — `radar_v4/atomic_write.py` write temp sibling then replace
+- **Unit 44** — pack load verifies an existing `manifest.json`; missing is optional unless required
+- **Unit 45** — `session --require-manifest` and `session --expect-ruler`
+- **Unit 46** — `compare_pack_manifests` / CLI `pack-compare`
+- **Unit 47** — `MANIFEST_REQUIRED` in the refusal catalog
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -54,6 +59,7 @@ Network downloads, broker/paper trading, indicators, thresholds, ranking, and tr
 ```text
 PYTHONPATH=. python3 -m unittest discover -s tests -v
 PYTHONPATH=. python3 -m radar_v4 session --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 session --pack fixtures/synthetic_one_symbol_1d --require-manifest
 PYTHONPATH=. python3 -m radar_v4 replay --snapshot <snapshot.json>
 PYTHONPATH=. python3 -m radar_v4 compare --left <snapshot.json> --right <snapshot.json>
 PYTHONPATH=. python3 -m radar_v4 verify --snapshot <snapshot.json>
@@ -61,5 +67,6 @@ PYTHONPATH=. python3 -m radar_v4 export-pack --snapshot <snapshot.json> --out <e
 PYTHONPATH=. python3 -m radar_v4 codes
 PYTHONPATH=. python3 -m radar_v4 quarantine --pack fixtures/synthetic_one_symbol_1d --out journal.json
 PYTHONPATH=. python3 -m radar_v4 pack-verify --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 pack-compare --left fixtures/synthetic_one_symbol_1d --right fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 show-ruler --pack fixtures/synthetic_one_symbol_1d
 ```

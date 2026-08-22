@@ -9,6 +9,7 @@ from __future__ import annotations
 from json import JSONDecodeError
 from pathlib import Path
 
+from radar_v4.atomic_write import write_text_atomic
 from radar_v4.snapshot import DatasetSnapshot
 
 
@@ -26,8 +27,7 @@ def write_snapshot_file(path: str | Path, snapshot: DatasetSnapshot) -> Path:
             "SNAPSHOT_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a snapshot file",
         )
-    target.write_text(snapshot.serialize() + "\n", encoding="utf-8")
-    return target
+    return write_text_atomic(target, snapshot.serialize() + "\n")
 
 
 def read_snapshot_file(path: str | Path) -> DatasetSnapshot:

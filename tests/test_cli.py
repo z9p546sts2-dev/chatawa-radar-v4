@@ -159,6 +159,38 @@ class CliTests(unittest.TestCase):
                 self.assertEqual(main(["pack-verify", "--pack", str(pack)]), 0)
             self.assertIn("declaration.json", json.loads(verify_pack.getvalue())["files"])
 
+            required = io.StringIO()
+            with redirect_stdout(required), redirect_stderr(io.StringIO()):
+                self.assertEqual(
+                    main(["session", "--pack", str(pack), "--require-manifest"]),
+                    0,
+                )
+            self.assertTrue(json.loads(required.getvalue())["pack_usable"])
+
+            compare_pack = io.StringIO()
+            with redirect_stdout(compare_pack), redirect_stderr(io.StringIO()):
+                self.assertEqual(
+                    main(["pack-compare", "--left", str(pack), "--right", str(pack)]),
+                    0,
+                )
+            self.assertTrue(json.loads(compare_pack.getvalue())["equal"])
+
+            bad_ruler = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(bad_ruler):
+                self.assertEqual(
+                    main(
+                        [
+                            "session",
+                            "--pack",
+                            str(pack),
+                            "--expect-ruler",
+                            "0" * 64,
+                        ]
+                    ),
+                    2,
+                )
+            self.assertIn("RULER_MISMATCH", bad_ruler.getvalue())
+
     def test_missing_pack_exits_without_inventing_session(self) -> None:
         stderr = io.StringIO()
         stdout = io.StringIO()

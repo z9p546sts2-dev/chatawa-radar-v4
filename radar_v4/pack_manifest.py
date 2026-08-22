@@ -8,6 +8,7 @@ from hashlib import sha256
 from json import JSONDecodeError, dumps, loads
 from pathlib import Path
 
+from radar_v4.atomic_write import write_text_atomic
 from radar_v4.dataset_pack import SKIP_FILENAMES
 
 MANIFEST_FILENAME = "manifest.json"
@@ -63,8 +64,7 @@ def write_pack_manifest(directory: str | Path) -> Path:
     root = Path(directory)
     manifest = build_pack_manifest(root)
     target = root / MANIFEST_FILENAME
-    target.write_text(manifest.serialize() + "\n", encoding="utf-8")
-    return target
+    return write_text_atomic(target, manifest.serialize() + "\n")
 
 
 def read_pack_manifest(directory: str | Path) -> PackManifest:
@@ -134,3 +134,42 @@ def verify_pack_manifest(directory: str | Path) -> PackManifest:
             f"pack file checksums do not match: {', '.join(mismatches)}",
         )
     return expected
+
+
+@dataclass(frozen=True)
+class ManifestComparison:
+    equal: bool
+    left_only: tuple[str, ...]
+    right_only: tuple[str, ...]
+    digest_mismatches: tuple[str, ...]
+
+    def serialize(self) -> str:
+        document = {
+            "digest_mismatches": list(self.digest_mismatches),
+            "equal": self.equal,
+            "left_only": list(self.left_only),
+            "right_only": list(self.right_only),
+        }
+        return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+
+
+def compare_pack_manifests(
+    left_directory: str | Path, right_directory: str | Path
+) -> ManifestComparison:
+    left = read_pack_manifest(left_directory)
+    right = read_pack_manifest(right_directory)
+    left_only = tuple(sorted(set(left.files) - set(right.files)))
+    right_only = tuple(sorted(set(right.files) - set(left.files)))
+    mismatches = tuple(
+        sorted(
+            name
+            for name in set(left.files) & set(right.files)
+            if left.files[name] != right.files[name]
+        )
+    )
+    return ManifestComparison(
+        equal=not left_only and not right_only and not mismatches,
+        left_only=left_only,
+        right_only=right_only,
+        digest_mismatches=mismatches,
+    )

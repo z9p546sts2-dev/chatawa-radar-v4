@@ -5,6 +5,7 @@ from __future__ import annotations
 from json import dumps
 from pathlib import Path
 
+from radar_v4.atomic_write import write_text_atomic
 from radar_v4.change_continuity import inspect_change_records
 from radar_v4.local_session import LocalSessionResult
 from radar_v4.ruler import ruler_checksum
@@ -107,8 +108,7 @@ def _write_report_file(path: str | Path, text: str) -> Path:
             "SESSION_REPORT_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a session report file",
         )
-    target.write_text(text + "\n", encoding="utf-8")
-    return target
+    return write_text_atomic(target, text + "\n")
 
 
 def _loads_object(text: str) -> dict[str, object]:

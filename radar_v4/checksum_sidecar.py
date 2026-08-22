@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from radar_v4.atomic_write import write_text_atomic
 from radar_v4.snapshot_files import SnapshotFileError, read_snapshot_file
 from radar_v4.snapshot_verify import SnapshotVerification, verify_snapshot
 
@@ -22,8 +23,7 @@ def write_checksum_sidecar(snapshot_path: str | Path, checksum: str | None = Non
             "SIDECAR_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a checksum sidecar",
         )
-    target.write_text(checksum + "\n", encoding="utf-8")
-    return target
+    return write_text_atomic(target, checksum + "\n")
 
 
 def read_checksum_sidecar(snapshot_path: str | Path) -> str:

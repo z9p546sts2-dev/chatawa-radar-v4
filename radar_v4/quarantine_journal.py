@@ -5,6 +5,7 @@ from __future__ import annotations
 from json import dumps
 from pathlib import Path
 
+from radar_v4.atomic_write import write_text_atomic
 from radar_v4.local_session import LocalSessionResult
 from radar_v4.session import SessionResult
 from radar_v4.snapshot_files import SnapshotFileError
@@ -95,8 +96,6 @@ def write_quarantine_journal_file(
             "QUARANTINE_JOURNAL_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a quarantine journal file",
         )
-    target.write_text(
-        serialize_quarantine_journal(session=session, local=local) + "\n",
-        encoding="utf-8",
+    return write_text_atomic(
+        target, serialize_quarantine_journal(session=session, local=local) + "\n"
     )
-    return target

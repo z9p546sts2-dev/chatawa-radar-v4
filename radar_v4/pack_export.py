@@ -6,6 +6,7 @@ from dataclasses import asdict
 from json import dumps
 from pathlib import Path
 
+from radar_v4.atomic_write import write_text_atomic
 from radar_v4.dataset_pack import DECLARATION_FILENAME
 from radar_v4.fixture_pack import PACK_ALLOWED_PROVENANCE
 from radar_v4.pack_manifest import write_pack_manifest
@@ -45,9 +46,9 @@ def export_snapshot_to_pack(snapshot: DatasetSnapshot, directory: str | Path) ->
             f"{target} already contains files; export will not merge or repair",
         )
     target.mkdir(parents=True, exist_ok=True)
-    (target / DECLARATION_FILENAME).write_text(
+    write_text_atomic(
+        target / DECLARATION_FILENAME,
         dumps(asdict(snapshot.declaration), indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
     )
     for index, item in enumerate(snapshot.observations, start=1):
         document = {
@@ -55,9 +56,9 @@ def export_snapshot_to_pack(snapshot: DatasetSnapshot, directory: str | Path) ->
             "payload": item.payload.canonical_payload(),
             "payload_checksum": item.payload_checksum,
         }
-        name = f"obs_{index:04d}.json"
-        (target / name).write_text(
-            dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        write_text_atomic(
+            target / f"obs_{index:04d}.json",
+            dumps(document, indent=2, sort_keys=True) + "\n",
         )
     write_pack_manifest(target)
     return target

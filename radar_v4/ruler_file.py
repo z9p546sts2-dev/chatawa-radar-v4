@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from json import JSONDecodeError, dumps, loads
 from pathlib import Path
 
+from radar_v4.atomic_write import write_text_atomic
 from radar_v4.dataset import DatasetDeclaration
 from radar_v4.ruler import declaration_ruler, ruler_checksum
 from radar_v4.snapshot_files import SnapshotFileError
@@ -33,8 +34,7 @@ def write_ruler_sidecar(snapshot_path: str | Path, declaration: DatasetDeclarati
             "RULER_SIDECAR_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a ruler sidecar",
         )
-    target.write_text(serialize_ruler(declaration) + "\n", encoding="utf-8")
-    return target
+    return write_text_atomic(target, serialize_ruler(declaration) + "\n")
 
 
 def read_ruler_sidecar(snapshot_path: str | Path) -> dict[str, object]:
