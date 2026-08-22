@@ -31,6 +31,7 @@ This is not:
 - a guarantee that Radar V4 will work as a trader;
 - a schedule for stocks, futures, forex, crypto, and options;
 - a commitment to buy a market-data API;
+- permission to open a paper-trading or simulated-broker account;
 - a claim of edge, best trades, or AI authority;
 - permission to revive V1 or V2 code;
 - authorization of Build Unit 1;
@@ -57,10 +58,11 @@ It may:
 
 It may not:
 
-- place orders;
-- connect to a broker;
+- place live or paper orders as a way to start;
+- connect to a broker so the project looks alive;
 - call itself a signal service;
 - promise best trades;
+- treat paper P&L as proof of edge;
 - hide a failed primary question behind a dashboard.
 
 ### Product B — Later Autonomous Trading Program
@@ -102,6 +104,7 @@ HORIZON 1     YEARS 0–1      Evidence software bones
 HORIZON 2     YEARS 1–2      One dataset, one question
 HORIZON 3     YEARS 2–4      Evidence SaaS for humans
 HORIZON 4     YEARS 3–5      One method, or honest stop
+HORIZON 4A    IF EARNED      Bounded paper / simulated execution
 HORIZON 5     IF EARNED      Separate Product B review
 ```
 
@@ -114,7 +117,7 @@ ROADMAP PHASE 5        Horizon 2     data / research foundation
 ROADMAP PHASE 6        Horizon 2–4   candidate feature / method research
 ROADMAP PHASE 7        Horizon 4     bounded offline pilot
 ROADMAP PHASE 8        Horizon 3–4   human review interface
-ROADMAP PHASE 9        Horizon 4–5   controlled live observation only
+ROADMAP PHASE 9        Horizon 4–4A  controlled live observation, then paper only if earned
 PRODUCT B              not a Radar V4 phase
 ```
 
@@ -209,7 +212,8 @@ A historical-stock API may be considered here as a **named source**, not earlier
 - feature libraries;
 - scoring;
 - backtests used as marketing;
-- broker accounts.
+- broker accounts;
+- paper trading.
 
 **Stress test**
 
@@ -247,7 +251,7 @@ One of: `NO EDGE SHOWN`, `UNCLEAR`, `INSUFFICIENT EVIDENCE`, `INVALID COMPARISON
 
 **The product may not show**
 
-- a trade button;
+- a trade button, including paper;
 - a “best trade” rank;
 - a confidence number without entitlement;
 - a green health light that means only “the process ran.”
@@ -286,6 +290,7 @@ Stop if SaaS design requires a broker, a signal feed, or a second asset class to
 
 **Out of scope**
 
+- paper or simulated broker orders (that is Horizon 4A, and only if earned);
 - autonomous orders;
 - portfolio authority;
 - “AI finds the best trades”;
@@ -309,6 +314,59 @@ HORIZON COMPLETE — NO EDGE SHOWN
 ```
 
 `HORIZON COMPLETE — NO EDGE SHOWN` is a successful evidence program.
+
+# Horizon 4A — Bounded paper / simulated execution
+
+**Objective:** Rehearse one already-specified method against live or delayed quotes **without capital**, after historical validation, not instead of it.
+
+Paper trading is operational rehearsal. It is not a backtest, not a method-discovery lab, and not a safer form of Product B.
+
+**Required before any paper account or simulator**
+
+- Horizon 4 completed with either `READY FOR SHADOW-OPERATION DECISION` or an explicit Todd exception that still names one locked method;
+- the same question, method version, and kill rule used in the offline pilot;
+- a written fill model: delay, spread, size, partials, rejects, and what the simulator is known to fake;
+- a fixed paper window and a stop that does not move after seeing P&L;
+- no parameter changes during the window unless the window is restarted and recorded;
+- separate Todd authorization for this window only.
+
+**In scope**
+
+- simulated orders for one market and one method;
+- logs of intended action, simulated fill, provenance, and freshness;
+- comparison of paper outcome with the historical pilot **as a process check**;
+- human review and an explicit shutoff.
+
+**Out of scope**
+
+- using paper P&L to invent a threshold;
+- using a broker’s “guaranteed fill” book as evidence the method is tradable;
+- opening stocks, futures, forex, crypto, and options paper books at once;
+- connecting paper so Horizon 1–3 can be skipped;
+- autonomous live orders.
+
+**How to report paper results**
+
+```text
+SOFTWARE CORRECTNESS     did the paper path run and record
+DATA CORRECTNESS         were quotes identified and fresh enough
+OPERATIONAL RESILIENCE   did stop, reject, and shutoff work
+METHOD VALIDITY          not earned by paper P&L
+MARKET USEFULNESS        not earned by paper P&L
+```
+
+A profitable paper book with an honest fill model is still only rehearsal. A profitable paper book with fantasy fills is noise.
+
+**Stress test**
+
+- stale features cannot ride a fresh last price into a simulated order;
+- a rejected or partial fill cannot be rewritten as a full fill;
+- the window cannot be extended because the curve looks good;
+- closing the paper account is tested, not assumed.
+
+**Stop**
+
+Stop if a paper account is opened to make Radar V4 feel alive, to justify a data API, or to tune rules after seeing results.
 
 # Horizon 5 — Separate Product B review, if earned
 
@@ -340,6 +398,7 @@ Do not schedule the following as year-N deliverables:
 5. A dashboard before a method.
 6. The 3,000-unit curriculum as a gate in front of Build Unit 1.
 7. Any claim that SaaS revenue proves the method.
+8. Paper trading as a substitute for historical validation or as the first “real” test.
 
 Those items may be discussed later as separate programs. They are not Radar V4 milestones.
 
@@ -348,7 +407,7 @@ Those items may be discussed later as separate programs. They are not Radar V4 m
 The 4–5 year horizon itself must stop or return to Todd if:
 
 - Build Unit 1 expands into market logic;
-- a data API is purchased before Horizon 2’s question is locked;
+- a data API is purchased, or a paper broker is opened, before Horizon 2’s question is locked;
 - “all tests passed” is reported without categories;
 - SaaS work starts so the project looks alive;
 - a second asset class is added to rescue a weak first result;
@@ -361,6 +420,8 @@ The 4–5 year horizon itself must stop or return to Todd if:
 Do not implement this horizon.
 
 Do not buy historical data.
+
+Do not open a paper-trading account.
 
 Do not design the SaaS.
 
@@ -379,6 +440,7 @@ HORIZON ROADMAP — RECORDED
 NEAR-TERM ROADMAP — STILL CONTROLLING
 BUILD UNIT 1 EXECUTION — NOT AUTHORIZED
 HISTORICAL DATA API — NOT AUTHORIZED
+PAPER TRADING — NOT AUTHORIZED
 EVIDENCE SAAS — NOT AUTHORIZED
 SPECIFIC MARKET METHOD — NOT DEFINED
 AUTONOMOUS TRADING PROGRAM — NOT SCOPED

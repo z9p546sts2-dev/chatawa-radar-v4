@@ -249,6 +249,8 @@ Restrictions include:
 
 **Status:** NOT AUTHORIZED
 
+Paper or simulated broker orders are not part of this phase. If they are ever earned, they sit later, after a locked historical pilot, as Horizon 4A in `RADAR_V4_HORIZON_ROADMAP.md`. Paper P&L is not method validity.
+
 ## Current authorized work
 
 Authorized now:
