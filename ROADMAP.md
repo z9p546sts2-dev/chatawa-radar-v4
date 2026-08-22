@@ -8,6 +8,8 @@ Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, deployment, and any future operational role.
 
+The long-horizon companion is `RADAR_V4_HORIZON_ROADMAP.md`. Years do not authorize stages.
+
 ## Intended purpose
 
 Radar V4 may eventually become a human-controlled intelligence and opportunity-ranking system that:
