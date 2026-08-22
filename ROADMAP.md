@@ -274,7 +274,7 @@ Not authorized now:
 - scores or thresholds;
 - signals or edge claims;
 - legacy code migration;
-- brokerage or trading;
+- brokerage, paper trading, or simulated orders;
 - automatic Build Unit 2.
 
 The 4–5 year evidence-gated horizon is recorded in `RADAR_V4_HORIZON_ROADMAP.md`. It does not replace this file, authorize Build Unit 1, or turn elapsed years into permission.
