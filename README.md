@@ -1,8 +1,8 @@
 # Chatawa Radar V4
 
-## Status: BUILD UNIT 1 COMPLETE WITHIN SCOPE / ACCEPTED-TC
+## Status: BUILD UNITS 1–2 COMPLETE WITHIN SCOPE / ACCEPTED-TC
 
-Radar V4 has a bounded evidence-envelope and provenance-gate software foundation. Todd accepted that unit on 2026-08-22.
+Radar V4 has a bounded evidence-envelope, provenance-gate, and intake/quarantine software foundation. Todd accepted Build Unit 2 on 2026-08-22.
 
 No later unit is authorized. This is not a market method, data feed, signal, or trading system.
 
@@ -21,7 +21,8 @@ V4 ENGINEERING REQUIREMENTS — DOCUMENTED
 V4 RESEARCH METHODOLOGY — DEFINED / AUDITED
 SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
-BUILD UNIT 2 — NOT AUTHORIZED
+BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
+BUILD UNIT 3 — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED
@@ -54,6 +55,18 @@ It does not authorize or define:
 
 Acceptance of this unit is not authorization of the next unit.
 
+## Build Unit 2
+
+The accepted second-code unit is:
+
+> **Evidence Intake and Quarantine Gate**
+
+It validates a batch of envelopes and partitions them into accepted and quarantined records without repair.
+
+See `README_BUILD_UNIT_2.md` and `RADAR_V4_BUILD_UNIT_2_ACCEPTANCE_TC.md`.
+
+Acceptance of this unit is not authorization of Build Unit 3, market data, or Phase 5.
+
 ## Legacy relationship
 
 The historical repositories remain:
@@ -85,10 +98,10 @@ Until Todd explicitly authorizes a later bounded unit:
 - no signals or edge claims;
 - no trading or execution;
 - no automatic reuse of legacy components;
-- no Build Unit 2;
+- no Build Unit 3;
 - no assumption that V1 or V2 behavior remains valid.
 
-The repository now has a small evidence/provenance software foundation. It is not a trading-system authorization.
+The repository now has a small evidence/provenance and intake/quarantine software foundation. It is not a trading-system authorization.
 
 **Tools verify. Todd authorizes.**
 

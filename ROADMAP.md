@@ -2,9 +2,9 @@
 
 ## Status
 
-**BUILD UNIT 1 COMPLETE WITHIN SCOPE — ACCEPTED-TC**
+**BUILD UNITS 1–2 COMPLETE WITHIN SCOPE — ACCEPTED-TC**
 
-Radar V4 has a bounded evidence-envelope and provenance-gate software foundation. Todd accepted that unit on 2026-08-22. No later unit is authorized.
+Radar V4 has a bounded evidence-envelope, provenance-gate, and intake/quarantine software foundation. Todd accepted Build Unit 2 on 2026-08-22. No later unit is authorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, deployment, and any future operational role.
 
@@ -256,11 +256,12 @@ Authorized now:
 - completed forensic-evidence review and preservation;
 - methodology review and maintenance;
 - the accepted Build Unit 1 evidence/provenance software;
-- review of that unit without expanding it.
+- the accepted Build Unit 2 intake/quarantine software;
+- review of those units without expanding them.
 
 Not authorized now:
 
-- Build Unit 2 or any automatic continuation;
+- Build Unit 3 or any automatic continuation;
 - schemas beyond a separately authorized unit boundary;
 - live or historical market-data ingestion;
 - backtesting;
@@ -273,7 +274,7 @@ Not authorized now:
 
 ## Immediate next action
 
-Stop. Do not start Phase 5 or Build Unit 2 because Unit 1 was accepted.
+Stop. Do not start Phase 5 or Build Unit 3 because Unit 2 was accepted.
 
 A later data / research foundation requires a separate Todd authorization. Buying a market-data API, opening a paper account, or designing SaaS is not authorized by this acceptance.
 
@@ -285,6 +286,7 @@ PHASE 1 — LEGACY FORENSIC REVIEW                     COMPLETE
 PHASE 2 — RESEARCH METHODOLOGY                       COMPLETE / AUDITED
 PHASE 3 — BUILD UNIT 1 PROPOSAL / AUTH READINESS     COMPLETE / PASS
 PHASE 4 — BUILD UNIT 1 EXECUTION                     COMPLETE WITHIN SCOPE / ACCEPTED-TC
+PHASE 4A — BUILD UNIT 2 INTAKE / QUARANTINE          COMPLETE WITHIN SCOPE / ACCEPTED-TC
 PHASE 5 — DATA / RESEARCH FOUNDATION                 NOT AUTHORIZED
 PHASE 6 — FEATURE / METHOD RESEARCH                  NOT AUTHORIZED
 PHASE 7 — BOUNDED OFFLINE PILOT                      NOT AUTHORIZED

@@ -2,9 +2,9 @@
 
 ## Status
 
-**BUILD UNIT 1 COMPLETE WITHIN SCOPE — ACCEPTED-TC**
+**BUILD UNITS 1–2 COMPLETE WITHIN SCOPE — ACCEPTED-TC**
 
-Radar V4 has a bounded evidence-envelope and provenance-gate software foundation. Todd accepted that unit on 2026-08-22.
+Radar V4 has a bounded evidence-envelope, provenance-gate, and intake/quarantine software foundation. Todd accepted Build Unit 2 on 2026-08-22.
 
 No later unit is authorized.
 
@@ -33,10 +33,12 @@ The repository has earned the following progression:
 6. Build Unit 1 proposal — complete and audited.
 7. Build Unit 1 authorization-readiness review — PASS.
 8. Build Unit 1 execution — complete within scope / Accepted-TC.
+9. Build Unit 2 execution — complete within scope / Accepted-TC.
 
-The accepted bounded unit is:
+The accepted bounded units are:
 
-> **Build Unit 1 — Evidence Envelope and Provenance Gate**
+> **Build Unit 1 — Evidence Envelope and Provenance Gate**  
+> **Build Unit 2 — Evidence Intake and Quarantine Gate**
 
 Its purpose is non-market infrastructure only. It does not define or implement features, signals, scores, thresholds, rankings, market methods, backtests, live data, brokerage, or trading.
 
@@ -99,7 +101,7 @@ Tools and assistants may not independently:
 - authorize a backtest;
 - connect to a broker;
 - make portfolio decisions;
-- authorize Build Unit 2 or later work;
+- authorize Build Unit 3 or later work;
 - override Todd.
 
 ## Current authorized scope
@@ -110,11 +112,12 @@ Authorized now:
 2. Read-only repository inspection.
 3. Preservation and review of completed V1/V2 forensic evidence.
 4. The accepted Build Unit 1 evidence/provenance software.
-5. Future evidence requirements and non-executing research planning.
+5. The accepted Build Unit 2 intake/quarantine software.
+6. Future evidence requirements and non-executing research planning.
 
 Not authorized now:
 
-1. Build Unit 2 or any automatic continuation after Build Unit 1.
+1. Build Unit 3 or any automatic continuation after Build Unit 2.
 2. Market-data ingestion.
 3. Live or historical market-data calls.
 4. Market schemas beyond a separately authorized build boundary.
@@ -125,7 +128,7 @@ Not authorized now:
 9. Portfolio authority.
 10. Copying, importing, adapting, or cherry-picking legacy Radar code.
 
-A later unit may begin only after Todd provides a new explicit authorization. `Accepted-TC` applies to Build Unit 1 only.
+A later unit may begin only after Todd provides a new explicit authorization. `Accepted-TC` on Unit 2 does not authorize Unit 3.
 
 ## Evidence rules
 
@@ -290,7 +293,8 @@ V4 ENGINEERING REQUIREMENTS — DOCUMENTED
 V4 RESEARCH METHODOLOGY — DEFINED / AUDITED
 SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
-BUILD UNIT 2 — NOT AUTHORIZED
+BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
+BUILD UNIT 3 — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED

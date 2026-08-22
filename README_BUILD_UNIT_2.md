@@ -1,6 +1,7 @@
 # Radar V4 Build Unit 2 — Evidence Intake and Quarantine Gate
 
 **Authorization:** `Lets keep building.-TC`  
+**Disposition:** `Accepted-TC`  
 **Depends on:** accepted Build Unit 1  
 **Market method:** none  
 **Dependencies added:** none
