@@ -44,6 +44,10 @@ class EvidenceRegistry:
     def quarantined_records(self) -> tuple[IntakeRecord, ...]:
         return tuple(self._quarantined)
 
+    def record_quarantine(self, records: Sequence[IntakeRecord]) -> None:
+        """Preserve already-quarantined records. Does not repair them."""
+        self._quarantined.extend(records)
+
     def accepted_count(self) -> int:
         return len(self._accepted)
 

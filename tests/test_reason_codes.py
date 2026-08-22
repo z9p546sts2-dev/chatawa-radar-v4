@@ -26,6 +26,9 @@ class ReasonCodeTests(unittest.TestCase):
             "CONTRADICTORY_IDENTITY",
             "UNREADABLE_JSON",
             "UNREADABLE_SNAPSHOT_FILE",
+            "CHANGE_DISCONTINUITY",
+            "SNAPSHOT_CHECKSUM_MISMATCH",
+            "UNREADABLE_REGISTRY_FILE",
         ):
             self.assertIn(code, REASON_CODES)
 

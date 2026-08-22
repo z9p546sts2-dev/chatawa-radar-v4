@@ -7,6 +7,7 @@ import sys
 from collections.abc import Sequence
 
 from radar_v4.local_session import run_session_from_pack, run_session_from_snapshot_file
+from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
 from radar_v4.session_report import (
     serialize_local_session_report,
     serialize_session_report,
@@ -14,7 +15,8 @@ from radar_v4.session_report import (
     write_session_report_file,
 )
 from radar_v4.snapshot_compare import compare_snapshot_files
-from radar_v4.snapshot_files import SnapshotFileError, write_snapshot_file
+from radar_v4.snapshot_files import SnapshotFileError, read_snapshot_file, write_snapshot_file
+from radar_v4.snapshot_verify import verify_snapshot_file
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -37,12 +39,29 @@ def main(argv: Sequence[str] | None = None) -> int:
     compare.add_argument("--left", required=True, help="left snapshot file")
     compare.add_argument("--right", required=True, help="right snapshot file")
 
+    verify = sub.add_parser("verify", help="verify a snapshot integrity checksum")
+    verify.add_argument("--snapshot", required=True, help="snapshot file")
+    verify.add_argument(
+        "--expect-checksum",
+        help="optional SHA-256 hex digest to compare",
+    )
+
+    export_pack = sub.add_parser(
+        "export-pack", help="write a FIXTURE/SYNTHETIC pack from a snapshot"
+    )
+    export_pack.add_argument("--snapshot", required=True, help="snapshot file")
+    export_pack.add_argument("--out", required=True, help="empty output directory")
+
     args = parser.parse_args(list(argv) if argv is not None else None)
     if args.command == "session":
         return _run_session(args.pack, args.snapshot, args.report)
     if args.command == "replay":
         return _run_replay(args.snapshot, args.report)
-    return _run_compare(args.left, args.right)
+    if args.command == "compare":
+        return _run_compare(args.left, args.right)
+    if args.command == "verify":
+        return _run_verify(args.snapshot, args.expect_checksum)
+    return _run_export_pack(args.snapshot, args.out)
 
 
 def _run_session(pack: str, snapshot_path: str | None, report_path: str | None) -> int:
@@ -77,6 +96,33 @@ def _run_replay(snapshot_path: str, report_path: str | None) -> int:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
     sys.stdout.write(serialize_session_report(session) + "\n")
+    return 0
+
+
+def _run_verify(snapshot_path: str, expected: str | None) -> int:
+    try:
+        verification = verify_snapshot_file(snapshot_path, expected)
+    except SnapshotFileError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    sys.stdout.write(verification.serialize() + "\n")
+    if verification.matched is False:
+        sys.stderr.write("SNAPSHOT_CHECKSUM_MISMATCH\n")
+        return 1
+    return 0
+
+
+def _run_export_pack(snapshot_path: str, out_dir: str) -> int:
+    try:
+        snapshot = read_snapshot_file(snapshot_path)
+        written = export_snapshot_to_pack(snapshot, out_dir)
+    except SnapshotFileError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    except PackExportError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    sys.stdout.write(f"{written}\n")
     return 0
 
 

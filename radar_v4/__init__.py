@@ -5,6 +5,7 @@ thresholds, data access, or trading.
 """
 
 from radar_v4.baseline import BaselineReport, CloseToCloseChange, close_to_close_changes
+from radar_v4.change_continuity import inspect_change_records
 from radar_v4.dataset import DatasetDeclaration, admit_to_dataset
 from radar_v4.dataset_pack import DatasetPackReport, load_dataset_pack
 from radar_v4.declaration_json import DeclarationIntakeReport, intake_declaration_json
@@ -27,7 +28,9 @@ from radar_v4.observation_json import (
     intake_observation_json,
 )
 from radar_v4.observation_validation import validate_observation
+from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
 from radar_v4.registry import EvidenceRegistry
+from radar_v4.registry_files import RegistryFileError, read_registry_file, write_registry_file
 from radar_v4.series import SeriesReport, inspect_series
 from radar_v4.local_session import (
     LocalSessionResult,
@@ -49,6 +52,7 @@ from radar_v4.snapshot_compare import (
     compare_snapshot_files,
     compare_snapshots,
 )
+from radar_v4.snapshot_verify import SnapshotVerification, verify_snapshot, verify_snapshot_file
 from radar_v4.snapshot_files import (
     SnapshotFileError,
     read_snapshot_file,
@@ -76,6 +80,9 @@ __all__ = [
     "DocumentIntakeReport",
     "EvidenceEnvelope",
     "EvidenceRegistry",
+    "PackExportError",
+    "RegistryFileError",
+    "SnapshotVerification",
     "IntakeRecord",
     "IntakeReport",
     "ProvenanceClass",
@@ -89,11 +96,14 @@ __all__ = [
     "close_to_close_changes",
     "compare_snapshot_files",
     "compare_snapshots",
+    "export_snapshot_to_pack",
+    "inspect_change_records",
     "inspect_series",
     "intake_declaration_json",
     "intake_observation_json",
     "load_dataset_pack",
     "make_snapshot",
+    "read_registry_file",
     "read_snapshot_file",
     "run_dataset_session",
     "run_session_from_pack",
@@ -109,4 +119,7 @@ __all__ = [
     "load_fixture_pack",
     "validate_envelope",
     "validate_observation",
+    "verify_snapshot",
+    "verify_snapshot_file",
+    "write_registry_file",
 ]

@@ -1,8 +1,8 @@
 # Chatawa Radar V4
 
-## Status: PHASE 5 AUTHORIZED — UNITS 7–27 COMPLETE WITHIN SCOPE
+## Status: PHASE 5 AUTHORIZED — UNITS 7–32 COMPLETE WITHIN SCOPE
 
-Radar V4 has a bounded evidence foundation plus a local Phase 5 path: admit a declared dataset, describe ordinary close-to-close differences with from/to records, persist and compare snapshots, report pack refusals, and run or replay that path from `python -m radar_v4`.
+Radar V4 has a bounded evidence foundation plus a local Phase 5 path: admit a declared dataset, describe ordinary close-to-close differences, persist/verify/export snapshots, persist the envelope registry, and run that path from `python -m radar_v4`.
 
 Vendor download, live capture, and method research are not authorized. This is not a trading system.
 
@@ -48,6 +48,11 @@ UNIT 24 — SNAPSHOT INTEGRITY CHECKSUM — COMPLETE WITHIN SCOPE
 UNIT 25 — PACK SESSION REPORT — COMPLETE WITHIN SCOPE
 UNIT 26 — CLI SNAPSHOT REPLAY — COMPLETE WITHIN SCOPE
 UNIT 27 — REASON CODE CATALOG — COMPLETE WITHIN SCOPE
+UNIT 28 — SNAPSHOT VERIFY — COMPLETE WITHIN SCOPE
+UNIT 29 — SNAPSHOT PACK EXPORT — COMPLETE WITHIN SCOPE
+UNIT 30 — REGISTRY FILES — COMPLETE WITHIN SCOPE
+UNIT 31 — CHANGE CONTINUITY — COMPLETE WITHIN SCOPE
+UNIT 32 — CLI VERIFY / EXPORT-PACK — COMPLETE WITHIN SCOPE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 PHASE 6 METHOD RESEARCH — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED

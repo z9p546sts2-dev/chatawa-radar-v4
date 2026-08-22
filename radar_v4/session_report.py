@@ -5,6 +5,7 @@ from __future__ import annotations
 from json import dumps
 from pathlib import Path
 
+from radar_v4.change_continuity import inspect_change_records
 from radar_v4.local_session import LocalSessionResult
 from radar_v4.session import SessionResult
 from radar_v4.snapshot_files import SnapshotFileError
@@ -44,6 +45,9 @@ def serialize_session_report(result: SessionResult) -> str:
         "kept_observation_count": result.kept_observation_count(),
         "rejected_codes": rejected_codes,
         "rejected_observation_count": result.rejected_observation_count(),
+        "change_continuity_valid": None
+        if baseline is None
+        else inspect_change_records(baseline.change_records).valid,
         "series_issue_codes": list(result.series.issue_codes()),
         "series_valid": result.series.valid,
         "snapshot_checksum": result.snapshot.integrity_checksum(),

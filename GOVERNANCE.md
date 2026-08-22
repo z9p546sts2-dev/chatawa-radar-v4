@@ -2,9 +2,9 @@
 
 ## Status
 
-**PHASE 5 AUTHORIZED — UNITS 7–27 COMPLETE WITHIN SCOPE**
+**PHASE 5 AUTHORIZED — UNITS 7–32 COMPLETE WITHIN SCOPE**
 
-Radar V4 has Phase 5 dataset admission through a local FIXTURE/SYNTHETIC pack session, change records, snapshot checksum, pack refusal report, CLI replay, and a reason-code catalog. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence.
+Radar V4 has Phase 5 dataset admission through a local FIXTURE/SYNTHETIC pack session, snapshot verify/export, registry files, and change continuity. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -111,7 +111,7 @@ Authorized now:
 2. Read-only repository inspection.
 3. Preservation and review of completed V1/V2 forensic evidence.
 4. Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software.
-5. Phase 5 units 7–27 dataset admission through local pack session, change records, snapshot checksum, pack refusal report, CLI replay, and reason-code catalog.
+5. Phase 5 units 7–32 dataset admission through local pack session, snapshot verify/export, registry files, change continuity, and CLI verify/export-pack.
 6. Future evidence requirements and non-executing research planning.
 
 Not authorized now:
@@ -126,7 +126,7 @@ Not authorized now:
 8. Portfolio authority.
 9. Copying, importing, adapting, or cherry-picking legacy Radar code.
 
-A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–27 does not authorize that class.
+A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–32 does not authorize that class.
 
 ## Evidence rules
 
@@ -293,7 +293,7 @@ SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
-PHASE 5 — AUTHORIZED-TC / UNITS 7–27 COMPLETE
+PHASE 5 — AUTHORIZED-TC / UNITS 7–32 COMPLETE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED

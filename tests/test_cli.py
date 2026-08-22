@@ -68,6 +68,35 @@ class CliTests(unittest.TestCase):
             self.assertEqual(compare_code, 0)
             self.assertTrue(json.loads(compare_out.getvalue())["equal"])
 
+            verify_out = io.StringIO()
+            with redirect_stdout(verify_out), redirect_stderr(io.StringIO()):
+                verify_code = main(
+                    [
+                        "verify",
+                        "--snapshot",
+                        str(snapshot),
+                        "--expect-checksum",
+                        session["snapshot_checksum"],
+                    ]
+                )
+            self.assertEqual(verify_code, 0)
+            self.assertTrue(json.loads(verify_out.getvalue())["matched"])
+
+            export_dir = Path(raw) / "exported"
+            export_err = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(export_err):
+                export_code = main(
+                    [
+                        "export-pack",
+                        "--snapshot",
+                        str(snapshot),
+                        "--out",
+                        str(export_dir),
+                    ]
+                )
+            self.assertEqual(export_code, 0, export_err.getvalue())
+            self.assertTrue((export_dir / "declaration.json").is_file())
+
     def test_missing_pack_exits_without_inventing_session(self) -> None:
         stderr = io.StringIO()
         stdout = io.StringIO()

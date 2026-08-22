@@ -27,6 +27,11 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Unit 25** — pack session report includes pack refusals
 - **Unit 26** — `python -m radar_v4 replay --snapshot <file>`
 - **Unit 27** — `radar_v4/reason_codes.py` refusal/result catalog
+- **Unit 28** — `radar_v4/snapshot_verify.py` checksum verify
+- **Unit 29** — `radar_v4/pack_export.py` snapshot → FIXTURE/SYNTHETIC pack
+- **Unit 30** — `radar_v4/registry_files.py` local registry persist/load
+- **Unit 31** — `radar_v4/change_continuity.py` from/to chain check
+- **Unit 32** — CLI `verify` and `export-pack`
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -41,4 +46,6 @@ PYTHONPATH=. python3 -m unittest discover -s tests -v
 PYTHONPATH=. python3 -m radar_v4 session --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 replay --snapshot <snapshot.json>
 PYTHONPATH=. python3 -m radar_v4 compare --left <snapshot.json> --right <snapshot.json>
+PYTHONPATH=. python3 -m radar_v4 verify --snapshot <snapshot.json>
+PYTHONPATH=. python3 -m radar_v4 export-pack --snapshot <snapshot.json> --out <empty-dir>
 ```
