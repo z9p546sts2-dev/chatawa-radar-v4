@@ -43,19 +43,29 @@ Its purpose is non-market infrastructure only. It does not define or implement f
 
 ## Prohibited interpretations
 
-The existence of this repository, roadmap, methodology, proposal, audit, authorization-readiness PASS, or Unit 1 acceptance does not mean:
+The existence of this repository, roadmap, methodology, proposal, audit, authorization-readiness PASS, unit completion, or Unit 1 acceptance does not mean:
 
-- a later build unit is authorized;
+- a later *class* of work is authorized;
 - market code is authorized;
 - legacy Radar code is approved for reuse;
 - a signal exists;
 - an edge has been established;
-- live or historical market data is authorized;
+- live or purchased historical market data is authorized;
 - backtesting is authorized;
 - trading or execution is allowed;
 - a dashboard is justified;
 - production status has been earned;
-- Phase 5 data work is authorized.
+- a vendor API, live download, or HISTORICAL data purchase is authorized.
+
+Phase 5 local FIXTURE/SYNTHETIC software is authorized. Phase 5 vendor/historical data access is not.
+
+`python -m radar_v4 status` is a workshop capability statement. It does not prove that a measurement occurred during that invocation.
+
+`LEVEL 0 — MEASURED` may appear only on a MEASURED baseline. Refusal statuses use claim_level NONE.
+
+Pack readiness counts declaration-admitted observations. It is not proof that a measurement session already produced a valid LEVEL 0 result, and it is not market evidence.
+
+Unit 100 completion is inspectability, not a research result. It does not change the claim class.
 
 **Ready for authorization is not authorization.**
 
@@ -92,15 +102,15 @@ Tools and assistants may, within Todd-authorized scope:
 Tools and assistants may not independently:
 
 - activate Radar V4;
-- begin Build Unit 1 execution;
+- authorize a later class of work;
 - create market features or ranking logic;
-- connect live or historical market data;
+- connect live or purchased historical market data;
 - migrate legacy code;
 - declare a signal or edge;
 - authorize a backtest;
 - connect to a broker;
 - make portfolio decisions;
-- authorize Build Unit 3 or later work;
+- treat unit completion as method validity;
 - override Todd.
 
 ## Current authorized scope
@@ -265,17 +275,20 @@ The interface may not hide limitations to create confidence.
 
 ## Stop rules
 
-Current pre-build work must stop when:
+Current Phase 5 workshop work must stop when:
 
-- Build Unit 1 scope expands beyond the approved Evidence Envelope and Provenance Gate;
-- implementation is requested without explicit Todd authorization;
-- live or historical market data becomes necessary;
+- scope expands beyond local evidence-ops into a method, vendor client, or trading path;
+- implementation of a new class of work is requested without explicit Todd authorization;
+- live or purchased historical market data becomes necessary;
 - a feature, indicator, score, threshold, ranking, or signal is introduced;
 - legacy code reuse is assumed rather than separately authorized;
 - a new non-minimal dependency becomes necessary without review;
 - test criteria are weakened after results are seen;
 - invalid evidence would be silently repaired instead of rejected or versioned;
 - market methodology is being invented inside foundation code;
+- unit completion is treated as data correctness, method validity, or edge;
+- `radar_v4 status` is treated as proof that a dataset was measured;
+- pack readiness is treated as proven measurement-session success;
 - pressure to continue is based only on momentum;
 - rollback or write authority is ambiguous.
 

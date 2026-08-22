@@ -81,7 +81,10 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     layout = sub.add_parser("pack-layout", help="check required pack files")
     layout.add_argument("--pack", required=True)
 
-    canonical = sub.add_parser("canonical-check", help="check sorted-key compact JSON")
+    canonical = sub.add_parser(
+        "canonical-check",
+        help="require exact sorted-key compact JSON plus one newline",
+    )
     canonical.add_argument("--path", required=True)
 
     identities = sub.add_parser("pack-identities", help="list pack envelope identities")
@@ -102,9 +105,15 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     inv_manifest.add_argument("--pack", required=True)
 
-    sub.add_parser("status", help="print workshop status, not a method claim")
+    sub.add_parser(
+        "status",
+        help="print workshop capability statement; does not measure a dataset",
+    )
 
-    readiness = sub.add_parser("readiness", help="say whether a pack could be measured")
+    readiness = sub.add_parser(
+        "readiness",
+        help="count declaration-admitted observations; not a measurement",
+    )
     readiness.add_argument("--pack", required=True)
 
 

@@ -33,6 +33,7 @@ class BaselineTests(unittest.TestCase):
     def test_single_observation_is_insufficient(self) -> None:
         report = close_to_close_changes((_obs(7, "10.0"),))
         self.assertEqual(report.status, "INSUFFICIENT_EVIDENCE")
+        self.assertEqual(report.claim_level, "NONE")
 
     def test_live_is_refused(self) -> None:
         report = close_to_close_changes(
@@ -42,6 +43,7 @@ class BaselineTests(unittest.TestCase):
             )
         )
         self.assertEqual(report.status, "INVALID_COMPARISON")
+        self.assertEqual(report.claim_level, "NONE")
 
     def test_mixed_interval_is_invalid(self) -> None:
         first = Observation.create(
@@ -59,6 +61,7 @@ class BaselineTests(unittest.TestCase):
         )
         report = close_to_close_changes((first, second))
         self.assertEqual(report.status, "INVALID_COMPARISON")
+        self.assertEqual(report.claim_level, "NONE")
 
 
 if __name__ == "__main__":

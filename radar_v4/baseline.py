@@ -51,14 +51,15 @@ class BaselineReport:
 def close_to_close_changes(observations: Sequence[Observation]) -> BaselineReport:
     """Describe ordinary close-to-close differences.
 
-    This is LEVEL 0 — MEASURED. It is not usefulness, prediction, or a
-    trading rule. LIVE records are refused. Invalid observations are
-    refused rather than repaired.
+    A MEASURED status may carry LEVEL 0 — MEASURED. Refusal statuses
+    do not. This is not usefulness, prediction, or a trading rule.
+    LIVE records are refused. Invalid observations are refused rather
+    than repaired.
     """
     notes: list[str] = []
     if len(observations) < 2:
         return BaselineReport(
-            claim_level="LEVEL 0 — MEASURED",
+            claim_level="NONE",
             status="INSUFFICIENT_EVIDENCE",
             symbol_or_universe=None,
             interval=None,
@@ -72,7 +73,7 @@ def close_to_close_changes(observations: Sequence[Observation]) -> BaselineRepor
     for item in observations:
         if item.envelope.provenance_class == LIVE_PROVENANCE:
             return BaselineReport(
-                claim_level="LEVEL 0 — MEASURED",
+                claim_level="NONE",
                 status="INVALID_COMPARISON",
                 symbol_or_universe=item.envelope.symbol_or_universe,
                 interval=item.envelope.interval,
@@ -84,7 +85,7 @@ def close_to_close_changes(observations: Sequence[Observation]) -> BaselineRepor
             )
         if not validate_observation(item).valid:
             return BaselineReport(
-                claim_level="LEVEL 0 — MEASURED",
+                claim_level="NONE",
                 status="INVALID_COMPARISON",
                 symbol_or_universe=item.envelope.symbol_or_universe,
                 interval=item.envelope.interval,
@@ -105,7 +106,7 @@ def close_to_close_changes(observations: Sequence[Observation]) -> BaselineRepor
             or envelope.transformation_version != first.transformation_version
         ):
             return BaselineReport(
-                claim_level="LEVEL 0 — MEASURED",
+                claim_level="NONE",
                 status="INVALID_COMPARISON",
                 symbol_or_universe=first.symbol_or_universe,
                 interval=first.interval,

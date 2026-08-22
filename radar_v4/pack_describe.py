@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from json import dumps
 from pathlib import Path
 
+from radar_v4.dataset import admit_to_dataset
 from radar_v4.dataset_pack import load_dataset_pack
 from radar_v4.declaration_json import intake_declaration_json
 from radar_v4.evidence import format_canonical_timestamp
@@ -151,6 +152,7 @@ class PackReadiness:
     directory: str
     usable_pack: bool
     accepted_observations: int
+    admitted_observations: int
     enough_for_close_to_close: bool
     notes: tuple[str, ...]
 
@@ -158,6 +160,7 @@ class PackReadiness:
         return _dump(
             {
                 "accepted_observations": self.accepted_observations,
+                "admitted_observations": self.admitted_observations,
                 "directory": self.directory,
                 "document_kind": "radar_v4.pack_readiness",
                 "enough_for_close_to_close": self.enough_for_close_to_close,
@@ -168,11 +171,20 @@ class PackReadiness:
 
 
 def pack_readiness(directory: str | Path) -> PackReadiness:
-    """Say whether a pack could be measured. Does not measure it."""
+    """Say whether declaration-admitted observations could be measured.
+
+    Pack-loader acceptance is not admission. This does not measure.
+    """
     pack = load_dataset_pack(directory)
     accepted = pack.observation_intake.accepted_count()
+    admitted = 0
+    if pack.declaration is not None:
+        envelopes = tuple(item.envelope for item in pack.observation_intake.accepted)
+        admitted = admit_to_dataset(pack.declaration, envelopes).accepted_count()
     notes = [
         "readiness is not a measurement",
+        "enough_for_close_to_close requires two declaration-admitted observations",
+        "pack-accepted files are not automatically admitted",
         "SYNTHETIC and FIXTURE numbers are not HISTORICAL evidence",
     ]
     if pack.declaration is not None and pack.declaration.provenance_class in {
@@ -184,7 +196,8 @@ def pack_readiness(directory: str | Path) -> PackReadiness:
         directory=str(Path(directory)),
         usable_pack=pack.usable(),
         accepted_observations=accepted,
-        enough_for_close_to_close=pack.usable() and accepted >= 2,
+        admitted_observations=admitted,
+        enough_for_close_to_close=pack.usable() and admitted >= 2,
         notes=tuple(notes),
     )
 

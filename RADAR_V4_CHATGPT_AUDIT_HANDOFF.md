@@ -5,11 +5,14 @@ DATE — 2026-08-22
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 BRANCH — cursor/phase-5-dataset-session-9fd5
 PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/8
-HEAD — 053fc2808d6fe3b53de984b20f2e9ef6a1a3c15a
+AUDITED SOFTWARE HEAD — 053fc2808d6fe3b53de984b20f2e9ef6a1a3c15a
+HANDOFF-ONLY HEAD — 9851692131c925a8576c6971a6fe984b6a209a50
+REMEDIATION HEAD — this commit (after independent audit)
 BASE / main — 1ff2333 (Phase 5 units 7–11 only)
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
-INTENDED AUDITOR — ChatGPT (independent)
+INDEPENDENT AUDITOR — ChatGPT
+AUDITOR DISPOSITION — PASS WITH MATERIAL OPEN ITEMS
 ```
 
 This record is for independent audit. It is not a method claim, not a performance report, and not authorization of the next class of work.
@@ -90,7 +93,7 @@ These remain separate. Passing one does not earn the next.
 
 | Class | Status now |
 |---|---|
-| Software correctness | Earned on the local FIXTURE/SYNTHETIC path. 166 tests passed at HEAD. |
+| Software correctness | Core local SYNTHETIC path strongly supported. 166 tests were implementer-reported at `053fc28` and were not independently executed by the auditor. Full software correctness is not yet audit-clean until remediations below are re-verified. |
 | Data correctness | **Not earned.** No real HISTORICAL records are in the workshop. |
 | Method validity | **Not defined.** No Phase 6 authorization. |
 | Usefulness / edge | **Not asked. Not shown.** |
@@ -164,17 +167,7 @@ Atomic write (temp sibling, then replace), manifest gate on load, `session --req
 
 Document-kind detect, show declaration/snapshot/observation, provenance mix, admission without measurement, compare rulers/reports/inventories, journal summary, report-to-snapshot bind, determinism (run twice, compare snapshot checksums), snapshot inventory, pack layout, canonical JSON check, pack identities/describe/readiness, reason-code lookup, workshop `status`.
 
-`python -m radar_v4 status` at HEAD:
-
-```text
-highest_unit: 100
-method_defined: false
-vendor_authorized: false
-historical_evidence: false
-fixture_is_market_evidence: false
-paper_trading_authorized: false
-claim_level: LEVEL 0 — MEASURED
-```
+`python -m radar_v4 status` is a **workshop capability statement**, not proof that a dataset was measured in that invocation. After remediation it reports `measured: false` and `available_claim_level: LEVEL 0 — MEASURED`. It does not emit `claim_level` as if a measurement occurred.
 
 Honest auditor note: units 58–100 do not change the claim class. They make the workshop inspectable. Completing unit 100 is not a research result.
 
@@ -255,7 +248,8 @@ PYTHONPATH=. python3 -m radar_v4 pack-verify --pack fixtures/synthetic_one_symbo
 
 Expected:
 
-- 166 tests pass;
+- full unittest suite passes on the remediation head;
+- `status` reports `measured: false` and does not emit `claim_level`;
 - `status` denies method, vendor, historical evidence, and paper trading;
 - `session` on the fixture pack is `MEASURED` with SYNTHETIC changes `0.50`, `-0.50`;
 - `determinism` is equal;
@@ -285,33 +279,43 @@ Completion of units 7–100 does not authorize a data purchase or Phase 6.
 
 ---
 
-## Smallest next authorizations that would change the claim class
+## Independent audit and remediations
 
-Only Todd can issue these. The auditor should not treat them as implied.
+ChatGPT audited PR #8 as verifier only. Disposition: **PASS WITH MATERIAL OPEN ITEMS**.
 
-| If Todd names… | Then the class that can change is… |
-|---|---|
-| A vendor/API **by name**, after the locked question remains locked | Data access (still not method validity) |
-| `AUTHORIZE PHASE 6 — TC` plus one predeclared comparison | Method research (still not usefulness) |
-| A locked historical pilot, then Horizon 4A paper | Observation of a later operational layer (not a start method) |
+Remediations applied after that audit (this commit):
 
-Until one of those is named, further software on SYNTHETIC packs cannot honestly change the claim class.
+1. Named the actual audited software head (`053fc28`) and the handoff-only head (`9851692`).
+2. Reconciled stale GOVERNANCE language: Phase 5 local software is authorized; vendor/historical data access is not. Stop rules now describe the current workshop, not a pre-Unit-1 freeze.
+3. `workshop_status()` is a capability statement (`measured: false`, `available_claim_level` only). Baseline refusals use `claim_level=NONE`; only `MEASURED` may say `LEVEL 0 — MEASURED`.
+4. Canonical JSON requires exact sorted-key compact bytes plus one newline. Leading whitespace or extra newlines fail.
+5. Pack readiness counts declaration-admitted observations, not merely pack-loader accepted files.
+
+## Authorization does not earn a claim
+
+Naming a vendor/API would authorize access. It would **not** make data correctness earned.
+
+The smallest later evidence exercise, if Todd separately authorizes one, would be one named source, one symbol, interval `1d`, one fixed period, the locked close-to-close question unchanged, and no feature, threshold, signal, Phase 6, backtest, or paper trading.
+
+That is not authorized now.
 
 ---
 
 ## Disposition for ChatGPT
 
 ```text
-RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF
+RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF + OPEN-ITEM REMEDIATION
 SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–100
-SOFTWARE CORRECTNESS — 166 TESTS PASSED AT HEAD (VERIFY)
+INDEPENDENT AUDIT — PASS WITH MATERIAL OPEN ITEMS
+CORE SYNTHETIC PATH — STRONGLY SUPPORTED
+166 TESTS AT 053fc28 — IMPLEMENTER-REPORTED
+FULL SOFTWARE CORRECTNESS — REMEDIATED; RE-VERIFY ON THIS HEAD
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN
 VENDOR / LIVE / PAPER — NOT AUTHORIZED
 V1/V2 INHERITANCE — FORBIDDEN
 NEXT CLASS OF WORK — NOT AUTHORIZED BY UNIT 100
-AUDITOR ACTION — VERIFY CLAIMS; REPORT OVERCLAIM; DO NOT IMPLEMENT
 ```
 
 Learning and Earning It.  

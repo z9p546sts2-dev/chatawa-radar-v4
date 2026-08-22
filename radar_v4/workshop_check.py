@@ -122,8 +122,7 @@ def check_canonical_json(path: str | Path) -> CanonicalCheck:
     except JSONDecodeError:
         return CanonicalCheck(False, "UNREADABLE_JSON")
     expected = dumps(raw, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
-    stripped = text.strip()
-    if stripped == expected:
+    if text == expected + "\n":
         return CanonicalCheck(True, None)
     return CanonicalCheck(False, "NOT_CANONICAL_JSON")
 
@@ -206,15 +205,18 @@ PHASE5_HIGHEST_UNIT = 100
 
 
 def workshop_status() -> str:
+    """Workshop capability statement. Does not measure a dataset."""
     return _dump(
         {
-            "claim_level": "LEVEL 0 — MEASURED",
+            "available_claim_level": "LEVEL 0 — MEASURED",
             "document_kind": "radar_v4.workshop_status",
             "fixture_is_market_evidence": False,
             "historical_evidence": False,
             "highest_unit": PHASE5_HIGHEST_UNIT,
+            "measured": False,
             "method_defined": False,
             "notes": [
+                "status is a workshop capability statement, not a measurement",
                 "software correctness is not data correctness",
                 "data correctness is not method validity",
                 "method validity is not usefulness",

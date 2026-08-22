@@ -64,7 +64,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 74–79** — report-to-snapshot bind, determinism, snapshot inventory
 - **Units 80–87** — pack layout, canonical JSON, identities, describe
 - **Units 88–94** — reason-code lookup/catalog document, inventory compare, inventory vs manifest
-- **Units 95–100** — workshop status, readiness, forbidden-claim fields, highest-unit lock at 100
+- **Units 95–100** — workshop capability status (not a measurement), admission readiness, forbidden-claim fields, highest-unit lock at 100
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 

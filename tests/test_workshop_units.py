@@ -79,6 +79,7 @@ class WorkshopUnitTests(unittest.TestCase):
         self.assertEqual(len(identities.accepted), 3)
         readiness = pack_readiness(PACK)
         self.assertTrue(readiness.enough_for_close_to_close)
+        self.assertEqual(readiness.admitted_observations, 3)
         self.assertIn("not a measurement", " ".join(readiness.notes))
         description = json.loads(describe_pack(PACK).serialize())
         self.assertEqual(description["document_kind"], "radar_v4.pack_describe")
@@ -116,10 +117,57 @@ class WorkshopUnitTests(unittest.TestCase):
         self.assertTrue(check.canonical)
         status = json.loads(workshop_status())
         self.assertEqual(status["highest_unit"], 100)
+        self.assertFalse(status["measured"])
         self.assertFalse(status["method_defined"])
         self.assertFalse(status["vendor_authorized"])
+        self.assertEqual(status["available_claim_level"], "LEVEL 0 — MEASURED")
+        self.assertNotIn("claim_level", status)
         self.assertTrue(lookup_reason_code("FILE_EXISTS").known)
         self.assertFalse(lookup_reason_code("NOT_A_REAL_CODE").known)
+        with tempfile.TemporaryDirectory() as raw:
+            padded = Path(raw) / "padded.json"
+            padded.write_text(
+                "\n" + (PACK / "manifest.json").read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            self.assertFalse(check_canonical_json(padded).canonical)
+            self.assertEqual(check_canonical_json(padded).error_code, "NOT_CANONICAL_JSON")
+            extra_newlines = Path(raw) / "extra_newlines.json"
+            extra_newlines.write_text(
+                (PACK / "manifest.json").read_text(encoding="utf-8") + "\n",
+                encoding="utf-8",
+            )
+            self.assertFalse(check_canonical_json(extra_newlines).canonical)
+            self.assertEqual(
+                check_canonical_json(extra_newlines).error_code,
+                "NOT_CANONICAL_JSON",
+            )
+
+    def test_readiness_requires_declaration_match(self) -> None:
+        from radar_v4.evidence import ProvenanceClass
+        from radar_v4.observation import Observation, ObservationPayload
+        from tests.helpers import envelope
+        from tests.test_dataset_pack import _declaration, _write_obs
+
+        first = Observation.create(
+            envelope(provenance=ProvenanceClass.SYNTHETIC, symbol="SYN:BBB", day=7),
+            ObservationPayload(close="10.00"),
+        )
+        second = Observation.create(
+            envelope(provenance=ProvenanceClass.SYNTHETIC, symbol="SYN:BBB", day=8),
+            ObservationPayload(close="11.00"),
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / "declaration.json").write_text(
+                json.dumps(_declaration()), encoding="utf-8"
+            )
+            _write_obs(root / "obs_a.json", first)
+            _write_obs(root / "obs_b.json", second)
+            readiness = pack_readiness(root)
+        self.assertGreaterEqual(readiness.accepted_observations, 2)
+        self.assertEqual(readiness.admitted_observations, 0)
+        self.assertFalse(readiness.enough_for_close_to_close)
 
 
 if __name__ == "__main__":

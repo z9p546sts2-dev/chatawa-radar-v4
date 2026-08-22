@@ -176,19 +176,19 @@ Build Unit 1 earned only a small evidence/provenance software foundation. It doe
 
 **Status:** COMPLETE WITHIN SCOPE / ACCEPTED-TC
 
-# Phase 5 — Future data / research foundation
+# Phase 5 — Data / research foundation
 
 Objective:
 
-Define and separately authorize any later work involving real historical data, data access, cadence enforcement, baseline research, or candidate market questions.
+Local FIXTURE/SYNTHETIC dataset admission, ordinary close-to-close description, integrity, and inspectability. Real historical data access, vendor download, and method research remain a later class of work.
 
 This phase must not begin automatically after Build Unit 1.
 
 Before any real dataset is admitted, required controls include provenance, source identity, interval/cadence semantics, timestamps, timezone, transformation identity, integrity checks, and quarantine of contradictory or unknown-provenance data.
 
-**Status:** AUTHORIZED-TC / UNITS 7–100 COMPLETE WITHIN SCOPE
+**Status:** AUTHORIZED-TC / UNITS 7–100 COMPLETE WITHIN SCOPE FOR LOCAL SOFTWARE ONLY
 
-Vendor download, paper trading, and method research remain unauthorized.
+Vendor download, paper trading, and method research remain unauthorized. Completing units 7–100 does not authorize a data purchase.
 
 # Phase 6 — Candidate feature / method research
 
