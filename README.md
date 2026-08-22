@@ -1,8 +1,8 @@
 # Chatawa Radar V4
 
-## Status: PHASE 5 AUTHORIZED — UNITS 7–11 COMPLETE WITHIN SCOPE
+## Status: PHASE 5 AUTHORIZED — UNITS 7–14 COMPLETE WITHIN SCOPE
 
-Radar V4 has a bounded evidence foundation plus Phase 5 dataset admission, observation payloads, and a descriptive close-to-close baseline.
+Radar V4 has a bounded evidence foundation plus Phase 5 dataset admission, observation payloads, a descriptive close-to-close baseline, series integrity, snapshots, a dataset session runner, observation JSON intake, and local snapshot files.
 
 Vendor download, live capture, and method research are not authorized. This is not a trading system.
 
@@ -32,6 +32,9 @@ UNIT 8 — OBSERVATION PAYLOAD — COMPLETE WITHIN SCOPE
 UNIT 9 — ORDINARY CLOSE-TO-CLOSE DESCRIPTION — COMPLETE WITHIN SCOPE
 UNIT 10 — SERIES INTEGRITY — COMPLETE WITHIN SCOPE
 UNIT 11 — DATASET SNAPSHOT — COMPLETE WITHIN SCOPE
+UNIT 12 — DATASET SESSION — COMPLETE WITHIN SCOPE
+UNIT 13 — OBSERVATION JSON INTAKE — COMPLETE WITHIN SCOPE
+UNIT 14 — LOCAL SNAPSHOT FILES — COMPLETE WITHIN SCOPE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 PHASE 6 METHOD RESEARCH — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
@@ -109,19 +112,18 @@ No legacy source file may be copied merely because it already exists.
 
 Until Todd explicitly authorizes a later bounded unit:
 
-- no market-data ingestion;
-- no market features;
+- no vendor API or live download;
+- no market features, indicators, scores, or thresholds;
 - no ranking logic;
-- no thresholds;
 - no backtests;
 - no signals or edge claims;
 - no trading or execution;
 - no automatic reuse of legacy components;
-- no Build Unit 7;
-- no Phase 5 dataset;
-- no assumption that V1 or V2 behavior remains valid.
+- no Phase 6 method research;
+- no assumption that V1 or V2 behavior remains valid;
+- no treating SYNTHETIC or FIXTURE numbers as HISTORICAL evidence.
 
-The repository now has a small evidence/provenance and intake/quarantine software foundation. It is not a trading-system authorization.
+The repository now has a Phase 5 software foundation through dataset session composition and local snapshot files. It is not a trading-system authorization.
 
 **Tools verify. Todd authorizes.**
 

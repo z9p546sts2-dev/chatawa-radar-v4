@@ -19,10 +19,21 @@ from radar_v4.json_intake import (
     intake_json_text,
 )
 from radar_v4.observation import Observation, ObservationPayload
+from radar_v4.observation_json import (
+    ObservationIntakeRecord,
+    ObservationIntakeReport,
+    intake_observation_json,
+)
 from radar_v4.observation_validation import validate_observation
 from radar_v4.registry import EvidenceRegistry
 from radar_v4.series import SeriesReport, inspect_series
+from radar_v4.session import SessionResult, run_dataset_session
 from radar_v4.snapshot import DatasetSnapshot, make_snapshot
+from radar_v4.snapshot_files import (
+    SnapshotFileError,
+    read_snapshot_file,
+    write_snapshot_file,
+)
 from radar_v4.validation import ValidationIssue, ValidationResult, validate_envelope
 
 __all__ = [
@@ -32,7 +43,11 @@ __all__ = [
     "DatasetSnapshot",
     "SeriesReport",
     "Observation",
+    "ObservationIntakeRecord",
+    "ObservationIntakeReport",
     "ObservationPayload",
+    "SessionResult",
+    "SnapshotFileError",
     "DocumentIntakeReport",
     "EvidenceEnvelope",
     "EvidenceRegistry",
@@ -46,7 +61,11 @@ __all__ = [
     "admit_to_dataset",
     "close_to_close_changes",
     "inspect_series",
+    "intake_observation_json",
     "make_snapshot",
+    "read_snapshot_file",
+    "run_dataset_session",
+    "write_snapshot_file",
     "intake_envelopes",
     "intake_json_text",
     "load_fixture_pack",

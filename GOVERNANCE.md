@@ -2,9 +2,9 @@
 
 ## Status
 
-**PHASE 5 AUTHORIZED — UNITS 7–11 COMPLETE WITHIN SCOPE**
+**PHASE 5 AUTHORIZED — UNITS 7–14 COMPLETE WITHIN SCOPE**
 
-Radar V4 has Phase 5 dataset admission, observation payloads, and a descriptive close-to-close baseline. Vendor download and method research are not authorized.
+Radar V4 has Phase 5 dataset admission, observation payloads, a descriptive close-to-close baseline, series integrity, snapshots, a dataset session runner, observation JSON intake, and local snapshot files. Vendor download and method research are not authorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -110,24 +110,23 @@ Authorized now:
 1. README, roadmap, governance, methodology, proposal, audit, and status maintenance.
 2. Read-only repository inspection.
 3. Preservation and review of completed V1/V2 forensic evidence.
-4. The accepted Build Unit 1 evidence/provenance software.
-5. The accepted Build Unit 2 intake/quarantine software.
+4. Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software.
+5. Phase 5 units 7–14 dataset admission, observation payload, descriptive baseline, series, snapshot, session, observation JSON intake, and local snapshot files.
 6. Future evidence requirements and non-executing research planning.
 
 Not authorized now:
 
-1. Build Unit 6, Phase 5 data ingestion, or any market-method unit.
-2. Market-data ingestion.
-3. Live or historical market-data calls.
-4. Market schemas beyond a separately authorized build boundary.
-5. Features, indicators, ranking algorithms, scores, thresholds, or signals.
-6. Backtests or historical method validation.
-7. Brokerage, paper trading, or simulated orders.
-8. Trading or execution.
-9. Portfolio authority.
-10. Copying, importing, adapting, or cherry-picking legacy Radar code.
+1. A purchased market-data API or live download.
+2. Treating SYNTHETIC or FIXTURE numbers as HISTORICAL evidence.
+3. Phase 6 method research.
+4. Features, indicators, ranking algorithms, scores, thresholds, or signals.
+5. Backtests or historical method validation.
+6. Brokerage, paper trading, or simulated orders.
+7. Trading or execution.
+8. Portfolio authority.
+9. Copying, importing, adapting, or cherry-picking legacy Radar code.
 
-A later unit may begin only after Todd provides a new explicit authorization. `Accepted-TC` on Unit 2 does not authorize Unit 3.
+A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–14 does not authorize that class.
 
 ## Evidence rules
 
@@ -294,7 +293,7 @@ SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
-PHASE 5 — AUTHORIZED-TC / UNITS 7–11 COMPLETE
+PHASE 5 — AUTHORIZED-TC / UNITS 7–14 COMPLETE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED

@@ -2,9 +2,9 @@
 
 ## Status
 
-**BUILD UNITS 1–5 COMPLETE WITHIN SCOPE**
+**PHASE 5 AUTHORIZED — UNITS 7–14 COMPLETE WITHIN SCOPE**
 
-Radar V4 has a bounded evidence foundation through identity-collision detection. Todd authorized continued building without per-unit stops. Phase 5 market data remains unauthorized.
+Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software. Todd authorized continued building without per-unit stops. Vendor download and method research remain unauthorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, deployment, and any future operational role.
 
@@ -186,7 +186,7 @@ This phase must not begin automatically after Build Unit 1.
 
 Before any real dataset is admitted, required controls include provenance, source identity, interval/cadence semantics, timestamps, timezone, transformation identity, integrity checks, and quarantine of contradictory or unknown-provenance data.
 
-**Status:** AUTHORIZED-TC / UNITS 7–11 COMPLETE WITHIN SCOPE
+**Status:** AUTHORIZED-TC / UNITS 7–14 COMPLETE WITHIN SCOPE
 
 Vendor download, paper trading, and method research remain unauthorized.
 
@@ -257,16 +257,14 @@ Authorized now:
 - read-only repository inspection;
 - completed forensic-evidence review and preservation;
 - methodology review and maintenance;
-- the accepted Build Unit 1 evidence/provenance software;
-- the accepted Build Unit 2 intake/quarantine software;
-- Build Units 3–5 JSON intake, in-memory registry, and collision gate;
-- review of those units without expanding them.
+- Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software;
+- Phase 5 units 7–14 dataset declaration, observation payload, descriptive baseline, series integrity, snapshot, session, observation JSON intake, and local snapshot files.
 
 Not authorized now:
 
-- Build Unit 6, Phase 5 data ingestion, or any market-method unit;
-- schemas beyond a separately authorized unit boundary;
-- live or historical market-data ingestion;
+- a purchased market-data API or live download;
+- treating SYNTHETIC or FIXTURE numbers as HISTORICAL evidence;
+- Phase 6 method research;
 - backtesting;
 - market features;
 - ranking logic;
@@ -277,9 +275,7 @@ Not authorized now:
 
 ## Immediate next action
 
-Phase 5 (real historical data) still requires a separate named authorization. Do not buy an API or open a paper account because Units 3–5 exist.
-
-A later data / research foundation requires a separate Todd authorization. Buying a market-data API, opening a paper account, or designing SaaS is not authorized by this acceptance.
+Vendor download, paper trading, and Phase 6 still require a separate named authorization. Do not buy an API or open a paper account because Units 7–14 exist.
 
 ## Current roadmap status
 
@@ -291,7 +287,7 @@ PHASE 3 — BUILD UNIT 1 PROPOSAL / AUTH READINESS     COMPLETE / PASS
 PHASE 4 — BUILD UNIT 1 EXECUTION                     COMPLETE WITHIN SCOPE / ACCEPTED-TC
 PHASE 4A — BUILD UNIT 2 INTAKE / QUARANTINE          COMPLETE WITHIN SCOPE / ACCEPTED-TC
 PHASE 4B — BUILD UNITS 3–6 JSON / REGISTRY / COLLISION / FIXTURE PACK  COMPLETE WITHIN SCOPE
-PHASE 5 — DATA / RESEARCH FOUNDATION                 AUTHORIZED-TC / UNITS 7–11 COMPLETE
+PHASE 5 — DATA / RESEARCH FOUNDATION                 AUTHORIZED-TC / UNITS 7–14 COMPLETE
 PHASE 6 — FEATURE / METHOD RESEARCH                  NOT AUTHORIZED
 PHASE 7 — BOUNDED OFFLINE PILOT                      NOT AUTHORIZED
 PHASE 8 — HUMAN REVIEW INTERFACE                     NOT AUTHORIZED
