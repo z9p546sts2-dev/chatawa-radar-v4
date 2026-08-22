@@ -6,6 +6,7 @@ from dataclasses import dataclass, fields
 from json import dumps
 from pathlib import Path
 
+from radar_v4.ruler import rulers_match
 from radar_v4.snapshot import DatasetSnapshot
 from radar_v4.snapshot_files import read_snapshot_file
 
@@ -17,6 +18,7 @@ class SnapshotComparison:
     left_only_envelope_checksums: tuple[str, ...]
     right_only_envelope_checksums: tuple[str, ...]
     payload_conflicts: tuple[str, ...]
+    rulers_match: bool
 
     def serialize(self) -> str:
         document = {
@@ -25,6 +27,7 @@ class SnapshotComparison:
             "left_only_envelope_checksums": list(self.left_only_envelope_checksums),
             "payload_conflicts": list(self.payload_conflicts),
             "right_only_envelope_checksums": list(self.right_only_envelope_checksums),
+            "rulers_match": self.rulers_match,
         }
         return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
@@ -62,6 +65,7 @@ def compare_snapshots(
         left_only_envelope_checksums=left_only,
         right_only_envelope_checksums=right_only,
         payload_conflicts=conflicts,
+        rulers_match=rulers_match(left.declaration, right.declaration),
     )
 
 

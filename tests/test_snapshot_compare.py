@@ -72,6 +72,7 @@ class SnapshotCompareTests(unittest.TestCase):
         comparison = compare_snapshots(left.snapshot, right.snapshot)
         self.assertFalse(comparison.equal)
         self.assertIn("dataset_id", comparison.declaration_mismatches)
+        self.assertTrue(comparison.rulers_match)
         self.assertEqual(len(comparison.left_only_envelope_checksums), 1)
 
     def test_file_compare_round_trip(self) -> None:

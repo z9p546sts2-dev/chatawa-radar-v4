@@ -7,6 +7,7 @@ from pathlib import Path
 
 from radar_v4.change_continuity import inspect_change_records
 from radar_v4.local_session import LocalSessionResult
+from radar_v4.ruler import ruler_checksum
 from radar_v4.session import SessionResult
 from radar_v4.snapshot_files import SnapshotFileError
 
@@ -42,6 +43,7 @@ def serialize_session_report(result: SessionResult) -> str:
             "status": baseline.status,
         },
         "dataset_id": result.snapshot.declaration.dataset_id,
+        "ruler_checksum": ruler_checksum(result.snapshot.declaration),
         "kept_observation_count": result.kept_observation_count(),
         "rejected_codes": rejected_codes,
         "rejected_observation_count": result.rejected_observation_count(),

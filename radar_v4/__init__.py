@@ -6,6 +6,11 @@ thresholds, data access, or trading.
 
 from radar_v4.baseline import BaselineReport, CloseToCloseChange, close_to_close_changes
 from radar_v4.change_continuity import inspect_change_records
+from radar_v4.checksum_sidecar import (
+    sidecar_path,
+    verify_checksum_sidecar,
+    write_checksum_sidecar,
+)
 from radar_v4.dataset import DatasetDeclaration, admit_to_dataset
 from radar_v4.dataset_pack import DatasetPackReport, load_dataset_pack
 from radar_v4.declaration_json import DeclarationIntakeReport, intake_declaration_json
@@ -29,6 +34,10 @@ from radar_v4.observation_json import (
 )
 from radar_v4.observation_validation import validate_observation
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
+from radar_v4.quarantine_journal import (
+    serialize_quarantine_journal,
+    write_quarantine_journal_file,
+)
 from radar_v4.registry import EvidenceRegistry
 from radar_v4.registry_files import RegistryFileError, read_registry_file, write_registry_file
 from radar_v4.series import SeriesReport, inspect_series
@@ -40,6 +49,13 @@ from radar_v4.local_session import (
 )
 from radar_v4.session import SessionResult, run_dataset_session
 from radar_v4.reason_codes import REASON_CODES, RESULT_STATUSES
+from radar_v4.ruler import (
+    RulerMismatchError,
+    declaration_ruler,
+    require_ruler,
+    ruler_checksum,
+    rulers_match,
+)
 from radar_v4.session_report import (
     serialize_local_session_report,
     serialize_session_report,
@@ -82,6 +98,7 @@ __all__ = [
     "EvidenceRegistry",
     "PackExportError",
     "RegistryFileError",
+    "RulerMismatchError",
     "SnapshotVerification",
     "IntakeRecord",
     "IntakeReport",
@@ -96,6 +113,7 @@ __all__ = [
     "close_to_close_changes",
     "compare_snapshot_files",
     "compare_snapshots",
+    "declaration_ruler",
     "export_snapshot_to_pack",
     "inspect_change_records",
     "inspect_series",
@@ -105,12 +123,17 @@ __all__ = [
     "make_snapshot",
     "read_registry_file",
     "read_snapshot_file",
+    "require_ruler",
+    "ruler_checksum",
+    "rulers_match",
     "run_dataset_session",
     "run_session_from_pack",
     "run_session_from_snapshot",
     "run_session_from_snapshot_file",
     "serialize_local_session_report",
+    "serialize_quarantine_journal",
     "serialize_session_report",
+    "sidecar_path",
     "write_local_session_report_file",
     "write_session_report_file",
     "write_snapshot_file",
@@ -119,7 +142,10 @@ __all__ = [
     "load_fixture_pack",
     "validate_envelope",
     "validate_observation",
+    "verify_checksum_sidecar",
     "verify_snapshot",
     "verify_snapshot_file",
+    "write_checksum_sidecar",
+    "write_quarantine_journal_file",
     "write_registry_file",
 ]

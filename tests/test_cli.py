@@ -97,6 +97,57 @@ class CliTests(unittest.TestCase):
             self.assertEqual(export_code, 0, export_err.getvalue())
             self.assertTrue((export_dir / "declaration.json").is_file())
 
+            codes_out = io.StringIO()
+            with redirect_stdout(codes_out), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["codes"]), 0)
+            self.assertIn("RULER_MISMATCH", json.loads(codes_out.getvalue()))
+
+            sidecar_err = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(sidecar_err):
+                sidecar_code = main(
+                    ["verify", "--snapshot", str(snapshot), "--write-sidecar"]
+                )
+            self.assertEqual(sidecar_code, 0, sidecar_err.getvalue())
+            self.assertTrue((Path(str(snapshot) + ".sha256")).is_file())
+
+            journal = Path(raw) / "journal.json"
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                self.assertEqual(
+                    main(["quarantine", "--pack", str(pack), "--out", str(journal)]),
+                    0,
+                )
+            self.assertTrue(journal.is_file())
+
+            registry_path = Path(raw) / "registry.json"
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                self.assertEqual(
+                    main(
+                        [
+                            "registry-write",
+                            "--snapshot",
+                            str(snapshot),
+                            "--out",
+                            str(registry_path),
+                        ]
+                    ),
+                    0,
+                )
+            self.assertTrue(registry_path.is_file())
+
+            mismatch = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(mismatch):
+                mismatch_code = main(
+                    [
+                        "replay",
+                        "--snapshot",
+                        str(snapshot),
+                        "--expect-ruler",
+                        "0" * 64,
+                    ]
+                )
+            self.assertEqual(mismatch_code, 1)
+            self.assertIn("RULER_MISMATCH", mismatch.getvalue())
+
     def test_missing_pack_exits_without_inventing_session(self) -> None:
         stderr = io.StringIO()
         stdout = io.StringIO()

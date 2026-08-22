@@ -29,6 +29,8 @@ class ReasonCodeTests(unittest.TestCase):
             "CHANGE_DISCONTINUITY",
             "SNAPSHOT_CHECKSUM_MISMATCH",
             "UNREADABLE_REGISTRY_FILE",
+            "RULER_MISMATCH",
+            "UNREADABLE_SIDECAR",
         ):
             self.assertIn(code, REASON_CODES)
 

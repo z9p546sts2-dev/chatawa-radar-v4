@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from radar_v4.dataset_pack import DatasetPackReport, load_dataset_pack
+from radar_v4.ruler import require_ruler
 from radar_v4.session import SessionResult, run_dataset_session
 from radar_v4.snapshot import DatasetSnapshot
 from radar_v4.snapshot_files import read_snapshot_file
@@ -18,14 +19,20 @@ class LocalSessionResult:
     error_code: str | None
 
 
-def run_session_from_snapshot(snapshot: DatasetSnapshot) -> SessionResult:
+def run_session_from_snapshot(
+    snapshot: DatasetSnapshot, expected_ruler: str | None = None
+) -> SessionResult:
     """Re-run admission, series, and baseline on a preserved snapshot."""
+    if expected_ruler is not None:
+        require_ruler(snapshot.declaration, expected_ruler)
     envelopes = tuple(item.envelope for item in snapshot.observations)
     return run_dataset_session(snapshot.declaration, envelopes, snapshot.observations)
 
 
-def run_session_from_snapshot_file(path: str | Path) -> SessionResult:
-    return run_session_from_snapshot(read_snapshot_file(path))
+def run_session_from_snapshot_file(
+    path: str | Path, expected_ruler: str | None = None
+) -> SessionResult:
+    return run_session_from_snapshot(read_snapshot_file(path), expected_ruler)
 
 
 def run_session_from_pack(directory: str | Path) -> LocalSessionResult:

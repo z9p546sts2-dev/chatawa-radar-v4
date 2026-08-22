@@ -5,9 +5,16 @@ from __future__ import annotations
 import argparse
 import sys
 from collections.abc import Sequence
+from json import dumps
 
+from radar_v4.checksum_sidecar import verify_checksum_sidecar, write_checksum_sidecar
 from radar_v4.local_session import run_session_from_pack, run_session_from_snapshot_file
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
+from radar_v4.quarantine_journal import write_quarantine_journal_file
+from radar_v4.reason_codes import REASON_CODES
+from radar_v4.registry import EvidenceRegistry
+from radar_v4.registry_files import RegistryFileError, write_registry_file
+from radar_v4.ruler import RulerMismatchError
 from radar_v4.session_report import (
     serialize_local_session_report,
     serialize_session_report,
@@ -30,10 +37,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     session.add_argument("--pack", required=True, help="local dataset pack directory")
     session.add_argument("--snapshot", help="optional snapshot output path")
     session.add_argument("--report", help="optional session report output path")
+    session.add_argument("--journal", help="optional quarantine journal output path")
+    session.add_argument(
+        "--sidecar",
+        action="store_true",
+        help="write a .sha256 sidecar next to --snapshot",
+    )
 
     replay = sub.add_parser("replay", help="replay a local snapshot file")
     replay.add_argument("--snapshot", required=True, help="snapshot file to replay")
     replay.add_argument("--report", help="optional session report output path")
+    replay.add_argument("--expect-ruler", help="optional ruler checksum to require")
 
     compare = sub.add_parser("compare", help="compare two local snapshot files")
     compare.add_argument("--left", required=True, help="left snapshot file")
@@ -45,6 +59,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--expect-checksum",
         help="optional SHA-256 hex digest to compare",
     )
+    verify.add_argument(
+        "--sidecar",
+        action="store_true",
+        help="verify or write using the .sha256 sidecar",
+    )
+    verify.add_argument(
+        "--write-sidecar",
+        action="store_true",
+        help="write a .sha256 sidecar for this snapshot",
+    )
 
     export_pack = sub.add_parser(
         "export-pack", help="write a FIXTURE/SYNTHETIC pack from a snapshot"
@@ -52,19 +76,47 @@ def main(argv: Sequence[str] | None = None) -> int:
     export_pack.add_argument("--snapshot", required=True, help="snapshot file")
     export_pack.add_argument("--out", required=True, help="empty output directory")
 
+    sub.add_parser("codes", help="print the refusal-code catalog")
+
+    quarantine = sub.add_parser("quarantine", help="write a pack quarantine journal")
+    quarantine.add_argument("--pack", required=True, help="local dataset pack directory")
+    quarantine.add_argument("--out", required=True, help="journal output path")
+
+    registry_write = sub.add_parser(
+        "registry-write", help="write accepted snapshot envelopes to a registry file"
+    )
+    registry_write.add_argument("--snapshot", required=True, help="snapshot file")
+    registry_write.add_argument("--out", required=True, help="registry output path")
+
     args = parser.parse_args(list(argv) if argv is not None else None)
     if args.command == "session":
-        return _run_session(args.pack, args.snapshot, args.report)
+        return _run_session(
+            args.pack, args.snapshot, args.report, args.journal, args.sidecar
+        )
     if args.command == "replay":
-        return _run_replay(args.snapshot, args.report)
+        return _run_replay(args.snapshot, args.report, args.expect_ruler)
     if args.command == "compare":
         return _run_compare(args.left, args.right)
     if args.command == "verify":
-        return _run_verify(args.snapshot, args.expect_checksum)
-    return _run_export_pack(args.snapshot, args.out)
+        return _run_verify(
+            args.snapshot, args.expect_checksum, args.sidecar, args.write_sidecar
+        )
+    if args.command == "export-pack":
+        return _run_export_pack(args.snapshot, args.out)
+    if args.command == "codes":
+        return _run_codes()
+    if args.command == "quarantine":
+        return _run_quarantine(args.pack, args.out)
+    return _run_registry_write(args.snapshot, args.out)
 
 
-def _run_session(pack: str, snapshot_path: str | None, report_path: str | None) -> int:
+def _run_session(
+    pack: str,
+    snapshot_path: str | None,
+    report_path: str | None,
+    journal_path: str | None,
+    write_sidecar: bool,
+) -> int:
     result = run_session_from_pack(pack)
     if result.session is None:
         sys.stderr.write(f"{result.error_code or 'PACK_NOT_USABLE'}\n")
@@ -73,13 +125,28 @@ def _run_session(pack: str, snapshot_path: str | None, report_path: str | None) 
                 sys.stderr.write(f"{issue.code}: {issue.reason}\n")
             for item in result.pack.unreadable:
                 sys.stderr.write(f"{item.code}: {item.reason}\n")
+        if journal_path:
+            try:
+                write_quarantine_journal_file(journal_path, local=result)
+            except SnapshotFileError as exc:
+                sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+                return 2
         return 2
     text = serialize_local_session_report(result)
     try:
         if snapshot_path:
             write_snapshot_file(snapshot_path, result.session.snapshot)
+            if write_sidecar:
+                write_checksum_sidecar(
+                    snapshot_path, result.session.snapshot.integrity_checksum()
+                )
+        elif write_sidecar:
+            sys.stderr.write("SIDECAR requires --snapshot\n")
+            return 2
         if report_path:
             write_local_session_report_file(report_path, result)
+        if journal_path:
+            write_quarantine_journal_file(journal_path, local=result)
     except SnapshotFileError as exc:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
@@ -87,21 +154,36 @@ def _run_session(pack: str, snapshot_path: str | None, report_path: str | None) 
     return 0
 
 
-def _run_replay(snapshot_path: str, report_path: str | None) -> int:
+def _run_replay(
+    snapshot_path: str, report_path: str | None, expected_ruler: str | None
+) -> int:
     try:
-        session = run_session_from_snapshot_file(snapshot_path)
+        session = run_session_from_snapshot_file(snapshot_path, expected_ruler)
         if report_path:
             write_session_report_file(report_path, session)
     except SnapshotFileError as exc:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
+    except RulerMismatchError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 1
     sys.stdout.write(serialize_session_report(session) + "\n")
     return 0
 
 
-def _run_verify(snapshot_path: str, expected: str | None) -> int:
+def _run_verify(
+    snapshot_path: str,
+    expected: str | None,
+    use_sidecar: bool,
+    write_sidecar: bool,
+) -> int:
     try:
-        verification = verify_snapshot_file(snapshot_path, expected)
+        if write_sidecar:
+            write_checksum_sidecar(snapshot_path)
+        if use_sidecar:
+            verification = verify_checksum_sidecar(snapshot_path)
+        else:
+            verification = verify_snapshot_file(snapshot_path, expected)
     except SnapshotFileError as exc:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
@@ -133,4 +215,41 @@ def _run_compare(left: str, right: str) -> int:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
     sys.stdout.write(comparison.serialize() + "\n")
+    return 0
+
+
+def _run_codes() -> int:
+    sys.stdout.write(
+        dumps(sorted(REASON_CODES), separators=(",", ":"), ensure_ascii=True) + "\n"
+    )
+    return 0
+
+
+def _run_quarantine(pack: str, out_path: str) -> int:
+    result = run_session_from_pack(pack)
+    try:
+        write_quarantine_journal_file(out_path, local=result)
+    except SnapshotFileError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    if result.session is None:
+        sys.stderr.write(f"{result.error_code or 'PACK_NOT_USABLE'}\n")
+        return 2
+    sys.stdout.write(out_path + "\n")
+    return 0
+
+
+def _run_registry_write(snapshot_path: str, out_path: str) -> int:
+    try:
+        snapshot = read_snapshot_file(snapshot_path)
+        registry = EvidenceRegistry()
+        registry.put(tuple(item.envelope for item in snapshot.observations))
+        write_registry_file(out_path, registry)
+    except SnapshotFileError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    except RegistryFileError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    sys.stdout.write(out_path + "\n")
     return 0
