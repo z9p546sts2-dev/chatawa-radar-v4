@@ -8,6 +8,7 @@ from pathlib import Path
 
 from radar_v4.dataset_pack import DECLARATION_FILENAME
 from radar_v4.fixture_pack import PACK_ALLOWED_PROVENANCE
+from radar_v4.pack_manifest import write_pack_manifest
 from radar_v4.snapshot import DatasetSnapshot
 
 
@@ -58,4 +59,5 @@ def export_snapshot_to_pack(snapshot: DatasetSnapshot, directory: str | Path) ->
         (target / name).write_text(
             dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
+    write_pack_manifest(target)
     return target

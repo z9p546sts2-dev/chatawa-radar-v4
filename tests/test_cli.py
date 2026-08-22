@@ -148,6 +148,17 @@ class CliTests(unittest.TestCase):
             self.assertEqual(mismatch_code, 1)
             self.assertIn("RULER_MISMATCH", mismatch.getvalue())
 
+            ruler_out = io.StringIO()
+            with redirect_stdout(ruler_out), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["show-ruler", "--pack", str(pack)]), 0)
+            self.assertEqual(
+                json.loads(ruler_out.getvalue())["document_kind"], "radar_v4.ruler"
+            )
+            verify_pack = io.StringIO()
+            with redirect_stdout(verify_pack), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["pack-verify", "--pack", str(pack)]), 0)
+            self.assertIn("declaration.json", json.loads(verify_pack.getvalue())["files"])
+
     def test_missing_pack_exits_without_inventing_session(self) -> None:
         stderr = io.StringIO()
         stdout = io.StringIO()

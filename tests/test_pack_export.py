@@ -14,6 +14,7 @@ from radar_v4.evidence import ProvenanceClass
 from radar_v4.local_session import run_session_from_pack
 from radar_v4.observation import Observation, ObservationPayload
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
+from radar_v4.pack_manifest import verify_pack_manifest
 from radar_v4.session import run_dataset_session
 from tests.helpers import envelope
 
@@ -55,6 +56,7 @@ class PackExportTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as raw:
             out = Path(raw) / "pack"
             export_snapshot_to_pack(original.snapshot, out)
+            verify_pack_manifest(out)
             loaded = load_dataset_pack(out)
             self.assertTrue(loaded.usable())
             replayed = run_session_from_pack(out)

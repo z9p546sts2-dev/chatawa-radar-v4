@@ -60,6 +60,8 @@ class SessionReportTests(unittest.TestCase):
         self.assertEqual(len(document["snapshot_checksum"]), 64)
         self.assertEqual(document["baseline"]["change_records"][0]["difference"], "0.25")
         self.assertTrue(document["change_continuity_valid"])
+        self.assertEqual(document["document_kind"], "radar_v4.session_report")
+        self.assertEqual(document["report_version"], 1)
 
     def test_directory_path_is_refused(self) -> None:
         declaration = DatasetDeclaration(

@@ -37,6 +37,11 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Unit 35** — `radar_v4/checksum_sidecar.py` `.sha256` sidecar
 - **Unit 36** — CLI `codes`, `quarantine`, `registry-write`, `--sidecar`
 - **Unit 37** — `replay --expect-ruler`
+- **Unit 38** — pack loader skips journal/manifest/registry artifacts (not observations)
+- **Unit 39** — `radar_v4/pack_manifest.py` pack file digests
+- **Unit 40** — verify a pack against its manifest
+- **Unit 41** — ruler sidecar + CLI `show-ruler`
+- **Unit 42** — session report `document_kind` / `report_version`
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -55,4 +60,6 @@ PYTHONPATH=. python3 -m radar_v4 verify --snapshot <snapshot.json>
 PYTHONPATH=. python3 -m radar_v4 export-pack --snapshot <snapshot.json> --out <empty-dir>
 PYTHONPATH=. python3 -m radar_v4 codes
 PYTHONPATH=. python3 -m radar_v4 quarantine --pack fixtures/synthetic_one_symbol_1d --out journal.json
+PYTHONPATH=. python3 -m radar_v4 pack-verify --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 show-ruler --pack fixtures/synthetic_one_symbol_1d
 ```

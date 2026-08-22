@@ -53,6 +53,8 @@ def serialize_session_report(result: SessionResult) -> str:
         "series_issue_codes": list(result.series.issue_codes()),
         "series_valid": result.series.valid,
         "snapshot_checksum": result.snapshot.integrity_checksum(),
+        "document_kind": "radar_v4.session_report",
+        "report_version": 1,
     }
     return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
@@ -78,7 +80,9 @@ def serialize_local_session_report(result: LocalSessionResult) -> str:
         "pack_issue_codes": pack_issue_codes,
         "pack_quarantine_codes": pack_quarantine_codes,
         "pack_unreadable_codes": pack_unreadable_codes,
+        "document_kind": "radar_v4.local_session_report",
         "pack_usable": bool(pack is not None and pack.usable()),
+        "report_version": 1,
         "session": None
         if result.session is None
         else _loads_object(serialize_session_report(result.session)),

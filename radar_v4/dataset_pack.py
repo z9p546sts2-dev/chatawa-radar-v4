@@ -19,7 +19,16 @@ from radar_v4.validation import ValidationIssue, ValidationResult
 
 DECLARATION_FILENAME = "declaration.json"
 SKIP_FILENAMES = frozenset(
-    {DECLARATION_FILENAME, "snapshot.json", "session_report.json"}
+    {
+        DECLARATION_FILENAME,
+        "snapshot.json",
+        "session_report.json",
+        "manifest.json",
+        "journal.json",
+        "registry.json",
+        "quarantine.json",
+        "ruler.json",
+    }
 )
 
 

@@ -34,6 +34,12 @@ from radar_v4.observation_json import (
 )
 from radar_v4.observation_validation import validate_observation
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
+from radar_v4.pack_manifest import (
+    PackManifest,
+    PackManifestError,
+    verify_pack_manifest,
+    write_pack_manifest,
+)
 from radar_v4.quarantine_journal import (
     serialize_quarantine_journal,
     write_quarantine_journal_file,
@@ -55,6 +61,11 @@ from radar_v4.ruler import (
     require_ruler,
     ruler_checksum,
     rulers_match,
+)
+from radar_v4.ruler_file import (
+    read_ruler_sidecar,
+    serialize_ruler,
+    write_ruler_sidecar,
 )
 from radar_v4.session_report import (
     serialize_local_session_report,
@@ -97,6 +108,8 @@ __all__ = [
     "EvidenceEnvelope",
     "EvidenceRegistry",
     "PackExportError",
+    "PackManifest",
+    "PackManifestError",
     "RegistryFileError",
     "RulerMismatchError",
     "SnapshotVerification",
@@ -122,6 +135,7 @@ __all__ = [
     "load_dataset_pack",
     "make_snapshot",
     "read_registry_file",
+    "read_ruler_sidecar",
     "read_snapshot_file",
     "require_ruler",
     "ruler_checksum",
@@ -131,6 +145,7 @@ __all__ = [
     "run_session_from_snapshot",
     "run_session_from_snapshot_file",
     "serialize_local_session_report",
+    "serialize_ruler",
     "serialize_quarantine_journal",
     "serialize_session_report",
     "sidecar_path",
@@ -143,9 +158,12 @@ __all__ = [
     "validate_envelope",
     "validate_observation",
     "verify_checksum_sidecar",
+    "verify_pack_manifest",
     "verify_snapshot",
     "verify_snapshot_file",
     "write_checksum_sidecar",
+    "write_pack_manifest",
     "write_quarantine_journal_file",
+    "write_ruler_sidecar",
     "write_registry_file",
 ]

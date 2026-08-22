@@ -6,15 +6,19 @@ import argparse
 import sys
 from collections.abc import Sequence
 from json import dumps
+from pathlib import Path
 
 from radar_v4.checksum_sidecar import verify_checksum_sidecar, write_checksum_sidecar
+from radar_v4.declaration_json import intake_declaration_json
 from radar_v4.local_session import run_session_from_pack, run_session_from_snapshot_file
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
+from radar_v4.pack_manifest import PackManifestError, verify_pack_manifest, write_pack_manifest
 from radar_v4.quarantine_journal import write_quarantine_journal_file
 from radar_v4.reason_codes import REASON_CODES
 from radar_v4.registry import EvidenceRegistry
 from radar_v4.registry_files import RegistryFileError, write_registry_file
 from radar_v4.ruler import RulerMismatchError
+from radar_v4.ruler_file import serialize_ruler, write_ruler_sidecar
 from radar_v4.session_report import (
     serialize_local_session_report,
     serialize_session_report,
@@ -88,6 +92,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     registry_write.add_argument("--snapshot", required=True, help="snapshot file")
     registry_write.add_argument("--out", required=True, help="registry output path")
 
+    manifest = sub.add_parser("pack-manifest", help="write a pack integrity manifest")
+    manifest.add_argument("--pack", required=True, help="local dataset pack directory")
+
+    pack_verify = sub.add_parser("pack-verify", help="verify a pack against its manifest")
+    pack_verify.add_argument("--pack", required=True, help="local dataset pack directory")
+
+    show_ruler = sub.add_parser("show-ruler", help="print a pack or snapshot ruler")
+    show_ruler.add_argument("--pack", help="local dataset pack directory")
+    show_ruler.add_argument("--snapshot", help="snapshot file")
+
     args = parser.parse_args(list(argv) if argv is not None else None)
     if args.command == "session":
         return _run_session(
@@ -107,7 +121,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run_codes()
     if args.command == "quarantine":
         return _run_quarantine(args.pack, args.out)
-    return _run_registry_write(args.snapshot, args.out)
+    if args.command == "registry-write":
+        return _run_registry_write(args.snapshot, args.out)
+    if args.command == "pack-manifest":
+        return _run_pack_manifest(args.pack)
+    if args.command == "pack-verify":
+        return _run_pack_verify(args.pack)
+    return _run_show_ruler(args.pack, args.snapshot)
 
 
 def _run_session(
@@ -136,6 +156,7 @@ def _run_session(
     try:
         if snapshot_path:
             write_snapshot_file(snapshot_path, result.session.snapshot)
+            write_ruler_sidecar(snapshot_path, result.session.snapshot.declaration)
             if write_sidecar:
                 write_checksum_sidecar(
                     snapshot_path, result.session.snapshot.integrity_checksum()
@@ -252,4 +273,49 @@ def _run_registry_write(snapshot_path: str, out_path: str) -> int:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
     sys.stdout.write(out_path + "\n")
+    return 0
+
+
+def _run_pack_manifest(pack: str) -> int:
+    try:
+        written = write_pack_manifest(pack)
+    except PackManifestError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    sys.stdout.write(str(written) + "\n")
+    return 0
+
+
+def _run_pack_verify(pack: str) -> int:
+    try:
+        manifest = verify_pack_manifest(pack)
+    except PackManifestError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 1 if exc.code == "MANIFEST_CHECKSUM_MISMATCH" else 2
+    sys.stdout.write(manifest.serialize() + "\n")
+    return 0
+
+
+def _run_show_ruler(pack: str | None, snapshot_path: str | None) -> int:
+    if bool(pack) == bool(snapshot_path):
+        sys.stderr.write("show-ruler requires exactly one of --pack or --snapshot\n")
+        return 2
+    if snapshot_path:
+        try:
+            snapshot = read_snapshot_file(snapshot_path)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        sys.stdout.write(serialize_ruler(snapshot.declaration) + "\n")
+        return 0
+    assert pack is not None
+    declaration_path = Path(pack) / "declaration.json"
+    if not declaration_path.is_file():
+        sys.stderr.write("UNREADABLE_DECLARATION: pack has no usable declaration.json\n")
+        return 2
+    parsed = intake_declaration_json(declaration_path.read_text(encoding="utf-8"))
+    if parsed.declaration is None:
+        sys.stderr.write("UNREADABLE_DECLARATION: pack has no usable declaration.json\n")
+        return 2
+    sys.stdout.write(serialize_ruler(parsed.declaration) + "\n")
     return 0

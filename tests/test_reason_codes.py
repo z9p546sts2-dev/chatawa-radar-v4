@@ -31,6 +31,8 @@ class ReasonCodeTests(unittest.TestCase):
             "UNREADABLE_REGISTRY_FILE",
             "RULER_MISMATCH",
             "UNREADABLE_SIDECAR",
+            "MANIFEST_CHECKSUM_MISMATCH",
+            "UNREADABLE_MANIFEST",
         ):
             self.assertIn(code, REASON_CODES)
 
