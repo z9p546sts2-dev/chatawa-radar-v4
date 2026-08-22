@@ -2,9 +2,9 @@
 
 ## Status
 
-**PHASE 5 AUTHORIZED — UNITS 7–14 COMPLETE WITHIN SCOPE**
+**PHASE 5 AUTHORIZED — UNITS 7–18 COMPLETE WITHIN SCOPE**
 
-Radar V4 has Phase 5 dataset admission, observation payloads, a descriptive close-to-close baseline, series integrity, snapshots, a dataset session runner, observation JSON intake, and local snapshot files. Vendor download and method research are not authorized.
+Radar V4 has Phase 5 dataset admission through a local FIXTURE/SYNTHETIC pack session and session report. Vendor download and method research are not authorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -111,7 +111,7 @@ Authorized now:
 2. Read-only repository inspection.
 3. Preservation and review of completed V1/V2 forensic evidence.
 4. Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software.
-5. Phase 5 units 7–14 dataset admission, observation payload, descriptive baseline, series, snapshot, session, observation JSON intake, and local snapshot files.
+5. Phase 5 units 7–18 dataset admission through local pack session and session report.
 6. Future evidence requirements and non-executing research planning.
 
 Not authorized now:
@@ -126,7 +126,7 @@ Not authorized now:
 8. Portfolio authority.
 9. Copying, importing, adapting, or cherry-picking legacy Radar code.
 
-A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–14 does not authorize that class.
+A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–18 does not authorize that class.
 
 ## Evidence rules
 
@@ -293,7 +293,7 @@ SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
-PHASE 5 — AUTHORIZED-TC / UNITS 7–14 COMPLETE
+PHASE 5 — AUTHORIZED-TC / UNITS 7–18 COMPLETE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED

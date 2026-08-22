@@ -6,6 +6,8 @@ thresholds, data access, or trading.
 
 from radar_v4.baseline import BaselineReport, close_to_close_changes
 from radar_v4.dataset import DatasetDeclaration, admit_to_dataset
+from radar_v4.dataset_pack import DatasetPackReport, load_dataset_pack
+from radar_v4.declaration_json import DeclarationIntakeReport, intake_declaration_json
 from radar_v4.evidence import (
     ALLOWED_PROVENANCE_CLASSES,
     EvidenceEnvelope,
@@ -27,7 +29,14 @@ from radar_v4.observation_json import (
 from radar_v4.observation_validation import validate_observation
 from radar_v4.registry import EvidenceRegistry
 from radar_v4.series import SeriesReport, inspect_series
+from radar_v4.local_session import (
+    LocalSessionResult,
+    run_session_from_pack,
+    run_session_from_snapshot,
+    run_session_from_snapshot_file,
+)
 from radar_v4.session import SessionResult, run_dataset_session
+from radar_v4.session_report import serialize_session_report, write_session_report_file
 from radar_v4.snapshot import DatasetSnapshot, make_snapshot
 from radar_v4.snapshot_files import (
     SnapshotFileError,
@@ -40,7 +49,10 @@ __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
     "BaselineReport",
     "DatasetDeclaration",
+    "DatasetPackReport",
     "DatasetSnapshot",
+    "DeclarationIntakeReport",
+    "LocalSessionResult",
     "SeriesReport",
     "Observation",
     "ObservationIntakeRecord",
@@ -61,10 +73,17 @@ __all__ = [
     "admit_to_dataset",
     "close_to_close_changes",
     "inspect_series",
+    "intake_declaration_json",
     "intake_observation_json",
+    "load_dataset_pack",
     "make_snapshot",
     "read_snapshot_file",
     "run_dataset_session",
+    "run_session_from_pack",
+    "run_session_from_snapshot",
+    "run_session_from_snapshot_file",
+    "serialize_session_report",
+    "write_session_report_file",
     "write_snapshot_file",
     "intake_envelopes",
     "intake_json_text",

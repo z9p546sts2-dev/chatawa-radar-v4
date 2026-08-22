@@ -14,6 +14,10 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Unit 12** — `radar_v4/session.py` admit → keep matching observations → series → snapshot → baseline
 - **Unit 13** — `radar_v4/observation_json.py` observation document intake
 - **Unit 14** — `radar_v4/snapshot_files.py` local snapshot read/write
+- **Unit 15** — `radar_v4/declaration_json.py` dataset declaration JSON
+- **Unit 16** — `radar_v4/dataset_pack.py` local FIXTURE/SYNTHETIC dataset pack
+- **Unit 17** — `radar_v4/local_session.py` session from pack or snapshot
+- **Unit 18** — `radar_v4/session_report.py` descriptive session report
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
