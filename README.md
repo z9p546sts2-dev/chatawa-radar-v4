@@ -89,6 +89,8 @@ Until Todd explicitly authorizes Build Unit 1 execution:
 - no Build Unit 2;
 - no assumption that V1 or V2 behavior remains valid.
 
+The long-horizon companion is `RADAR_V4_HORIZON_ROADMAP.md`: a 4–5 year evidence-gated sequence for an evidence system first, then a separately authorized later program if earned. Years do not authorize work.
+
 The repository is pre-build ready for a bounded first-code decision. It is not a trading-system authorization.
 
 **Tools verify. Todd authorizes.**

@@ -6,6 +6,8 @@
 
 Radar V4 has progressed beyond the original foundation-only roadmap through completed forensic review, methodology definition, and a bounded first build proposal. Implementation remains unauthorized.
 
+The 4–5 year evidence-gated horizon is recorded in `RADAR_V4_HORIZON_ROADMAP.md`. That file does not replace this roadmap or authorize any phase. Years do not unlock Phase 4.
+
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, deployment, and any future operational role.
 
 ## Intended purpose
@@ -272,6 +274,8 @@ Not authorized now:
 - legacy code migration;
 - brokerage or trading;
 - automatic Build Unit 2.
+
+The 4–5 year evidence-gated horizon is recorded in `RADAR_V4_HORIZON_ROADMAP.md`. It does not replace this file, authorize Build Unit 1, or turn elapsed years into permission.
 
 ## Immediate next action
 
