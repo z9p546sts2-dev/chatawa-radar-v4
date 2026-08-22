@@ -102,10 +102,10 @@ class BundleVerifyTests(unittest.TestCase):
             verification = verify_snapshot_bundle(
                 path, require_sidecar=True, require_ruler=True
             )
-        self.assertEqual(written.snapshot, path)
-        self.assertTrue(written.sidecar.is_file())
-        self.assertTrue(written.ruler.is_file())
-        self.assertTrue(verification.matched)
+            self.assertEqual(written.snapshot, path)
+            self.assertTrue(written.sidecar.is_file())
+            self.assertTrue(written.ruler.is_file())
+            self.assertTrue(verification.matched)
 
 
 if __name__ == "__main__":
