@@ -12,6 +12,8 @@ from radar_v4.intake import IntakeRecord
 from radar_v4.registry import EvidenceRegistry
 from radar_v4.validation import ValidationIssue, ValidationResult
 
+DOCUMENT_KIND = "radar_v4.registry"
+
 
 class RegistryFileError(ValueError):
     def __init__(self, code: str, reason: str) -> None:
@@ -35,6 +37,8 @@ def write_registry_file(
             f"{target} already exists; pass replace=True to overwrite",
         )
     document = {
+        "document_kind": DOCUMENT_KIND,
+        "registry_version": 1,
         "accepted": [item.serialize() for item in registry.accepted_envelopes()],
         "quarantined": [
             {
@@ -83,6 +87,12 @@ def read_registry_file(path: str | Path) -> EvidenceRegistry:
         raise RegistryFileError(
             "UNREADABLE_REGISTRY_FILE",
             "registry file must be a JSON object",
+        )
+    kind = raw.get("document_kind")
+    if kind is not None and kind != DOCUMENT_KIND:
+        raise RegistryFileError(
+            "UNREADABLE_REGISTRY_FILE",
+            f"document_kind {kind!r} is not {DOCUMENT_KIND}",
         )
     registry = EvidenceRegistry()
     accepted_raw = raw.get("accepted")

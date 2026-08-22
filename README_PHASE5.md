@@ -52,6 +52,11 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Unit 50** — `radar_v4/bundle_verify.py` snapshot + optional sidecar/ruler check
 - **Unit 51** — quarantine journal `document_kind` / `journal_version` / read
 - **Unit 52** — CLI `pack-inventory`, `bundle-verify`, and `--replace`
+- **Unit 53** — `write_snapshot_bundle` / `write_bundle_sidecars`
+- **Unit 54** — `read_session_report_file` refuses the wrong `document_kind`
+- **Unit 55** — registry files carry `document_kind` / `registry_version`
+- **Unit 56** — pack inventory includes SHA-256 file digests without measuring
+- **Unit 57** — CLI `write-bundle`, `show-report`, `show-journal`
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -75,5 +80,8 @@ PYTHONPATH=. python3 -m radar_v4 pack-verify --pack fixtures/synthetic_one_symbo
 PYTHONPATH=. python3 -m radar_v4 pack-compare --left fixtures/synthetic_one_symbol_1d --right fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 pack-inventory --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 bundle-verify --snapshot <snapshot.json>
+PYTHONPATH=. python3 -m radar_v4 write-bundle --snapshot <snapshot.json>
+PYTHONPATH=. python3 -m radar_v4 show-report --report <session_report.json>
+PYTHONPATH=. python3 -m radar_v4 show-journal --journal <journal.json>
 PYTHONPATH=. python3 -m radar_v4 show-ruler --pack fixtures/synthetic_one_symbol_1d
 ```

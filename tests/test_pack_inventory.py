@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib
 import json
 import unittest
+from hashlib import sha256
 from pathlib import Path
 from py_compile import compile as py_compile
 
@@ -32,6 +33,12 @@ class PackInventoryTests(unittest.TestCase):
         document = json.loads(inventory.serialize())
         self.assertEqual(document["document_kind"], "radar_v4.pack_inventory")
         self.assertEqual(document["observation_count"], 3)
+        declaration = next(item for item in inventory.files if item.name == "declaration.json")
+        self.assertEqual(len(declaration.digest), 64)
+        self.assertEqual(
+            declaration.digest,
+            sha256((root / "declaration.json").read_bytes()).hexdigest(),
+        )
 
     def test_missing_directory_does_not_invent_files(self) -> None:
         inventory = inventory_pack("/tmp/radar-v4-no-such-inventory-pack")

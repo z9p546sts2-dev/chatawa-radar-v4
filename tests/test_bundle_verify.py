@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 from py_compile import compile as py_compile
 
-from radar_v4.bundle_verify import verify_snapshot_bundle
+from radar_v4.bundle_verify import verify_snapshot_bundle, write_snapshot_bundle
 from radar_v4.checksum_sidecar import write_checksum_sidecar
 from radar_v4.dataset import DatasetDeclaration
 from radar_v4.evidence import ProvenanceClass
@@ -43,6 +43,7 @@ class BundleVerifyTests(unittest.TestCase):
     def test_import_and_parse(self) -> None:
         package = importlib.import_module("radar_v4")
         self.assertTrue(hasattr(package, "verify_snapshot_bundle"))
+        self.assertTrue(hasattr(package, "write_snapshot_bundle"))
         self.assertTrue(hasattr(package, "BundleVerification"))
         root = Path(__file__).resolve().parents[1]
         py_compile(str(root / "radar_v4" / "bundle_verify.py"), doraise=True)
@@ -92,6 +93,19 @@ class BundleVerifyTests(unittest.TestCase):
             verification = verify_snapshot_bundle(path)
         self.assertFalse(verification.matched)
         self.assertEqual(verification.issues, ("SNAPSHOT_CHECKSUM_MISMATCH",))
+
+    def test_write_bundle_creates_snapshot_and_sidecars(self) -> None:
+        result = _session()
+        with tempfile.TemporaryDirectory() as raw:
+            path = Path(raw) / "snap.json"
+            written = write_snapshot_bundle(path, result.snapshot)
+            verification = verify_snapshot_bundle(
+                path, require_sidecar=True, require_ruler=True
+            )
+        self.assertEqual(written.snapshot, path)
+        self.assertTrue(written.sidecar.is_file())
+        self.assertTrue(written.ruler.is_file())
+        self.assertTrue(verification.matched)
 
 
 if __name__ == "__main__":

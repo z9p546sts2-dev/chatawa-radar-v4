@@ -6,10 +6,11 @@ from dataclasses import dataclass
 from json import dumps
 from pathlib import Path
 
-from radar_v4.checksum_sidecar import sidecar_path, verify_checksum_sidecar
+from radar_v4.checksum_sidecar import sidecar_path, verify_checksum_sidecar, write_checksum_sidecar
 from radar_v4.ruler import ruler_checksum
-from radar_v4.ruler_file import read_ruler_sidecar, ruler_sidecar_path
-from radar_v4.snapshot_files import read_snapshot_file
+from radar_v4.ruler_file import read_ruler_sidecar, ruler_sidecar_path, write_ruler_sidecar
+from radar_v4.snapshot import DatasetSnapshot
+from radar_v4.snapshot_files import read_snapshot_file, write_snapshot_file
 
 DOCUMENT_KIND = "radar_v4.bundle_verification"
 
@@ -91,3 +92,38 @@ def verify_snapshot_bundle(
         matched=len(issues) == 0,
         issues=tuple(issues),
     )
+
+
+@dataclass(frozen=True)
+class BundleWriteResult:
+    snapshot: Path
+    sidecar: Path
+    ruler: Path
+
+
+def write_snapshot_bundle(
+    path: str | Path, snapshot: DatasetSnapshot, replace: bool = False
+) -> BundleWriteResult:
+    """Write snapshot, checksum sidecar, and ruler sidecar together.
+
+    This does not download, invent, or relabel records.
+    """
+    written = write_snapshot_file(path, snapshot, replace=replace)
+    ruler = write_ruler_sidecar(path, snapshot.declaration, replace=replace)
+    sidecar = write_checksum_sidecar(
+        path, snapshot.integrity_checksum(), replace=replace
+    )
+    return BundleWriteResult(snapshot=written, sidecar=sidecar, ruler=ruler)
+
+
+def write_bundle_sidecars(
+    snapshot_path: str | Path, replace: bool = False
+) -> BundleWriteResult:
+    """Write sidecars for an existing snapshot. Does not rewrite the snapshot."""
+    target = Path(snapshot_path)
+    snapshot = read_snapshot_file(target)
+    ruler = write_ruler_sidecar(target, snapshot.declaration, replace=replace)
+    sidecar = write_checksum_sidecar(
+        target, snapshot.integrity_checksum(), replace=replace
+    )
+    return BundleWriteResult(snapshot=target, sidecar=sidecar, ruler=ruler)

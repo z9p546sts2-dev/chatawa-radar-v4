@@ -38,6 +38,7 @@ class ReasonCodeTests(unittest.TestCase):
             "BUNDLE_RULER_MISSING",
             "BUNDLE_RULER_MISMATCH",
             "UNREADABLE_JOURNAL",
+            "UNREADABLE_SESSION_REPORT",
             "UNREADABLE_MANIFEST",
         ):
             self.assertIn(code, REASON_CODES)

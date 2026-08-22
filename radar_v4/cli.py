@@ -8,7 +8,7 @@ from collections.abc import Sequence
 from json import dumps
 from pathlib import Path
 
-from radar_v4.bundle_verify import verify_snapshot_bundle
+from radar_v4.bundle_verify import verify_snapshot_bundle, write_bundle_sidecars
 from radar_v4.checksum_sidecar import verify_checksum_sidecar, write_checksum_sidecar
 from radar_v4.declaration_json import intake_declaration_json
 from radar_v4.local_session import run_session_from_pack, run_session_from_snapshot_file
@@ -20,13 +20,17 @@ from radar_v4.pack_manifest import (
     verify_pack_manifest,
     write_pack_manifest,
 )
-from radar_v4.quarantine_journal import write_quarantine_journal_file
+from radar_v4.quarantine_journal import (
+    read_quarantine_journal_file,
+    write_quarantine_journal_file,
+)
 from radar_v4.reason_codes import REASON_CODES
 from radar_v4.registry import EvidenceRegistry
 from radar_v4.registry_files import RegistryFileError, write_registry_file
 from radar_v4.ruler import RulerMismatchError
 from radar_v4.ruler_file import serialize_ruler, write_ruler_sidecar
 from radar_v4.session_report import (
+    read_session_report_file,
     serialize_local_session_report,
     serialize_session_report,
     write_local_session_report_file,
@@ -167,6 +171,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="refuse a snapshot that has no ruler sidecar",
     )
 
+    write_bundle = sub.add_parser(
+        "write-bundle", help="write checksum and ruler sidecars for a snapshot"
+    )
+    write_bundle.add_argument("--snapshot", required=True, help="existing snapshot file")
+    write_bundle.add_argument(
+        "--replace",
+        action="store_true",
+        help="overwrite existing sidecar files",
+    )
+
+    show_report = sub.add_parser("show-report", help="print a local session report file")
+    show_report.add_argument("--report", required=True, help="session report file")
+
+    show_journal = sub.add_parser("show-journal", help="print a quarantine journal file")
+    show_journal.add_argument("--journal", required=True, help="journal file")
+
     args = parser.parse_args(list(argv) if argv is not None else None)
     if args.command == "session":
         return _run_session(
@@ -209,6 +229,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run_pack_verify(args.pack)
     if args.command == "pack-compare":
         return _run_pack_compare(args.left, args.right)
+    if args.command == "write-bundle":
+        return _run_write_bundle(args.snapshot, args.replace)
+    if args.command == "show-report":
+        return _run_show_report(args.report)
+    if args.command == "show-journal":
+        return _run_show_journal(args.journal)
     return _run_show_ruler(args.pack, args.snapshot)
 
 
@@ -444,6 +470,43 @@ def _run_show_ruler(pack: str | None, snapshot_path: str | None) -> int:
         sys.stderr.write("UNREADABLE_DECLARATION: pack has no usable declaration.json\n")
         return 2
     sys.stdout.write(serialize_ruler(parsed.declaration) + "\n")
+    return 0
+
+
+def _run_write_bundle(snapshot_path: str, replace: bool) -> int:
+    try:
+        write_bundle_sidecars(snapshot_path, replace=replace)
+        verification = verify_snapshot_bundle(
+            snapshot_path, require_sidecar=True, require_ruler=True
+        )
+    except SnapshotFileError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    sys.stdout.write(verification.serialize() + "\n")
+    return 0 if verification.matched else 1
+
+
+def _run_show_report(report_path: str) -> int:
+    try:
+        document = read_session_report_file(report_path)
+    except SnapshotFileError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    sys.stdout.write(
+        dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True) + "\n"
+    )
+    return 0
+
+
+def _run_show_journal(journal_path: str) -> int:
+    try:
+        document = read_quarantine_journal_file(journal_path)
+    except SnapshotFileError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    sys.stdout.write(
+        dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True) + "\n"
+    )
     return 0
 
 

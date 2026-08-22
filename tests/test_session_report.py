@@ -13,7 +13,11 @@ from radar_v4.dataset import DatasetDeclaration
 from radar_v4.evidence import ProvenanceClass
 from radar_v4.observation import Observation, ObservationPayload
 from radar_v4.session import run_dataset_session
-from radar_v4.session_report import serialize_session_report, write_session_report_file
+from radar_v4.session_report import (
+    read_session_report_file,
+    serialize_session_report,
+    write_session_report_file,
+)
 from radar_v4.snapshot_files import SnapshotFileError
 from tests.helpers import envelope
 
@@ -22,6 +26,7 @@ class SessionReportTests(unittest.TestCase):
     def test_import_and_parse(self) -> None:
         package = importlib.import_module("radar_v4")
         self.assertTrue(hasattr(package, "serialize_session_report"))
+        self.assertTrue(hasattr(package, "read_session_report_file"))
         root = Path(__file__).resolve().parents[1]
         py_compile(str(root / "radar_v4" / "session_report.py"), doraise=True)
 
@@ -85,6 +90,14 @@ class SessionReportTests(unittest.TestCase):
             with self.assertRaises(SnapshotFileError) as ctx:
                 write_session_report_file(Path(raw), result)
             self.assertEqual(ctx.exception.code, "SESSION_REPORT_PATH_IS_DIRECTORY")
+
+    def test_read_refuses_wrong_document_kind(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            path = Path(raw) / "report.json"
+            path.write_text('{"document_kind":"not-a-report"}', encoding="utf-8")
+            with self.assertRaises(SnapshotFileError) as ctx:
+                read_session_report_file(path)
+            self.assertEqual(ctx.exception.code, "UNREADABLE_SESSION_REPORT")
 
 
 if __name__ == "__main__":

@@ -59,6 +59,17 @@ class RegistryFileTests(unittest.TestCase):
                 read_registry_file(path)
         self.assertEqual(ctx.exception.code, "UNREADABLE_REGISTRY_FILE")
 
+    def test_wrong_document_kind_is_refused(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            path = Path(raw) / "registry.json"
+            path.write_text(
+                '{"document_kind":"not-a-registry","accepted":[],"quarantined":[]}',
+                encoding="utf-8",
+            )
+            with self.assertRaises(RegistryFileError) as ctx:
+                read_registry_file(path)
+            self.assertEqual(ctx.exception.code, "UNREADABLE_REGISTRY_FILE")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -236,6 +236,37 @@ class CliTests(unittest.TestCase):
                 )
             self.assertTrue(json.loads(replaced.getvalue())["pack_usable"])
 
+            exists_bundle = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(exists_bundle):
+                self.assertEqual(
+                    main(["write-bundle", "--snapshot", str(snapshot)]),
+                    2,
+                )
+            self.assertIn("FILE_EXISTS", exists_bundle.getvalue())
+            bundle_write = io.StringIO()
+            with redirect_stdout(bundle_write), redirect_stderr(io.StringIO()):
+                self.assertEqual(
+                    main(["write-bundle", "--snapshot", str(snapshot), "--replace"]),
+                    0,
+                )
+            self.assertTrue(json.loads(bundle_write.getvalue())["matched"])
+
+            report_out = io.StringIO()
+            with redirect_stdout(report_out), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["show-report", "--report", str(report)]), 0)
+            self.assertEqual(
+                json.loads(report_out.getvalue())["document_kind"],
+                "radar_v4.local_session_report",
+            )
+
+            journal_out = io.StringIO()
+            with redirect_stdout(journal_out), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["show-journal", "--journal", str(journal)]), 0)
+            self.assertEqual(
+                json.loads(journal_out.getvalue())["document_kind"],
+                "radar_v4.quarantine_journal",
+            )
+
     def test_missing_pack_exits_without_inventing_session(self) -> None:
         stderr = io.StringIO()
         stdout = io.StringIO()

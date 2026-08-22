@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from hashlib import sha256
 from json import dumps
 from pathlib import Path
 
@@ -15,6 +16,7 @@ DOCUMENT_KIND = "radar_v4.pack_inventory"
 class PackFile:
     name: str
     role: str
+    digest: str
 
 
 @dataclass(frozen=True)
@@ -32,7 +34,10 @@ class PackInventory:
             "directory": self.directory,
             "document_kind": DOCUMENT_KIND,
             "error_code": self.error_code,
-            "files": [{"name": item.name, "role": item.role} for item in self.files],
+            "files": [
+                {"digest": item.digest, "name": item.name, "role": item.role}
+                for item in self.files
+            ],
             "observation_count": len(self.observation_names()),
             "present": self.present,
         }
@@ -60,7 +65,11 @@ def inventory_pack(directory: str | Path) -> PackInventory:
             error_code="UNREADABLE_PACK",
         )
     files = tuple(
-        PackFile(name=path.name, role=_role_for(path.name))
+        PackFile(
+            name=path.name,
+            role=_role_for(path.name),
+            digest=sha256(path.read_bytes()).hexdigest(),
+        )
         for path in sorted(root.iterdir())
         if path.is_file()
     )

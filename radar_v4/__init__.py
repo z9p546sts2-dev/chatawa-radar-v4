@@ -6,7 +6,13 @@ thresholds, data access, or trading.
 
 from radar_v4.atomic_write import write_text_atomic
 from radar_v4.baseline import BaselineReport, CloseToCloseChange, close_to_close_changes
-from radar_v4.bundle_verify import BundleVerification, verify_snapshot_bundle
+from radar_v4.bundle_verify import (
+    BundleVerification,
+    BundleWriteResult,
+    verify_snapshot_bundle,
+    write_bundle_sidecars,
+    write_snapshot_bundle,
+)
 from radar_v4.change_continuity import inspect_change_records
 from radar_v4.checksum_sidecar import (
     sidecar_path,
@@ -74,6 +80,7 @@ from radar_v4.ruler_file import (
     write_ruler_sidecar,
 )
 from radar_v4.session_report import (
+    read_session_report_file,
     serialize_local_session_report,
     serialize_session_report,
     write_local_session_report_file,
@@ -97,6 +104,7 @@ __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
     "BaselineReport",
     "BundleVerification",
+    "BundleWriteResult",
     "CloseToCloseChange",
     "DatasetDeclaration",
     "DatasetPackReport",
@@ -149,6 +157,7 @@ __all__ = [
     "read_quarantine_journal_file",
     "read_registry_file",
     "read_ruler_sidecar",
+    "read_session_report_file",
     "read_snapshot_file",
     "require_ruler",
     "ruler_checksum",
@@ -175,10 +184,12 @@ __all__ = [
     "verify_snapshot",
     "verify_snapshot_bundle",
     "verify_snapshot_file",
+    "write_bundle_sidecars",
     "write_checksum_sidecar",
     "write_pack_manifest",
     "write_quarantine_journal_file",
     "write_ruler_sidecar",
     "write_registry_file",
+    "write_snapshot_bundle",
     "write_text_atomic",
 ]

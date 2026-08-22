@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from json import dumps
+from collections.abc import Mapping
+from json import JSONDecodeError, dumps, loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
@@ -11,6 +12,10 @@ from radar_v4.local_session import LocalSessionResult
 from radar_v4.ruler import ruler_checksum
 from radar_v4.session import SessionResult
 from radar_v4.snapshot_files import SnapshotFileError
+
+SESSION_REPORT_KIND = "radar_v4.session_report"
+LOCAL_SESSION_REPORT_KIND = "radar_v4.local_session_report"
+REPORT_KINDS = frozenset({SESSION_REPORT_KIND, LOCAL_SESSION_REPORT_KIND})
 
 
 def serialize_session_report(result: SessionResult) -> str:
@@ -54,7 +59,7 @@ def serialize_session_report(result: SessionResult) -> str:
         "series_issue_codes": list(result.series.issue_codes()),
         "series_valid": result.series.valid,
         "snapshot_checksum": result.snapshot.integrity_checksum(),
-        "document_kind": "radar_v4.session_report",
+        "document_kind": SESSION_REPORT_KIND,
         "report_version": 1,
     }
     return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
@@ -81,7 +86,7 @@ def serialize_local_session_report(result: LocalSessionResult) -> str:
         "pack_issue_codes": pack_issue_codes,
         "pack_quarantine_codes": pack_quarantine_codes,
         "pack_unreadable_codes": pack_unreadable_codes,
-        "document_kind": "radar_v4.local_session_report",
+        "document_kind": LOCAL_SESSION_REPORT_KIND,
         "pack_usable": bool(pack is not None and pack.usable()),
         "report_version": 1,
         "session": None
@@ -118,9 +123,42 @@ def _write_report_file(path: str | Path, text: str, replace: bool = False) -> Pa
     return write_text_atomic(target, text + "\n")
 
 
-def _loads_object(text: str) -> dict[str, object]:
-    from json import loads
+def read_session_report_file(path: str | Path) -> dict[str, object]:
+    target = Path(path)
+    if target.exists() and target.is_dir():
+        raise SnapshotFileError(
+            "SESSION_REPORT_PATH_IS_DIRECTORY",
+            f"{target} is a directory, not a session report file",
+        )
+    try:
+        text = target.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise SnapshotFileError(
+            "UNREADABLE_SESSION_REPORT",
+            f"session report could not be read: {exc}",
+        ) from exc
+    try:
+        raw = loads(text)
+    except JSONDecodeError as exc:
+        raise SnapshotFileError(
+            "UNREADABLE_SESSION_REPORT",
+            f"session report is not readable JSON: {exc.msg}",
+        ) from exc
+    if not isinstance(raw, Mapping):
+        raise SnapshotFileError(
+            "UNREADABLE_SESSION_REPORT",
+            "session report must be a JSON object",
+        )
+    kind = raw.get("document_kind")
+    if kind is not None and kind not in REPORT_KINDS:
+        raise SnapshotFileError(
+            "UNREADABLE_SESSION_REPORT",
+            f"document_kind {kind!r} is not a session report",
+        )
+    return dict(raw)
 
+
+def _loads_object(text: str) -> dict[str, object]:
     parsed = loads(text)
     if not isinstance(parsed, dict):
         raise ValueError("session report must be a JSON object")
