@@ -89,7 +89,7 @@ Until Todd explicitly authorizes Build Unit 1 execution:
 - no Build Unit 2;
 - no assumption that V1 or V2 behavior remains valid.
 
-The repository is pre-build ready for a bounded first-code decision. It is not a trading-system authorization.
+The August 22 reactivation check passed. See `RADAR_V4_REACTIVATION_REVIEW_TC.md`. The repository is pre-build ready for a bounded first-code decision. It is not a trading-system authorization.
 
 **Tools verify. Todd authorizes.**
 

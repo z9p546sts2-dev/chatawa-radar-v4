@@ -275,14 +275,14 @@ Not authorized now:
 
 ## Immediate next action
 
-Do not create more foundation documentation merely to continue momentum.
+The August 22 reactivation check is recorded in `RADAR_V4_REACTIVATION_REVIEW_TC.md` and passed. Do not create more foundation documentation merely to continue momentum.
 
-Before any future Build Unit 1 execution:
+Items 1–3 below are complete. Item 4 remains:
 
-1. confirm `main` has not materially drifted from the approved pre-build state;
-2. confirm the intended Python/runtime environment;
-3. confirm the bounded file/tool/test scope remains unchanged;
-4. obtain Todd's explicit Build Unit 1 execution authorization.
+1. confirm `main` has not materially drifted from the approved pre-build state — DONE 2026-08-22;
+2. confirm the intended Python/runtime environment — Python 3.12.3 present; unit-only default;
+3. confirm the bounded file/tool/test scope remains unchanged — UNCHANGED;
+4. obtain Todd's explicit Build Unit 1 execution authorization — STILL REQUIRED.
 
 The required authority remains equivalent to:
 
