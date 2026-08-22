@@ -4,11 +4,34 @@ from __future__ import annotations
 
 import argparse
 import sys
-from json import dumps
+from json import dumps, loads
 from pathlib import Path
 
+from radar_v4.audit_bundle import (
+    AuditBundleError,
+    verify_audit_bundle,
+    write_audit_bundle,
+)
 from radar_v4.declaration_json import intake_declaration_json
 from radar_v4.document_kind import detect_document_kind
+from radar_v4.evidence_chain import (
+    inspect_evidence_chain,
+    reconcile_journal_to_pack,
+    three_way_pack,
+)
+from radar_v4.integrity import (
+    check_claim_level,
+    check_readiness_semantics,
+    inspect_close_scale,
+    inspect_gaps,
+    inspect_locked_scope,
+    inspect_payload_keys,
+    inspect_timestamps,
+    recompute_change_records,
+    recompute_from_snapshot,
+    require_document_kind,
+    scan_forbidden_fields,
+)
 from radar_v4.local_session import run_session_from_pack
 from radar_v4.observation_json import intake_observation_json
 from radar_v4.pack_describe import (
@@ -18,9 +41,11 @@ from radar_v4.pack_describe import (
     pack_readiness,
     provenance_mix,
 )
+from radar_v4.pack_safety import inspect_pack_safety
 from radar_v4.session_report import serialize_admission_report
 from radar_v4.snapshot_files import SnapshotFileError, read_snapshot_file
 from radar_v4.snapshot_inventory import snapshot_inventory
+from radar_v4.workshop_bounds import scan_package_network_imports, workshop_bounds
 from radar_v4.workshop_check import (
     bind_report_to_snapshot,
     check_canonical_json,
@@ -116,6 +141,101 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     readiness.add_argument("--pack", required=True)
 
+    claim = sub.add_parser(
+        "claim-check",
+        help="require MEASURED claim-level only on measured baselines",
+    )
+    claim.add_argument("--report", required=True)
+
+    recompute = sub.add_parser(
+        "recompute",
+        help="recompute stored close-to-close differences",
+    )
+    recompute.add_argument("--report", required=True)
+    recompute.add_argument("--snapshot", help="optional snapshot to recompute from")
+
+    locked = sub.add_parser(
+        "locked-scope",
+        help="check the locked one-symbol daily question",
+    )
+    locked.add_argument("--pack", required=True)
+
+    forbidden = sub.add_parser(
+        "forbidden",
+        help="refuse signal, score, threshold, or edge field names",
+    )
+    forbidden.add_argument("--path", required=True)
+
+    gaps = sub.add_parser("gaps", help="list timestamp deltas without filling bars")
+    gaps.add_argument("--pack", required=True)
+
+    timestamps = sub.add_parser(
+        "timestamps",
+        help="require timezone offsets; file mtime is not market time",
+    )
+    timestamps.add_argument("--pack", required=True)
+
+    safety = sub.add_parser(
+        "pack-safety",
+        help="refuse BOM, symlink, empty, nested, and non-UTF-8 pack files",
+    )
+    safety.add_argument("--pack", required=True)
+
+    chain = sub.add_parser("chain", help="bind pack, snapshot, and report identities")
+    chain.add_argument("--pack", required=True)
+    chain.add_argument("--snapshot")
+    chain.add_argument("--report")
+
+    three = sub.add_parser(
+        "three-way",
+        help="compare filesystem, inventory, and manifest names",
+    )
+    three.add_argument("--pack", required=True)
+
+    reconcile = sub.add_parser(
+        "reconcile-journal",
+        help="require journal codes to remain in current pack refusals",
+    )
+    reconcile.add_argument("--pack", required=True)
+    reconcile.add_argument("--journal", required=True)
+
+    write_audit = sub.add_parser(
+        "write-audit",
+        help="copy a local pack into an audit directory",
+    )
+    write_audit.add_argument("--pack", required=True)
+    write_audit.add_argument("--out", required=True)
+
+    verify_audit = sub.add_parser("verify-audit", help="verify a local audit copy")
+    verify_audit.add_argument("--dir", required=True)
+
+    close_scale = sub.add_parser(
+        "close-scale",
+        help="describe close decimal places; not a threshold",
+    )
+    close_scale.add_argument("--pack", required=True)
+
+    sub.add_parser("bounds", help="print authorized workshop bounds; does not measure")
+    sub.add_parser("no-network", help="scan the package for vendor-style imports")
+
+    kind_required = sub.add_parser(
+        "require-kind",
+        help="require document_kind or a known inferred kind",
+    )
+    kind_required.add_argument("--path", required=True)
+
+    payload_keys = sub.add_parser(
+        "payload-keys",
+        help="flag extra observation payload keys",
+    )
+    payload_keys.add_argument("--pack", required=True)
+
+    readiness_check = sub.add_parser(
+        "readiness-check",
+        help="refuse readiness that claims enough without two admitted observations",
+    )
+    readiness_check.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -190,6 +310,85 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(workshop_status(), 0)
     if command == "readiness":
         return _print(pack_readiness(args.pack).serialize(), 0)
+    if command == "claim-check":
+        try:
+            check = check_claim_level(args.report)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "recompute":
+        try:
+            if args.snapshot:
+                check = recompute_from_snapshot(args.report, args.snapshot)
+            else:
+                check = recompute_change_records(args.report)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "locked-scope":
+        check = inspect_locked_scope(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "forbidden":
+        check = scan_forbidden_fields(args.path)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "gaps":
+        return _print(inspect_gaps(args.pack).serialize(), 0)
+    if command == "timestamps":
+        check = inspect_timestamps(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "pack-safety":
+        report = inspect_pack_safety(args.pack)
+        return _print(report.serialize(), 0 if report.safe else 1)
+    if command == "chain":
+        try:
+            check = inspect_evidence_chain(args.pack, args.snapshot, args.report)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(check.serialize(), 0 if check.matched else 1)
+    if command == "three-way":
+        check = three_way_pack(args.pack)
+        return _print(check.serialize(), 0 if check.matched else 1)
+    if command == "reconcile-journal":
+        try:
+            check = reconcile_journal_to_pack(args.pack, args.journal)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(check.serialize(), 0 if check.matched else 1)
+    if command == "write-audit":
+        try:
+            written = write_audit_bundle(args.pack, args.out)
+        except AuditBundleError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(str(written), 0)
+    if command == "verify-audit":
+        try:
+            verification = verify_audit_bundle(args.dir)
+        except AuditBundleError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(verification.serialize(), 0 if verification.matched else 1)
+    if command == "close-scale":
+        return _print(inspect_close_scale(args.pack).serialize(), 0)
+    if command == "bounds":
+        return _print(workshop_bounds(), 0)
+    if command == "no-network":
+        text = scan_package_network_imports()
+        parsed = loads(text)
+        return _print(text, 0 if parsed.get("valid") else 1)
+    if command == "require-kind":
+        check = require_document_kind(args.path)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "payload-keys":
+        check = inspect_payload_keys(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "readiness-check":
+        check = check_readiness_semantics(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
 

@@ -1,4 +1,4 @@
-# ChatGPT Audit Handoff — Radar V4 through Unit 100
+# ChatGPT Audit Handoff — Radar V4 through Unit 150
 
 ```text
 DATE — 2026-08-22
@@ -54,6 +54,7 @@ Exact authorizations used on this path include:
 - `AUTHORIZE PHASE 5 — TC`
 - continued-build phrases (`Lets keep building`, `You can continue to build and not stop after building the units -TC`)
 - `Go ahead and do up too 100 units-TC`
+- `Lets do 50 more units-TC`
 
 Ready / complete-within-scope of a unit is **not** authorization of the next *class* of work (vendor API, Phase 6 method, paper trading, Product B).
 
@@ -171,6 +172,12 @@ Document-kind detect, show declaration/snapshot/observation, provenance mix, adm
 
 Honest auditor note: units 58–100 do not change the claim class. They make the workshop inspectable. Completing unit 100 is not a research result.
 
+### Phase 5 units 101–150 (inspectability continuation)
+
+Authorized by `Lets do 50 more units-TC`. These units press the open-item class from the independent audit: claim-level consistency, readiness semantics, stored-arithmetic recompute, locked one-symbol/`1d` scope, extra payload keys, forbidden method-field names, timestamp gaps without calendar fill, pack safety (BOM/symlink/empty/nested/UTF-8), evidence-chain binding, three-way filesystem/inventory/manifest compare, journal reconcile, and a local audit-directory copy.
+
+They do **not** change the claim class. Completing unit 150 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
+
 ---
 
 ## Software facts at HEAD
@@ -208,7 +215,7 @@ The workshop will not invent market calendars, exchange hours, or missing bars.
 
 ## Still unauthorized
 
-These remain unauthorized even though units 7–100 exist:
+These remain unauthorized even though units 7–150 exist:
 
 - purchased historical-stock API or any named vendor;
 - live capture;
@@ -266,7 +273,7 @@ If any command invents a session for a missing pack, downloads data, or prints a
 2. **SYNTHETIC familiarity.** Repeated `MEASURED` output on the fixture pack can start to feel like a result. It is not.
 3. **Decorative surface.** Many CLI commands now exist. Ask whether each one refuses something a human could otherwise misread.
 4. **Authorization breadth.** Continued-build phrases plus “up to 100 units” are wide. Confirm the implementer did not use that width to add indicators, vendors, or methods.
-5. **Unmerged `main`.** Status docs on the branch say units 7–100. `main` still says 7–11. That is a record split, not a production promotion.
+5. **Unmerged `main`.** Status docs on the branch say units 7–150. `main` still says 7–11. That is a record split, not a production promotion.
 
 ---
 
@@ -276,7 +283,7 @@ The local evidence workshop on PR #8 can load, refuse, measure LEVEL 0 close-to-
 
 **No edge. No HISTORICAL measurement. No vendor. No method. No paper trading.**
 
-Completion of units 7–100 does not authorize a data purchase or Phase 6.
+Completion of units 7–150 does not authorize a data purchase or Phase 6.
 
 ---
 
@@ -306,17 +313,19 @@ That is not authorized now.
 
 ```text
 RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF + OPEN-ITEM REMEDIATION
-SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–100
-INDEPENDENT AUDIT — PASS WITH MATERIAL OPEN ITEMS
+SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–150
+INDEPENDENT AUDIT THROUGH UNIT 100 — PASS WITH MATERIAL OPEN ITEMS
+UNITS 101–150 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
 CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 166 TESTS AT 053fc28 — IMPLEMENTER-REPORTED
-FULL SOFTWARE CORRECTNESS — REMEDIATED; 167 TESTS PASSED AT 4318a5c; INDEPENDENT RE-AUDIT STILL OPEN
+167 TESTS AT 4318a5c — IMPLEMENTER-REPORTED AFTER REMEDIATION
+UNITS 101–150 TESTS — RERUN REQUIRED ON THIS HEAD
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN
 VENDOR / LIVE / PAPER — NOT AUTHORIZED
 V1/V2 INHERITANCE — FORBIDDEN
-NEXT CLASS OF WORK — NOT AUTHORIZED BY UNIT 100
+NEXT CLASS OF WORK — NOT AUTHORIZED BY UNIT 150
 ```
 
 Learning and Earning It.  

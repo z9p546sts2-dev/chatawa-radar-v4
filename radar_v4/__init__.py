@@ -138,6 +138,34 @@ from radar_v4.workshop_compare import (
     compare_session_reports,
     inventory_vs_manifest,
 )
+from radar_v4.audit_bundle import (
+    AuditBundle,
+    AuditVerification,
+    verify_audit_bundle,
+    write_audit_bundle,
+)
+from radar_v4.evidence_chain import (
+    ChainCheck,
+    inspect_evidence_chain,
+    reconcile_journal_to_pack,
+    three_way_pack,
+)
+from radar_v4.integrity import (
+    IntegrityCheck,
+    check_claim_level,
+    check_readiness_semantics,
+    check_workshop_status_semantics,
+    inspect_close_scale,
+    inspect_gaps,
+    inspect_locked_scope,
+    inspect_payload_keys,
+    inspect_timestamps,
+    recompute_change_records,
+    require_document_kind,
+    scan_forbidden_fields,
+)
+from radar_v4.pack_safety import PackSafety, inspect_pack_safety
+from radar_v4.workshop_bounds import scan_package_network_imports, workshop_bounds
 
 __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
@@ -267,4 +295,28 @@ __all__ = [
     "write_registry_file",
     "write_snapshot_bundle",
     "write_text_atomic",
+    "AuditBundle",
+    "AuditVerification",
+    "ChainCheck",
+    "IntegrityCheck",
+    "PackSafety",
+    "check_claim_level",
+    "check_readiness_semantics",
+    "check_workshop_status_semantics",
+    "inspect_close_scale",
+    "inspect_evidence_chain",
+    "inspect_gaps",
+    "inspect_locked_scope",
+    "inspect_pack_safety",
+    "inspect_payload_keys",
+    "inspect_timestamps",
+    "recompute_change_records",
+    "reconcile_journal_to_pack",
+    "require_document_kind",
+    "scan_forbidden_fields",
+    "scan_package_network_imports",
+    "three_way_pack",
+    "verify_audit_bundle",
+    "workshop_bounds",
+    "write_audit_bundle",
 ]

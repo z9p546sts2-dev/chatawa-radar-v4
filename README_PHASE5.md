@@ -65,6 +65,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 80–87** — pack layout, canonical JSON, identities, describe
 - **Units 88–94** — reason-code lookup/catalog document, inventory compare, inventory vs manifest
 - **Units 95–100** — workshop capability status (not a measurement), admission readiness, forbidden-claim fields, highest-unit lock at 100
+- **Units 101–150** — claim-level consistency, arithmetic recompute, locked-scope, pack safety, evidence chain, local audit copy, no-network scan, highest-unit lock at 150. Inspectability only; not a research result.
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -93,7 +94,11 @@ PYTHONPATH=. python3 -m radar_v4 show-report --report <session_report.json>
 PYTHONPATH=. python3 -m radar_v4 show-journal --journal <journal.json>
 PYTHONPATH=. python3 -m radar_v4 show-ruler --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 status
+PYTHONPATH=. python3 -m radar_v4 bounds
 PYTHONPATH=. python3 -m radar_v4 pack-describe --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 admission --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 determinism --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 locked-scope --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 pack-safety --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 no-network
 ```

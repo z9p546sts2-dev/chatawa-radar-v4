@@ -2,9 +2,9 @@
 
 ## Status
 
-**PHASE 5 AUTHORIZED — UNITS 7–100 COMPLETE WITHIN SCOPE**
+**PHASE 5 AUTHORIZED — UNITS 7–150 COMPLETE WITHIN SCOPE**
 
-Radar V4 has Phase 5 dataset admission through unit 100: local FIXTURE/SYNTHETIC session, integrity, inspect/compare/bind, and workshop status. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence.
+Radar V4 has Phase 5 dataset admission through unit 150: local FIXTURE/SYNTHETIC session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, and local audit copy. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence. Units 101–150 are inspectability, not a research result.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -65,7 +65,7 @@ Phase 5 local FIXTURE/SYNTHETIC software is authorized. Phase 5 vendor/historica
 
 Pack readiness counts declaration-admitted observations. It is not proof that a measurement session already produced a valid LEVEL 0 result, and it is not market evidence.
 
-Unit 100 completion is inspectability, not a research result. It does not change the claim class.
+Unit 100 and units 101–150 are inspectability, not a research result. They do not change the claim class.
 
 **Ready for authorization is not authorization.**
 
@@ -121,7 +121,7 @@ Authorized now:
 2. Read-only repository inspection.
 3. Preservation and review of completed V1/V2 forensic evidence.
 4. Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software.
-5. Phase 5 units 7–100 dataset admission through local pack session, integrity, inspect/compare/bind, and workshop status.
+5. Phase 5 units 7–150 dataset admission through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, and local audit copy.
 6. Future evidence requirements and non-executing research planning.
 
 Not authorized now:
@@ -136,7 +136,7 @@ Not authorized now:
 8. Portfolio authority.
 9. Copying, importing, adapting, or cherry-picking legacy Radar code.
 
-A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–100 does not authorize that class.
+A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–150 does not authorize that class.
 
 ## Evidence rules
 
@@ -306,7 +306,7 @@ SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
-PHASE 5 — AUTHORIZED-TC / UNITS 7–100 COMPLETE
+PHASE 5 — AUTHORIZED-TC / UNITS 7–150 COMPLETE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED

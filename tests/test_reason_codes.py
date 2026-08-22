@@ -45,6 +45,14 @@ class ReasonCodeTests(unittest.TestCase):
             "DETERMINISM_MISMATCH",
             "NOT_CANONICAL_JSON",
             "LAYOUT_DECLARATION_MISSING",
+            "CLAIM_LEVEL_MISMATCH",
+            "ARITHMETIC_MISMATCH",
+            "LOCKED_SCOPE_VIOLATION",
+            "FORBIDDEN_FIELD",
+            "PACK_BOM",
+            "CHAIN_MISMATCH",
+            "AUDIT_BUNDLE_MISMATCH",
+            "NETWORK_IMPORT",
         ):
             self.assertIn(code, REASON_CODES)
 
