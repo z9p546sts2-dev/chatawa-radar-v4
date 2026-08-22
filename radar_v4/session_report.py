@@ -96,6 +96,23 @@ def serialize_local_session_report(result: LocalSessionResult) -> str:
     return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
 
+def serialize_admission_report(result: LocalSessionResult) -> str:
+    """Admission and series only. Does not include a close-to-close measurement."""
+    session = result.session
+    pack = result.pack
+    document = {
+        "admission_accepted": 0 if session is None else session.admission.accepted_count(),
+        "admission_quarantined": 0 if session is None else session.admission.quarantined_count(),
+        "document_kind": "radar_v4.admission_report",
+        "error_code": result.error_code,
+        "kept_observation_count": 0 if session is None else session.kept_observation_count(),
+        "measured": False,
+        "pack_usable": bool(pack is not None and pack.usable()),
+        "series_valid": None if session is None else session.series.valid,
+    }
+    return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+
+
 def write_session_report_file(
     path: str | Path, result: SessionResult, replace: bool = False
 ) -> Path:

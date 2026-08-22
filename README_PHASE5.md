@@ -57,6 +57,14 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Unit 55** — registry files carry `document_kind` / `registry_version`
 - **Unit 56** — pack inventory includes SHA-256 file digests without measuring
 - **Unit 57** — CLI `write-bundle`, `show-report`, `show-journal`
+- **Units 58–60** — document-kind catalog, detect, CLI `detect-kind`
+- **Units 61–63** — CLI `show-declaration`, `show-snapshot`, `show-observation`
+- **Units 64–67** — provenance mix and admission without measurement
+- **Units 68–73** — compare rulers/reports and summarize journals
+- **Units 74–79** — report-to-snapshot bind, determinism, snapshot inventory
+- **Units 80–87** — pack layout, canonical JSON, identities, describe
+- **Units 88–94** — reason-code lookup/catalog document, inventory compare, inventory vs manifest
+- **Units 95–100** — workshop status, readiness, forbidden-claim fields, highest-unit lock at 100
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -84,4 +92,8 @@ PYTHONPATH=. python3 -m radar_v4 write-bundle --snapshot <snapshot.json>
 PYTHONPATH=. python3 -m radar_v4 show-report --report <session_report.json>
 PYTHONPATH=. python3 -m radar_v4 show-journal --journal <journal.json>
 PYTHONPATH=. python3 -m radar_v4 show-ruler --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 status
+PYTHONPATH=. python3 -m radar_v4 pack-describe --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 admission --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 determinism --pack fixtures/synthetic_one_symbol_1d
 ```

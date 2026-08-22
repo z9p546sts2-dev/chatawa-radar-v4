@@ -39,11 +39,12 @@ def run_dataset_session(
     declaration: DatasetDeclaration,
     envelopes: Sequence[EvidenceEnvelope],
     observations: Sequence[Observation],
+    measure: bool = True,
 ) -> SessionResult:
     """Admit envelopes, keep matching valid observations, then inspect.
 
-    Baseline runs only when the series is valid. Unit 9 still reports
-    LEVEL 0 description only. Nothing is repaired.
+    Baseline runs only when measure is true and the series is valid.
+    Unit 9 still reports LEVEL 0 description only. Nothing is repaired.
     """
     admission = admit_to_dataset(declaration, envelopes)
     admitted_checksums = {
@@ -77,7 +78,9 @@ def run_dataset_session(
 
     series = inspect_series(kept)
     snapshot = make_snapshot(declaration, series.ordered)
-    baseline = close_to_close_changes(series.ordered) if series.valid else None
+    baseline = (
+        close_to_close_changes(series.ordered) if measure and series.valid else None
+    )
     return SessionResult(
         admission=admission,
         observations=tuple(kept),

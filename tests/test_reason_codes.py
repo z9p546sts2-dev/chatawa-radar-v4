@@ -40,6 +40,11 @@ class ReasonCodeTests(unittest.TestCase):
             "UNREADABLE_JOURNAL",
             "UNREADABLE_SESSION_REPORT",
             "UNREADABLE_MANIFEST",
+            "UNKNOWN_DOCUMENT_KIND",
+            "REPORT_SNAPSHOT_MISMATCH",
+            "DETERMINISM_MISMATCH",
+            "NOT_CANONICAL_JSON",
+            "LAYOUT_DECLARATION_MISSING",
         ):
             self.assertIn(code, REASON_CODES)
 

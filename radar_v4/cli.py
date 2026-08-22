@@ -39,6 +39,8 @@ from radar_v4.session_report import (
 from radar_v4.snapshot_compare import compare_snapshot_files
 from radar_v4.snapshot_files import SnapshotFileError, read_snapshot_file, write_snapshot_file
 from radar_v4.snapshot_verify import verify_snapshot_file
+from radar_v4.workshop_check import serialize_reason_catalog
+from radar_v4.workshop_cli import dispatch_workshop, register_workshop_commands
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -187,6 +189,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     show_journal = sub.add_parser("show-journal", help="print a quarantine journal file")
     show_journal.add_argument("--journal", required=True, help="journal file")
 
+    register_workshop_commands(sub)
+
     args = parser.parse_args(list(argv) if argv is not None else None)
     if args.command == "session":
         return _run_session(
@@ -235,6 +239,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _run_show_report(args.report)
     if args.command == "show-journal":
         return _run_show_journal(args.journal)
+    workshop = dispatch_workshop(args)
+    if workshop is not None:
+        return workshop
     return _run_show_ruler(args.pack, args.snapshot)
 
 
@@ -365,9 +372,7 @@ def _run_compare(left: str, right: str) -> int:
 
 
 def _run_codes() -> int:
-    sys.stdout.write(
-        dumps(sorted(REASON_CODES), separators=(",", ":"), ensure_ascii=True) + "\n"
-    )
+    sys.stdout.write(serialize_reason_catalog() + "\n")
     return 0
 
 

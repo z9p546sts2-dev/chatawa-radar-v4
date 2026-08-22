@@ -100,7 +100,7 @@ class CliTests(unittest.TestCase):
             codes_out = io.StringIO()
             with redirect_stdout(codes_out), redirect_stderr(io.StringIO()):
                 self.assertEqual(main(["codes"]), 0)
-            self.assertIn("RULER_MISMATCH", json.loads(codes_out.getvalue()))
+            self.assertIn("RULER_MISMATCH", json.loads(codes_out.getvalue())["codes"])
 
             sidecar_err = io.StringIO()
             with redirect_stdout(io.StringIO()), redirect_stderr(sidecar_err):
@@ -266,6 +266,29 @@ class CliTests(unittest.TestCase):
                 json.loads(journal_out.getvalue())["document_kind"],
                 "radar_v4.quarantine_journal",
             )
+
+            status_out = io.StringIO()
+            with redirect_stdout(status_out), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["status"]), 0)
+            self.assertEqual(
+                json.loads(status_out.getvalue())["highest_unit"],
+                100,
+            )
+            describe_out = io.StringIO()
+            with redirect_stdout(describe_out), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["pack-describe", "--pack", str(pack)]), 0)
+            self.assertEqual(
+                json.loads(describe_out.getvalue())["document_kind"],
+                "radar_v4.pack_describe",
+            )
+            admission_out = io.StringIO()
+            with redirect_stdout(admission_out), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["admission", "--pack", str(pack)]), 0)
+            self.assertFalse(json.loads(admission_out.getvalue())["measured"])
+            determinism_out = io.StringIO()
+            with redirect_stdout(determinism_out), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["determinism", "--pack", str(pack)]), 0)
+            self.assertTrue(json.loads(determinism_out.getvalue())["equal"])
 
     def test_missing_pack_exits_without_inventing_session(self) -> None:
         stderr = io.StringIO()
