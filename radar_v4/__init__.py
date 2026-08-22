@@ -21,12 +21,16 @@ from radar_v4.json_intake import (
 from radar_v4.observation import Observation, ObservationPayload
 from radar_v4.observation_validation import validate_observation
 from radar_v4.registry import EvidenceRegistry
+from radar_v4.series import SeriesReport, inspect_series
+from radar_v4.snapshot import DatasetSnapshot, make_snapshot
 from radar_v4.validation import ValidationIssue, ValidationResult, validate_envelope
 
 __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
     "BaselineReport",
     "DatasetDeclaration",
+    "DatasetSnapshot",
+    "SeriesReport",
     "Observation",
     "ObservationPayload",
     "DocumentIntakeReport",
@@ -41,6 +45,8 @@ __all__ = [
     "PACK_ALLOWED_PROVENANCE",
     "admit_to_dataset",
     "close_to_close_changes",
+    "inspect_series",
+    "make_snapshot",
     "intake_envelopes",
     "intake_json_text",
     "load_fixture_pack",

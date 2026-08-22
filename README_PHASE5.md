@@ -9,6 +9,8 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Unit 7** — `radar_v4/dataset.py` dataset declaration and admission
 - **Unit 8** — `radar_v4/observation.py` payload + payload checksum
 - **Unit 9** — `radar_v4/baseline.py` ordinary close-to-close description
+- **Unit 10** — `radar_v4/series.py` timestamp uniqueness and ordering
+- **Unit 11** — `radar_v4/snapshot.py` deterministic dataset snapshot
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
