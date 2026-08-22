@@ -117,8 +117,12 @@ class EvidenceEnvelope:
         context_decision_use_tag: str | None = None,
     ) -> EvidenceEnvelope:
         """Build an envelope and generate its integrity checksum."""
+        if isinstance(provenance_class, ProvenanceClass):
+            provenance_value = provenance_class.value
+        else:
+            provenance_value = str(provenance_class)
         unsigned = cls(
-            provenance_class=str(provenance_class),
+            provenance_class=provenance_value,
             provider=provider,
             symbol_or_universe=symbol_or_universe,
             market_timestamp=market_timestamp,
