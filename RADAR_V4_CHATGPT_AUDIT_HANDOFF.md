@@ -179,7 +179,7 @@ Honest auditor note: units 58–100 do not change the claim class. They make the
 LANGUAGE — Python 3.12, stdlib only
 TEST COMMAND — PYTHONPATH=. python3 -m unittest discover -s tests -v
 TESTS AT 053fc28 — 166 passed (implementer-reported)
-TESTS AT REMEDIATION HEAD — rerun required on this head
+TESTS AFTER REMEDIATION — 167 passed at 4318a5c87e8385643fbf2dbd9f61dc854b5b67e6
 REASON CODES — catalog present (python -m radar_v4 codes)
 CLI — python -m radar_v4
 NETWORK — none in this package
@@ -249,7 +249,7 @@ PYTHONPATH=. python3 -m radar_v4 pack-verify --pack fixtures/synthetic_one_symbo
 
 Expected:
 
-- full unittest suite passes on the remediation head;
+- full unittest suite: 167 passed at `4318a5c` (implementer-executed after remediation);
 - `status` reports `measured: false` and does not emit `claim_level`;
 - `status` denies method, vendor, historical evidence, and paper trading;
 - `session` on the fixture pack is `MEASURED` with SYNTHETIC changes `0.50`, `-0.50`;
@@ -310,7 +310,7 @@ SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–100
 INDEPENDENT AUDIT — PASS WITH MATERIAL OPEN ITEMS
 CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 166 TESTS AT 053fc28 — IMPLEMENTER-REPORTED
-FULL SOFTWARE CORRECTNESS — REMEDIATED; RE-VERIFY ON THIS HEAD
+FULL SOFTWARE CORRECTNESS — REMEDIATED; 167 TESTS PASSED AT 4318a5c; INDEPENDENT RE-AUDIT STILL OPEN
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN
