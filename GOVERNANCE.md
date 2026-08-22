@@ -2,11 +2,9 @@
 
 ## Status
 
-**BUILD UNITS 1–5 COMPLETE WITHIN SCOPE**
+**PHASE 5 AUTHORIZED — UNITS 7–9 COMPLETE WITHIN SCOPE**
 
-Radar V4 has a bounded evidence foundation through JSON intake, in-memory registry, and identity-collision quarantine. Todd authorized continued building without per-unit stops.
-
-Phase 5 market data is not authorized.
+Radar V4 has Phase 5 dataset admission, observation payloads, and a descriptive close-to-close baseline. Vendor download and method research are not authorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -296,7 +294,8 @@ SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
-PHASE 5 MARKET DATA — NOT AUTHORIZED
+PHASE 5 — AUTHORIZED-TC / UNITS 7–9 COMPLETE
+VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED

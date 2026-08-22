@@ -1,10 +1,10 @@
 # Chatawa Radar V4
 
-## Status: BUILD UNITS 1–6 COMPLETE WITHIN SCOPE
+## Status: PHASE 5 AUTHORIZED — UNITS 7–9 COMPLETE WITHIN SCOPE
 
-Radar V4 has a bounded evidence foundation: envelope, validation, intake/quarantine, JSON document intake, in-memory registry, and identity-collision gate.
+Radar V4 has a bounded evidence foundation plus Phase 5 dataset admission, observation payloads, and a descriptive close-to-close baseline.
 
-Todd authorized continued building without per-unit stops. Phase 5 market data is still not authorized. This is not a market method, data feed, signal, or trading system.
+Vendor download, live capture, and method research are not authorized. This is not a trading system.
 
 ## Intended future role
 
@@ -26,9 +26,12 @@ BUILD UNIT 3 — JSON DOCUMENT INTAKE — COMPLETE WITHIN SCOPE
 BUILD UNIT 4 — IN-MEMORY REGISTRY — COMPLETE WITHIN SCOPE
 BUILD UNIT 5 — IDENTITY COLLISION GATE — COMPLETE WITHIN SCOPE
 BUILD UNIT 6 — FIXTURE PACK LOADER — COMPLETE WITHIN SCOPE
-BUILD UNIT 7 — NOT STARTED
-LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
-LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
+PHASE 5 — AUTHORIZED-TC
+UNIT 7 — DATASET ADMISSION — COMPLETE WITHIN SCOPE
+UNIT 8 — OBSERVATION PAYLOAD — COMPLETE WITHIN SCOPE
+UNIT 9 — ORDINARY CLOSE-TO-CLOSE DESCRIPTION — COMPLETE WITHIN SCOPE
+VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
+PHASE 6 METHOD RESEARCH — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED
 ```
