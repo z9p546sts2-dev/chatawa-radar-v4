@@ -1,6 +1,6 @@
 # Chatawa Radar V4
 
-## Status: PHASE 5 AUTHORIZED — UNITS 7–47 COMPLETE WITHIN SCOPE
+## Status: PHASE 5 AUTHORIZED — UNITS 7–52 COMPLETE WITHIN SCOPE
 
 Radar V4 has a bounded evidence foundation plus a local Phase 5 path: admit a declared dataset, describe ordinary close-to-close differences, persist/verify/export snapshots, journal refusals, bind a measurement ruler, and verify pack-file integrity.
 
@@ -68,6 +68,11 @@ UNIT 44 — PACK MANIFEST GATE ON LOAD — COMPLETE WITHIN SCOPE
 UNIT 45 — SESSION MANIFEST / RULER REQUIREMENTS — COMPLETE WITHIN SCOPE
 UNIT 46 — PACK MANIFEST COMPARE — COMPLETE WITHIN SCOPE
 UNIT 47 — MANIFEST_REQUIRED REASON CODE — COMPLETE WITHIN SCOPE
+UNIT 48 — EXISTING-FILE OVERWRITE REFUSAL — COMPLETE WITHIN SCOPE
+UNIT 49 — PACK INVENTORY — COMPLETE WITHIN SCOPE
+UNIT 50 — SNAPSHOT BUNDLE VERIFY — COMPLETE WITHIN SCOPE
+UNIT 51 — QUARANTINE JOURNAL DOCUMENT KIND / READ — COMPLETE WITHIN SCOPE
+UNIT 52 — CLI PACK-INVENTORY / BUNDLE-VERIFY / REPLACE — COMPLETE WITHIN SCOPE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 PHASE 6 METHOD RESEARCH — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
@@ -156,7 +161,7 @@ Until Todd explicitly authorizes a later bounded unit:
 - no assumption that V1 or V2 behavior remains valid;
 - no treating SYNTHETIC or FIXTURE numbers as HISTORICAL evidence.
 
-The repository now has a Phase 5 software foundation through a local FIXTURE/SYNTHETIC dataset session, snapshot compare, pack-manifest gate, and CLI. It is not a trading-system authorization. The in-repo fixture pack is SYNTHETIC and is not market evidence.
+The repository now has a Phase 5 software foundation through a local FIXTURE/SYNTHETIC dataset session, snapshot compare, pack-manifest gate, overwrite refusal, pack inventory, and bundle verify. It is not a trading-system authorization. The in-repo fixture pack is SYNTHETIC and is not market evidence.
 
 **Tools verify. Todd authorizes.**
 

@@ -8,7 +8,7 @@ from hashlib import sha256
 from json import JSONDecodeError, dumps, loads
 from pathlib import Path
 
-from radar_v4.atomic_write import write_text_atomic
+from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.dataset_pack import SKIP_FILENAMES
 
 MANIFEST_FILENAME = "manifest.json"
@@ -60,10 +60,15 @@ def build_pack_manifest(directory: str | Path) -> PackManifest:
     return PackManifest(files=files)
 
 
-def write_pack_manifest(directory: str | Path) -> Path:
+def write_pack_manifest(directory: str | Path, replace: bool = False) -> Path:
     root = Path(directory)
     manifest = build_pack_manifest(root)
     target = root / MANIFEST_FILENAME
+    if file_exists_without_replace(target, replace):
+        raise PackManifestError(
+            "FILE_EXISTS",
+            f"{target} already exists; pass replace=True to overwrite",
+        )
     return write_text_atomic(target, manifest.serialize() + "\n")
 
 

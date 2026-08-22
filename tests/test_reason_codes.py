@@ -33,6 +33,11 @@ class ReasonCodeTests(unittest.TestCase):
             "UNREADABLE_SIDECAR",
             "MANIFEST_CHECKSUM_MISMATCH",
             "MANIFEST_REQUIRED",
+            "FILE_EXISTS",
+            "BUNDLE_SIDECAR_MISSING",
+            "BUNDLE_RULER_MISSING",
+            "BUNDLE_RULER_MISMATCH",
+            "UNREADABLE_JOURNAL",
             "UNREADABLE_MANIFEST",
         ):
             self.assertIn(code, REASON_CODES)

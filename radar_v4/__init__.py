@@ -6,6 +6,7 @@ thresholds, data access, or trading.
 
 from radar_v4.atomic_write import write_text_atomic
 from radar_v4.baseline import BaselineReport, CloseToCloseChange, close_to_close_changes
+from radar_v4.bundle_verify import BundleVerification, verify_snapshot_bundle
 from radar_v4.change_continuity import inspect_change_records
 from radar_v4.checksum_sidecar import (
     sidecar_path,
@@ -35,6 +36,7 @@ from radar_v4.observation_json import (
 )
 from radar_v4.observation_validation import validate_observation
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
+from radar_v4.pack_inventory import PackFile, PackInventory, inventory_pack
 from radar_v4.pack_manifest import (
     ManifestComparison,
     PackManifest,
@@ -44,6 +46,7 @@ from radar_v4.pack_manifest import (
     write_pack_manifest,
 )
 from radar_v4.quarantine_journal import (
+    read_quarantine_journal_file,
     serialize_quarantine_journal,
     write_quarantine_journal_file,
 )
@@ -93,6 +96,7 @@ from radar_v4.validation import ValidationIssue, ValidationResult, validate_enve
 __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
     "BaselineReport",
+    "BundleVerification",
     "CloseToCloseChange",
     "DatasetDeclaration",
     "DatasetPackReport",
@@ -101,6 +105,8 @@ __all__ = [
     "SnapshotComparison",
     "LocalSessionResult",
     "ManifestComparison",
+    "PackFile",
+    "PackInventory",
     "SeriesReport",
     "Observation",
     "ObservationIntakeRecord",
@@ -135,10 +141,12 @@ __all__ = [
     "export_snapshot_to_pack",
     "inspect_change_records",
     "inspect_series",
+    "inventory_pack",
     "intake_declaration_json",
     "intake_observation_json",
     "load_dataset_pack",
     "make_snapshot",
+    "read_quarantine_journal_file",
     "read_registry_file",
     "read_ruler_sidecar",
     "read_snapshot_file",
@@ -165,6 +173,7 @@ __all__ = [
     "verify_checksum_sidecar",
     "verify_pack_manifest",
     "verify_snapshot",
+    "verify_snapshot_bundle",
     "verify_snapshot_file",
     "write_checksum_sidecar",
     "write_pack_manifest",

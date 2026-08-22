@@ -47,6 +47,11 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Unit 45** — `session --require-manifest` and `session --expect-ruler`
 - **Unit 46** — `compare_pack_manifests` / CLI `pack-compare`
 - **Unit 47** — `MANIFEST_REQUIRED` in the refusal catalog
+- **Unit 48** — evidence-file writes refuse an existing path unless `replace=True`
+- **Unit 49** — `radar_v4/pack_inventory.py` lists pack file roles without measuring
+- **Unit 50** — `radar_v4/bundle_verify.py` snapshot + optional sidecar/ruler check
+- **Unit 51** — quarantine journal `document_kind` / `journal_version` / read
+- **Unit 52** — CLI `pack-inventory`, `bundle-verify`, and `--replace`
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -68,5 +73,7 @@ PYTHONPATH=. python3 -m radar_v4 codes
 PYTHONPATH=. python3 -m radar_v4 quarantine --pack fixtures/synthetic_one_symbol_1d --out journal.json
 PYTHONPATH=. python3 -m radar_v4 pack-verify --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 pack-compare --left fixtures/synthetic_one_symbol_1d --right fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 pack-inventory --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 bundle-verify --snapshot <snapshot.json>
 PYTHONPATH=. python3 -m radar_v4 show-ruler --pack fixtures/synthetic_one_symbol_1d
 ```

@@ -6,7 +6,7 @@ from collections.abc import Mapping
 from json import JSONDecodeError, dumps, loads
 from pathlib import Path
 
-from radar_v4.atomic_write import write_text_atomic
+from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.dataset import DatasetDeclaration
 from radar_v4.ruler import declaration_ruler, ruler_checksum
 from radar_v4.snapshot_files import SnapshotFileError
@@ -27,12 +27,21 @@ def serialize_ruler(declaration: DatasetDeclaration) -> str:
     return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
 
-def write_ruler_sidecar(snapshot_path: str | Path, declaration: DatasetDeclaration) -> Path:
+def write_ruler_sidecar(
+    snapshot_path: str | Path,
+    declaration: DatasetDeclaration,
+    replace: bool = False,
+) -> Path:
     target = ruler_sidecar_path(snapshot_path)
     if target.exists() and target.is_dir():
         raise SnapshotFileError(
             "RULER_SIDECAR_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a ruler sidecar",
+        )
+    if file_exists_without_replace(target, replace):
+        raise SnapshotFileError(
+            "FILE_EXISTS",
+            f"{target} already exists; pass replace=True to overwrite",
         )
     return write_text_atomic(target, serialize_ruler(declaration) + "\n")
 

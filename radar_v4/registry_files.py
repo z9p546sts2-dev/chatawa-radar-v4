@@ -6,7 +6,7 @@ from collections.abc import Mapping
 from json import JSONDecodeError, dumps, loads
 from pathlib import Path
 
-from radar_v4.atomic_write import write_text_atomic
+from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.evidence import EvidenceEnvelope
 from radar_v4.intake import IntakeRecord
 from radar_v4.registry import EvidenceRegistry
@@ -20,12 +20,19 @@ class RegistryFileError(ValueError):
         super().__init__(reason)
 
 
-def write_registry_file(path: str | Path, registry: EvidenceRegistry) -> Path:
+def write_registry_file(
+    path: str | Path, registry: EvidenceRegistry, replace: bool = False
+) -> Path:
     target = Path(path)
     if target.exists() and target.is_dir():
         raise RegistryFileError(
             "REGISTRY_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a registry file",
+        )
+    if file_exists_without_replace(target, replace):
+        raise RegistryFileError(
+            "FILE_EXISTS",
+            f"{target} already exists; pass replace=True to overwrite",
         )
     document = {
         "accepted": [item.serialize() for item in registry.accepted_envelopes()],

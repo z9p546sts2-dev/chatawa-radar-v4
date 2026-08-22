@@ -191,6 +191,51 @@ class CliTests(unittest.TestCase):
                 )
             self.assertIn("RULER_MISMATCH", bad_ruler.getvalue())
 
+            inventory_out = io.StringIO()
+            with redirect_stdout(inventory_out), redirect_stderr(io.StringIO()):
+                self.assertEqual(main(["pack-inventory", "--pack", str(pack)]), 0)
+            listed = json.loads(inventory_out.getvalue())
+            self.assertEqual(listed["document_kind"], "radar_v4.pack_inventory")
+            self.assertEqual(listed["observation_count"], 3)
+
+            bundle_out = io.StringIO()
+            bundle_err = io.StringIO()
+            with redirect_stdout(bundle_out), redirect_stderr(bundle_err):
+                bundle_code = main(
+                    [
+                        "bundle-verify",
+                        "--snapshot",
+                        str(snapshot),
+                        "--require-ruler",
+                    ]
+                )
+            self.assertEqual(bundle_code, 0, bundle_err.getvalue())
+            self.assertTrue(json.loads(bundle_out.getvalue())["matched"])
+
+            exists = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(exists):
+                self.assertEqual(
+                    main(["session", "--pack", str(pack), "--snapshot", str(snapshot)]),
+                    2,
+                )
+            self.assertIn("FILE_EXISTS", exists.getvalue())
+            replaced = io.StringIO()
+            with redirect_stdout(replaced), redirect_stderr(io.StringIO()):
+                self.assertEqual(
+                    main(
+                        [
+                            "session",
+                            "--pack",
+                            str(pack),
+                            "--snapshot",
+                            str(snapshot),
+                            "--replace",
+                        ]
+                    ),
+                    0,
+                )
+            self.assertTrue(json.loads(replaced.getvalue())["pack_usable"])
+
     def test_missing_pack_exits_without_inventing_session(self) -> None:
         stderr = io.StringIO()
         stdout = io.StringIO()

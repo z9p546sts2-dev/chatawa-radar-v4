@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 from py_compile import compile as py_compile
 
-from radar_v4.atomic_write import write_text_atomic
+from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 
 
 class AtomicWriteTests(unittest.TestCase):
@@ -25,6 +25,8 @@ class AtomicWriteTests(unittest.TestCase):
             write_text_atomic(path, "second\n")
             self.assertEqual(path.read_text(encoding="utf-8"), "second\n")
             self.assertFalse((Path(raw) / "note.txt.tmp").exists())
+            self.assertTrue(file_exists_without_replace(path, False))
+            self.assertFalse(file_exists_without_replace(path, True))
 
 
 if __name__ == "__main__":

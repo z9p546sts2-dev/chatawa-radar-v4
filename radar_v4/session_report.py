@@ -5,7 +5,7 @@ from __future__ import annotations
 from json import dumps
 from pathlib import Path
 
-from radar_v4.atomic_write import write_text_atomic
+from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.change_continuity import inspect_change_records
 from radar_v4.local_session import LocalSessionResult
 from radar_v4.ruler import ruler_checksum
@@ -91,22 +91,29 @@ def serialize_local_session_report(result: LocalSessionResult) -> str:
     return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
 
-def write_session_report_file(path: str | Path, result: SessionResult) -> Path:
-    return _write_report_file(path, serialize_session_report(result))
+def write_session_report_file(
+    path: str | Path, result: SessionResult, replace: bool = False
+) -> Path:
+    return _write_report_file(path, serialize_session_report(result), replace)
 
 
 def write_local_session_report_file(
-    path: str | Path, result: LocalSessionResult
+    path: str | Path, result: LocalSessionResult, replace: bool = False
 ) -> Path:
-    return _write_report_file(path, serialize_local_session_report(result))
+    return _write_report_file(path, serialize_local_session_report(result), replace)
 
 
-def _write_report_file(path: str | Path, text: str) -> Path:
+def _write_report_file(path: str | Path, text: str, replace: bool = False) -> Path:
     target = Path(path)
     if target.exists() and target.is_dir():
         raise SnapshotFileError(
             "SESSION_REPORT_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a session report file",
+        )
+    if file_exists_without_replace(target, replace):
+        raise SnapshotFileError(
+            "FILE_EXISTS",
+            f"{target} already exists; pass replace=True to overwrite",
         )
     return write_text_atomic(target, text + "\n")
 

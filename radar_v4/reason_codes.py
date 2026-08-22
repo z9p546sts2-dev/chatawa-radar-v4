@@ -4,6 +4,9 @@ from __future__ import annotations
 
 REASON_CODES = frozenset(
     {
+        "BUNDLE_RULER_MISSING",
+        "BUNDLE_RULER_MISMATCH",
+        "BUNDLE_SIDECAR_MISSING",
         "CHANGE_DISCONTINUITY",
         "CHECKSUM_MISMATCH",
         "CONTRADICTORY_IDENTITY",
@@ -12,6 +15,7 @@ REASON_CODES = frozenset(
         "DECLARATION_FILE_MISSING",
         "DUPLICATE_MARKET_TIMESTAMP",
         "ENVELOPE_NOT_JSON_OBJECT",
+        "FILE_EXISTS",
         "INVALID_CLOSE",
         "INVALID_HIGH",
         "INVALID_LOW",
@@ -62,6 +66,7 @@ REASON_CODES = frozenset(
         "UNREADABLE_ITEM",
         "UNREADABLE_MANIFEST",
         "UNREADABLE_RULER_SIDECAR",
+        "UNREADABLE_JOURNAL",
         "UNREADABLE_JSON",
         "UNREADABLE_PACK",
         "UNREADABLE_REGISTRY_FILE",

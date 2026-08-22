@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from radar_v4.atomic_write import write_text_atomic
+from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.snapshot_files import SnapshotFileError, read_snapshot_file
 from radar_v4.snapshot_verify import SnapshotVerification, verify_snapshot
 
@@ -13,7 +13,9 @@ def sidecar_path(snapshot_path: str | Path) -> Path:
     return Path(str(Path(snapshot_path)) + ".sha256")
 
 
-def write_checksum_sidecar(snapshot_path: str | Path, checksum: str | None = None) -> Path:
+def write_checksum_sidecar(
+    snapshot_path: str | Path, checksum: str | None = None, replace: bool = False
+) -> Path:
     snapshot_file = Path(snapshot_path)
     if checksum is None:
         checksum = read_snapshot_file(snapshot_file).integrity_checksum()
@@ -22,6 +24,11 @@ def write_checksum_sidecar(snapshot_path: str | Path, checksum: str | None = Non
         raise SnapshotFileError(
             "SIDECAR_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a checksum sidecar",
+        )
+    if file_exists_without_replace(target, replace):
+        raise SnapshotFileError(
+            "FILE_EXISTS",
+            f"{target} already exists; pass replace=True to overwrite",
         )
     return write_text_atomic(target, checksum + "\n")
 

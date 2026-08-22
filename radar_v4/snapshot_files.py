@@ -9,7 +9,7 @@ from __future__ import annotations
 from json import JSONDecodeError
 from pathlib import Path
 
-from radar_v4.atomic_write import write_text_atomic
+from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.snapshot import DatasetSnapshot
 
 
@@ -20,12 +20,19 @@ class SnapshotFileError(ValueError):
         super().__init__(reason)
 
 
-def write_snapshot_file(path: str | Path, snapshot: DatasetSnapshot) -> Path:
+def write_snapshot_file(
+    path: str | Path, snapshot: DatasetSnapshot, replace: bool = False
+) -> Path:
     target = Path(path)
     if target.exists() and target.is_dir():
         raise SnapshotFileError(
             "SNAPSHOT_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a snapshot file",
+        )
+    if file_exists_without_replace(target, replace):
+        raise SnapshotFileError(
+            "FILE_EXISTS",
+            f"{target} already exists; pass replace=True to overwrite",
         )
     return write_text_atomic(target, snapshot.serialize() + "\n")
 

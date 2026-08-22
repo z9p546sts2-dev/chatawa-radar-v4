@@ -87,6 +87,33 @@ class SnapshotFileTests(unittest.TestCase):
                 write_snapshot_file(Path(tmp), session.snapshot)
             self.assertEqual(ctx.exception.code, "SNAPSHOT_PATH_IS_DIRECTORY")
 
+    def test_existing_file_is_refused_unless_replace(self) -> None:
+        declaration = DatasetDeclaration(
+            dataset_id="file.replace",
+            provenance_class=ProvenanceClass.SYNTHETIC.value,
+            provider="PHASE5_SOURCE",
+            universe="SYN:AAA",
+            interval="1d",
+            timezone="UTC",
+            transformation_version="phase5-v1",
+            adjustment_policy="UNADJUSTED",
+            locked_question="ordinary close-to-close changes for one symbol",
+            primary_metric="close-to-close difference",
+        )
+        item = Observation.create(
+            envelope(provenance=ProvenanceClass.SYNTHETIC, symbol="SYN:AAA"),
+            ObservationPayload(close="1.00"),
+        )
+        session = run_dataset_session(declaration, (item.envelope,), (item,))
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "snap.json"
+            write_snapshot_file(path, session.snapshot)
+            with self.assertRaises(SnapshotFileError) as ctx:
+                write_snapshot_file(path, session.snapshot)
+            self.assertEqual(ctx.exception.code, "FILE_EXISTS")
+            written = write_snapshot_file(path, session.snapshot, replace=True)
+            self.assertEqual(written, path)
+
 
 if __name__ == "__main__":
     unittest.main()

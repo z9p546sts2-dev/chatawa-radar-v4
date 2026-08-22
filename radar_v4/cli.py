@@ -8,10 +8,12 @@ from collections.abc import Sequence
 from json import dumps
 from pathlib import Path
 
+from radar_v4.bundle_verify import verify_snapshot_bundle
 from radar_v4.checksum_sidecar import verify_checksum_sidecar, write_checksum_sidecar
 from radar_v4.declaration_json import intake_declaration_json
 from radar_v4.local_session import run_session_from_pack, run_session_from_snapshot_file
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
+from radar_v4.pack_inventory import inventory_pack
 from radar_v4.pack_manifest import (
     PackManifestError,
     compare_pack_manifests,
@@ -58,11 +60,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="refuse a pack that has no manifest.json",
     )
     session.add_argument("--expect-ruler", help="optional ruler checksum to require")
+    session.add_argument(
+        "--replace",
+        action="store_true",
+        help="overwrite existing snapshot, report, journal, or sidecar files",
+    )
 
     replay = sub.add_parser("replay", help="replay a local snapshot file")
     replay.add_argument("--snapshot", required=True, help="snapshot file to replay")
     replay.add_argument("--report", help="optional session report output path")
     replay.add_argument("--expect-ruler", help="optional ruler checksum to require")
+    replay.add_argument(
+        "--replace",
+        action="store_true",
+        help="overwrite an existing session report",
+    )
 
     compare = sub.add_parser("compare", help="compare two local snapshot files")
     compare.add_argument("--left", required=True, help="left snapshot file")
@@ -84,6 +96,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="write a .sha256 sidecar for this snapshot",
     )
+    verify.add_argument(
+        "--replace",
+        action="store_true",
+        help="overwrite an existing checksum sidecar",
+    )
 
     export_pack = sub.add_parser(
         "export-pack", help="write a FIXTURE/SYNTHETIC pack from a snapshot"
@@ -96,15 +113,30 @@ def main(argv: Sequence[str] | None = None) -> int:
     quarantine = sub.add_parser("quarantine", help="write a pack quarantine journal")
     quarantine.add_argument("--pack", required=True, help="local dataset pack directory")
     quarantine.add_argument("--out", required=True, help="journal output path")
+    quarantine.add_argument(
+        "--replace",
+        action="store_true",
+        help="overwrite an existing journal file",
+    )
 
     registry_write = sub.add_parser(
         "registry-write", help="write accepted snapshot envelopes to a registry file"
     )
     registry_write.add_argument("--snapshot", required=True, help="snapshot file")
     registry_write.add_argument("--out", required=True, help="registry output path")
+    registry_write.add_argument(
+        "--replace",
+        action="store_true",
+        help="overwrite an existing registry file",
+    )
 
     manifest = sub.add_parser("pack-manifest", help="write a pack integrity manifest")
     manifest.add_argument("--pack", required=True, help="local dataset pack directory")
+    manifest.add_argument(
+        "--replace",
+        action="store_true",
+        help="overwrite an existing manifest.json",
+    )
 
     pack_verify = sub.add_parser("pack-verify", help="verify a pack against its manifest")
     pack_verify.add_argument("--pack", required=True, help="local dataset pack directory")
@@ -117,6 +149,24 @@ def main(argv: Sequence[str] | None = None) -> int:
     pack_compare.add_argument("--left", required=True, help="left pack directory")
     pack_compare.add_argument("--right", required=True, help="right pack directory")
 
+    inventory = sub.add_parser("pack-inventory", help="list pack files without measuring")
+    inventory.add_argument("--pack", required=True, help="local dataset pack directory")
+
+    bundle = sub.add_parser(
+        "bundle-verify", help="verify a snapshot plus optional sidecar files"
+    )
+    bundle.add_argument("--snapshot", required=True, help="snapshot file")
+    bundle.add_argument(
+        "--require-sidecar",
+        action="store_true",
+        help="refuse a snapshot that has no .sha256 sidecar",
+    )
+    bundle.add_argument(
+        "--require-ruler",
+        action="store_true",
+        help="refuse a snapshot that has no ruler sidecar",
+    )
+
     args = parser.parse_args(list(argv) if argv is not None else None)
     if args.command == "session":
         return _run_session(
@@ -127,25 +177,34 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.sidecar,
             args.require_manifest,
             args.expect_ruler,
+            args.replace,
         )
     if args.command == "replay":
-        return _run_replay(args.snapshot, args.report, args.expect_ruler)
+        return _run_replay(args.snapshot, args.report, args.expect_ruler, args.replace)
     if args.command == "compare":
         return _run_compare(args.left, args.right)
     if args.command == "verify":
         return _run_verify(
-            args.snapshot, args.expect_checksum, args.sidecar, args.write_sidecar
+            args.snapshot,
+            args.expect_checksum,
+            args.sidecar,
+            args.write_sidecar,
+            args.replace,
         )
     if args.command == "export-pack":
         return _run_export_pack(args.snapshot, args.out)
     if args.command == "codes":
         return _run_codes()
     if args.command == "quarantine":
-        return _run_quarantine(args.pack, args.out)
+        return _run_quarantine(args.pack, args.out, args.replace)
     if args.command == "registry-write":
-        return _run_registry_write(args.snapshot, args.out)
+        return _run_registry_write(args.snapshot, args.out, args.replace)
     if args.command == "pack-manifest":
-        return _run_pack_manifest(args.pack)
+        return _run_pack_manifest(args.pack, args.replace)
+    if args.command == "pack-inventory":
+        return _run_pack_inventory(args.pack)
+    if args.command == "bundle-verify":
+        return _run_bundle_verify(args.snapshot, args.require_sidecar, args.require_ruler)
     if args.command == "pack-verify":
         return _run_pack_verify(args.pack)
     if args.command == "pack-compare":
@@ -161,6 +220,7 @@ def _run_session(
     write_sidecar: bool,
     require_manifest: bool = False,
     expected_ruler: str | None = None,
+    replace: bool = False,
 ) -> int:
     result = run_session_from_pack(
         pack, require_manifest=require_manifest, expected_ruler=expected_ruler
@@ -174,7 +234,9 @@ def _run_session(
                 sys.stderr.write(f"{item.code}: {item.reason}\n")
         if journal_path:
             try:
-                write_quarantine_journal_file(journal_path, local=result)
+                write_quarantine_journal_file(
+                    journal_path, local=result, replace=replace
+                )
             except SnapshotFileError as exc:
                 sys.stderr.write(f"{exc.code}: {exc.reason}\n")
                 return 2
@@ -182,19 +244,25 @@ def _run_session(
     text = serialize_local_session_report(result)
     try:
         if snapshot_path:
-            write_snapshot_file(snapshot_path, result.session.snapshot)
-            write_ruler_sidecar(snapshot_path, result.session.snapshot.declaration)
+            write_snapshot_file(
+                snapshot_path, result.session.snapshot, replace=replace
+            )
+            write_ruler_sidecar(
+                snapshot_path, result.session.snapshot.declaration, replace=replace
+            )
             if write_sidecar:
                 write_checksum_sidecar(
-                    snapshot_path, result.session.snapshot.integrity_checksum()
+                    snapshot_path,
+                    result.session.snapshot.integrity_checksum(),
+                    replace=replace,
                 )
         elif write_sidecar:
             sys.stderr.write("SIDECAR requires --snapshot\n")
             return 2
         if report_path:
-            write_local_session_report_file(report_path, result)
+            write_local_session_report_file(report_path, result, replace=replace)
         if journal_path:
-            write_quarantine_journal_file(journal_path, local=result)
+            write_quarantine_journal_file(journal_path, local=result, replace=replace)
     except SnapshotFileError as exc:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
@@ -203,12 +271,15 @@ def _run_session(
 
 
 def _run_replay(
-    snapshot_path: str, report_path: str | None, expected_ruler: str | None
+    snapshot_path: str,
+    report_path: str | None,
+    expected_ruler: str | None,
+    replace: bool = False,
 ) -> int:
     try:
         session = run_session_from_snapshot_file(snapshot_path, expected_ruler)
         if report_path:
-            write_session_report_file(report_path, session)
+            write_session_report_file(report_path, session, replace=replace)
     except SnapshotFileError as exc:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
@@ -224,10 +295,11 @@ def _run_verify(
     expected: str | None,
     use_sidecar: bool,
     write_sidecar: bool,
+    replace: bool = False,
 ) -> int:
     try:
         if write_sidecar:
-            write_checksum_sidecar(snapshot_path)
+            write_checksum_sidecar(snapshot_path, replace=replace)
         if use_sidecar:
             verification = verify_checksum_sidecar(snapshot_path)
         else:
@@ -273,10 +345,10 @@ def _run_codes() -> int:
     return 0
 
 
-def _run_quarantine(pack: str, out_path: str) -> int:
+def _run_quarantine(pack: str, out_path: str, replace: bool = False) -> int:
     result = run_session_from_pack(pack)
     try:
-        write_quarantine_journal_file(out_path, local=result)
+        write_quarantine_journal_file(out_path, local=result, replace=replace)
     except SnapshotFileError as exc:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
@@ -287,12 +359,14 @@ def _run_quarantine(pack: str, out_path: str) -> int:
     return 0
 
 
-def _run_registry_write(snapshot_path: str, out_path: str) -> int:
+def _run_registry_write(
+    snapshot_path: str, out_path: str, replace: bool = False
+) -> int:
     try:
         snapshot = read_snapshot_file(snapshot_path)
         registry = EvidenceRegistry()
         registry.put(tuple(item.envelope for item in snapshot.observations))
-        write_registry_file(out_path, registry)
+        write_registry_file(out_path, registry, replace=replace)
     except SnapshotFileError as exc:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
@@ -303,13 +377,38 @@ def _run_registry_write(snapshot_path: str, out_path: str) -> int:
     return 0
 
 
-def _run_pack_manifest(pack: str) -> int:
+def _run_pack_manifest(pack: str, replace: bool = False) -> int:
     try:
-        written = write_pack_manifest(pack)
+        written = write_pack_manifest(pack, replace=replace)
     except PackManifestError as exc:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
     sys.stdout.write(str(written) + "\n")
+    return 0
+
+
+def _run_pack_inventory(pack: str) -> int:
+    inventory = inventory_pack(pack)
+    sys.stdout.write(inventory.serialize() + "\n")
+    return 0 if inventory.present else 2
+
+
+def _run_bundle_verify(
+    snapshot_path: str, require_sidecar: bool, require_ruler: bool
+) -> int:
+    try:
+        verification = verify_snapshot_bundle(
+            snapshot_path,
+            require_sidecar=require_sidecar,
+            require_ruler=require_ruler,
+        )
+    except SnapshotFileError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    sys.stdout.write(verification.serialize() + "\n")
+    if not verification.matched:
+        sys.stderr.write(",".join(verification.issues) + "\n")
+        return 1
     return 0
 
 
