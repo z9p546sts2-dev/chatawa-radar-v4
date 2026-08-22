@@ -10,9 +10,9 @@ from pathlib import Path
 from py_compile import compile as py_compile
 
 from radar_v4.dataset_pack import load_dataset_pack
-from radar_v4.evidence import ProvenanceClass
+from radar_v4.evidence import EvidenceEnvelope, ProvenanceClass
 from radar_v4.observation import Observation, ObservationPayload
-from tests.helpers import envelope
+from tests.helpers import aware, envelope
 
 
 def _declaration(**overrides: object) -> dict[str, object]:
@@ -103,6 +103,48 @@ class DatasetPackTests(unittest.TestCase):
         self.assertEqual(report.observation_intake.accepted_count(), 0)
         self.assertIn(
             "PACK_PROVENANCE_NOT_ALLOWED",
+            report.observation_intake.quarantined[0].validation.issue_codes(),
+        )
+
+    def test_same_file_twice_is_idempotent(self) -> None:
+        item = _obs(7, "10.00")
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / "declaration.json").write_text(
+                json.dumps(_declaration()), encoding="utf-8"
+            )
+            _write_obs(root / "a.json", item)
+            _write_obs(root / "b.json", item)
+            report = load_dataset_pack(root)
+        self.assertEqual(report.observation_intake.accepted_count(), 1)
+        self.assertEqual(report.observation_intake.quarantined_count(), 0)
+
+    def test_same_identity_different_checksum_is_quarantined(self) -> None:
+        first = _obs(7, "10.00")
+        colliding = Observation.create(
+            EvidenceEnvelope.create(
+                provenance_class=ProvenanceClass.SYNTHETIC,
+                provider="PHASE5_SOURCE",
+                symbol_or_universe="SYN:AAA",
+                market_timestamp=aware(7, 14),
+                retrieval_timestamp=aware(7, 16),
+                interval="1d",
+                timezone="UTC",
+                transformation_version="phase5-v1",
+            ),
+            ObservationPayload(close="11.00"),
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / "declaration.json").write_text(
+                json.dumps(_declaration()), encoding="utf-8"
+            )
+            _write_obs(root / "a.json", first)
+            _write_obs(root / "b.json", colliding)
+            report = load_dataset_pack(root)
+        self.assertEqual(report.observation_intake.accepted_count(), 1)
+        self.assertIn(
+            "CONTRADICTORY_IDENTITY",
             report.observation_intake.quarantined[0].validation.issue_codes(),
         )
 

@@ -38,6 +38,11 @@ from radar_v4.local_session import (
 from radar_v4.session import SessionResult, run_dataset_session
 from radar_v4.session_report import serialize_session_report, write_session_report_file
 from radar_v4.snapshot import DatasetSnapshot, make_snapshot
+from radar_v4.snapshot_compare import (
+    SnapshotComparison,
+    compare_snapshot_files,
+    compare_snapshots,
+)
 from radar_v4.snapshot_files import (
     SnapshotFileError,
     read_snapshot_file,
@@ -52,6 +57,7 @@ __all__ = [
     "DatasetPackReport",
     "DatasetSnapshot",
     "DeclarationIntakeReport",
+    "SnapshotComparison",
     "LocalSessionResult",
     "SeriesReport",
     "Observation",
@@ -72,6 +78,8 @@ __all__ = [
     "PACK_ALLOWED_PROVENANCE",
     "admit_to_dataset",
     "close_to_close_changes",
+    "compare_snapshot_files",
+    "compare_snapshots",
     "inspect_series",
     "intake_declaration_json",
     "intake_observation_json",

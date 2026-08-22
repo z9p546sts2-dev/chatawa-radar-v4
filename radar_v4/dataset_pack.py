@@ -9,6 +9,7 @@ from radar_v4.dataset import DatasetDeclaration
 from radar_v4.declaration_json import intake_declaration_json
 from radar_v4.fixture_pack import PACK_ALLOWED_PROVENANCE
 from radar_v4.json_intake import UnreadableDocument
+from radar_v4.observation import Observation
 from radar_v4.observation_json import (
     ObservationIntakeRecord,
     ObservationIntakeReport,
@@ -94,7 +95,7 @@ def load_dataset_pack(directory: str | Path) -> DatasetPackReport:
                     )
                 )
 
-    accepted = []
+    accepted: list[Observation] = []
     quarantined: list[ObservationIntakeRecord] = []
     for path in sorted(root.glob("*.json")):
         if path.name in SKIP_FILENAMES:
@@ -122,6 +123,8 @@ def load_dataset_pack(directory: str | Path) -> DatasetPackReport:
             else:
                 accepted.append(item)
 
+    accepted, identity_quarantine = _apply_identity_gate(accepted)
+    quarantined.extend(identity_quarantine)
     pack_issues.sort(key=lambda item: (item.code, item.field or "", item.reason))
     return DatasetPackReport(
         declaration=declaration,
@@ -133,3 +136,57 @@ def load_dataset_pack(directory: str | Path) -> DatasetPackReport:
         ),
         unreadable=tuple(unreadable),
     )
+
+
+def _apply_identity_gate(
+    observations: list[Observation],
+) -> tuple[list[Observation], list[ObservationIntakeRecord]]:
+    """Keep the first record. Same checksum is idempotent. Conflicts quarantine."""
+    kept: list[Observation] = []
+    quarantined: list[ObservationIntakeRecord] = []
+    by_checksum: dict[str | None, Observation] = {}
+    by_identity: dict[tuple[object, ...], Observation] = {}
+    for item in observations:
+        checksum = item.envelope.checksum
+        existing_same = by_checksum.get(checksum)
+        if existing_same is not None:
+            if existing_same.payload_checksum == item.payload_checksum:
+                continue
+            quarantined.append(
+                ObservationIntakeRecord(
+                    observation=item,
+                    validation=ValidationResult(
+                        valid=False,
+                        issues=(
+                            ValidationIssue(
+                                "CONTRADICTORY_PAYLOAD",
+                                "same envelope checksum already loaded with a different payload",
+                                "payload_checksum",
+                            ),
+                        ),
+                    ),
+                )
+            )
+            continue
+        identity = item.envelope.identity_key()
+        if identity in by_identity:
+            quarantined.append(
+                ObservationIntakeRecord(
+                    observation=item,
+                    validation=ValidationResult(
+                        valid=False,
+                        issues=(
+                            ValidationIssue(
+                                "CONTRADICTORY_IDENTITY",
+                                "same evidence identity already loaded with a different checksum",
+                                "checksum",
+                            ),
+                        ),
+                    ),
+                )
+            )
+            continue
+        by_checksum[checksum] = item
+        by_identity[identity] = item
+        kept.append(item)
+    return kept, quarantined

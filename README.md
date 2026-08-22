@@ -1,8 +1,8 @@
 # Chatawa Radar V4
 
-## Status: PHASE 5 AUTHORIZED — UNITS 7–18 COMPLETE WITHIN SCOPE
+## Status: PHASE 5 AUTHORIZED — UNITS 7–22 COMPLETE WITHIN SCOPE
 
-Radar V4 has a bounded evidence foundation plus Phase 5 dataset admission, observation payloads, a descriptive close-to-close baseline, series integrity, snapshots, a dataset session runner, observation JSON intake, local snapshot files, declaration JSON, a FIXTURE/SYNTHETIC dataset pack, local session replay, and a session report.
+Radar V4 has a bounded evidence foundation plus a local Phase 5 path: admit a declared dataset, describe ordinary close-to-close differences, persist snapshots, compare snapshots, and run that path from a FIXTURE/SYNTHETIC pack or `python -m radar_v4`.
 
 Vendor download, live capture, and method research are not authorized. This is not a trading system.
 
@@ -39,6 +39,10 @@ UNIT 15 — DECLARATION JSON INTAKE — COMPLETE WITHIN SCOPE
 UNIT 16 — LOCAL DATASET PACK — COMPLETE WITHIN SCOPE
 UNIT 17 — LOCAL PACK/SNAPSHOT SESSION — COMPLETE WITHIN SCOPE
 UNIT 18 — SESSION REPORT — COMPLETE WITHIN SCOPE
+UNIT 19 — SNAPSHOT COMPARE — COMPLETE WITHIN SCOPE
+UNIT 20 — PACK IDENTITY COLLISION — COMPLETE WITHIN SCOPE
+UNIT 21 — LOCAL CLI — COMPLETE WITHIN SCOPE
+UNIT 22 — SYNTHETIC FIXTURE PACK — COMPLETE WITHIN SCOPE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 PHASE 6 METHOD RESEARCH — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
@@ -127,7 +131,7 @@ Until Todd explicitly authorizes a later bounded unit:
 - no assumption that V1 or V2 behavior remains valid;
 - no treating SYNTHETIC or FIXTURE numbers as HISTORICAL evidence.
 
-The repository now has a Phase 5 software foundation through a local FIXTURE/SYNTHETIC dataset session. It is not a trading-system authorization.
+The repository now has a Phase 5 software foundation through a local FIXTURE/SYNTHETIC dataset session, snapshot compare, and CLI. It is not a trading-system authorization. The in-repo fixture pack is SYNTHETIC and is not market evidence.
 
 **Tools verify. Todd authorizes.**
 
