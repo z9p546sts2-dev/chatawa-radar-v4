@@ -45,6 +45,10 @@ class SnapshotTests(unittest.TestCase):
         self.assertEqual(restored.declaration.dataset_id, "phase5-snap")
         self.assertEqual(restored.observations[0].payload.close, "10.25")
         self.assertEqual(restored.serialize(), first)
+        self.assertEqual(
+            make_snapshot(declaration, (item,)).integrity_checksum(),
+            restored.integrity_checksum(),
+        )
 
 
 if __name__ == "__main__":

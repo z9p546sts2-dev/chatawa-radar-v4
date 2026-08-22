@@ -7,10 +7,31 @@ from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
 
+from radar_v4.evidence import format_canonical_timestamp
 from radar_v4.observation import Observation, parse_decimal
 from radar_v4.observation_validation import validate_observation
 
 LIVE_PROVENANCE = "LIVE"
+
+
+@dataclass(frozen=True)
+class CloseToCloseChange:
+    """One ordinary close-to-close difference. Not a signal."""
+
+    from_market_timestamp: str
+    to_market_timestamp: str
+    from_close: str
+    to_close: str
+    difference: str
+
+    def to_json_dict(self) -> dict[str, str]:
+        return {
+            "difference": self.difference,
+            "from_close": self.from_close,
+            "from_market_timestamp": self.from_market_timestamp,
+            "to_close": self.to_close,
+            "to_market_timestamp": self.to_market_timestamp,
+        }
 
 
 @dataclass(frozen=True)
@@ -24,6 +45,7 @@ class BaselineReport:
     change_count: int
     changes: tuple[str, ...]
     notes: tuple[str, ...]
+    change_records: tuple[CloseToCloseChange, ...] = ()
 
 
 def close_to_close_changes(observations: Sequence[Observation]) -> BaselineReport:
@@ -99,11 +121,30 @@ def close_to_close_changes(observations: Sequence[Observation]) -> BaselineRepor
         key=lambda item: item.envelope.market_timestamp or datetime(1, 1, 1),
     )
     closes = [parse_decimal(item.payload.close, "close") for item in ordered]
-    changes = tuple(
-        str(closes[index] - closes[index - 1])
-        for index in range(1, len(closes))
-        if closes[index] is not None and closes[index - 1] is not None
-    )
+    records: list[CloseToCloseChange] = []
+    for index in range(1, len(ordered)):
+        previous_close = closes[index - 1]
+        current_close = closes[index]
+        previous_stamp = ordered[index - 1].envelope.market_timestamp
+        current_stamp = ordered[index].envelope.market_timestamp
+        if (
+            previous_close is None
+            or current_close is None
+            or previous_stamp is None
+            or current_stamp is None
+        ):
+            continue
+        difference = str(current_close - previous_close)
+        records.append(
+            CloseToCloseChange(
+                from_market_timestamp=format_canonical_timestamp(previous_stamp),
+                to_market_timestamp=format_canonical_timestamp(current_stamp),
+                from_close=ordered[index - 1].payload.close,
+                to_close=ordered[index].payload.close,
+                difference=difference,
+            )
+        )
+    changes = tuple(item.difference for item in records)
     notes.append("descriptive close-to-close differences only")
     notes.append("not a threshold, signal, or edge")
     return BaselineReport(
@@ -116,4 +157,5 @@ def close_to_close_changes(observations: Sequence[Observation]) -> BaselineRepor
         change_count=len(changes),
         changes=changes,
         notes=tuple(notes),
+        change_records=tuple(records),
     )

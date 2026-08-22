@@ -5,6 +5,7 @@ from __future__ import annotations
 from json import dumps
 from pathlib import Path
 
+from radar_v4.local_session import LocalSessionResult
 from radar_v4.session import SessionResult
 from radar_v4.snapshot_files import SnapshotFileError
 
@@ -33,6 +34,7 @@ def serialize_session_report(result: SessionResult) -> str:
         if baseline is None
         else {
             "change_count": baseline.change_count,
+            "change_records": [item.to_json_dict() for item in baseline.change_records],
             "changes": list(baseline.changes),
             "claim_level": baseline.claim_level,
             "notes": list(baseline.notes),
@@ -44,16 +46,65 @@ def serialize_session_report(result: SessionResult) -> str:
         "rejected_observation_count": result.rejected_observation_count(),
         "series_issue_codes": list(result.series.issue_codes()),
         "series_valid": result.series.valid,
+        "snapshot_checksum": result.snapshot.integrity_checksum(),
+    }
+    return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+
+
+def serialize_local_session_report(result: LocalSessionResult) -> str:
+    """Include pack refusals. Does not invent a session when the pack is unusable."""
+    pack = result.pack
+    pack_issue_codes = []
+    pack_quarantine_codes = []
+    pack_unreadable_codes = []
+    if pack is not None:
+        pack_issue_codes = sorted({issue.code for issue in pack.pack_issues})
+        pack_quarantine_codes = sorted(
+            {
+                code
+                for record in pack.observation_intake.quarantined
+                for code in record.validation.issue_codes()
+            }
+        )
+        pack_unreadable_codes = sorted({item.code for item in pack.unreadable})
+    document = {
+        "error_code": result.error_code,
+        "pack_issue_codes": pack_issue_codes,
+        "pack_quarantine_codes": pack_quarantine_codes,
+        "pack_unreadable_codes": pack_unreadable_codes,
+        "pack_usable": bool(pack is not None and pack.usable()),
+        "session": None
+        if result.session is None
+        else _loads_object(serialize_session_report(result.session)),
     }
     return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
 
 def write_session_report_file(path: str | Path, result: SessionResult) -> Path:
+    return _write_report_file(path, serialize_session_report(result))
+
+
+def write_local_session_report_file(
+    path: str | Path, result: LocalSessionResult
+) -> Path:
+    return _write_report_file(path, serialize_local_session_report(result))
+
+
+def _write_report_file(path: str | Path, text: str) -> Path:
     target = Path(path)
     if target.exists() and target.is_dir():
         raise SnapshotFileError(
             "SESSION_REPORT_PATH_IS_DIRECTORY",
             f"{target} is a directory, not a session report file",
         )
-    target.write_text(serialize_session_report(result) + "\n", encoding="utf-8")
+    target.write_text(text + "\n", encoding="utf-8")
     return target
+
+
+def _loads_object(text: str) -> dict[str, object]:
+    from json import loads
+
+    parsed = loads(text)
+    if not isinstance(parsed, dict):
+        raise ValueError("session report must be a JSON object")
+    return parsed

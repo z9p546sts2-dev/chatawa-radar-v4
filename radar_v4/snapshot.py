@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass
+from hashlib import sha256
 from json import dumps, loads
 from typing import Any
 
@@ -30,6 +31,10 @@ class DatasetSnapshot:
             ],
         }
         return dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+
+    def integrity_checksum(self) -> str:
+        """SHA-256 of the canonical snapshot bytes. Not stored inside the snapshot."""
+        return sha256(self.serialize().encode("utf-8")).hexdigest()
 
     @classmethod
     def deserialize(cls, serialized: str) -> DatasetSnapshot:

@@ -22,6 +22,11 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Unit 20** — pack identity collision / idempotent reload
 - **Unit 21** — `python -m radar_v4` local session and compare commands
 - **Unit 22** — `fixtures/synthetic_one_symbol_1d/` labeled SYNTHETIC pack (not market evidence)
+- **Unit 23** — `CloseToCloseChange` from/to timestamps and closes
+- **Unit 24** — snapshot integrity checksum (hash of canonical bytes, not stored inside the snapshot)
+- **Unit 25** — pack session report includes pack refusals
+- **Unit 26** — `python -m radar_v4 replay --snapshot <file>`
+- **Unit 27** — `radar_v4/reason_codes.py` refusal/result catalog
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -34,5 +39,6 @@ Network downloads, broker/paper trading, indicators, thresholds, ranking, and tr
 ```text
 PYTHONPATH=. python3 -m unittest discover -s tests -v
 PYTHONPATH=. python3 -m radar_v4 session --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 replay --snapshot <snapshot.json>
 PYTHONPATH=. python3 -m radar_v4 compare --left <snapshot.json> --right <snapshot.json>
 ```

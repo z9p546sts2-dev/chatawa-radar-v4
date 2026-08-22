@@ -6,8 +6,13 @@ import argparse
 import sys
 from collections.abc import Sequence
 
-from radar_v4.local_session import run_session_from_pack
-from radar_v4.session_report import serialize_session_report, write_session_report_file
+from radar_v4.local_session import run_session_from_pack, run_session_from_snapshot_file
+from radar_v4.session_report import (
+    serialize_local_session_report,
+    serialize_session_report,
+    write_local_session_report_file,
+    write_session_report_file,
+)
 from radar_v4.snapshot_compare import compare_snapshot_files
 from radar_v4.snapshot_files import SnapshotFileError, write_snapshot_file
 
@@ -24,6 +29,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     session.add_argument("--snapshot", help="optional snapshot output path")
     session.add_argument("--report", help="optional session report output path")
 
+    replay = sub.add_parser("replay", help="replay a local snapshot file")
+    replay.add_argument("--snapshot", required=True, help="snapshot file to replay")
+    replay.add_argument("--report", help="optional session report output path")
+
     compare = sub.add_parser("compare", help="compare two local snapshot files")
     compare.add_argument("--left", required=True, help="left snapshot file")
     compare.add_argument("--right", required=True, help="right snapshot file")
@@ -31,6 +40,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(list(argv) if argv is not None else None)
     if args.command == "session":
         return _run_session(args.pack, args.snapshot, args.report)
+    if args.command == "replay":
+        return _run_replay(args.snapshot, args.report)
     return _run_compare(args.left, args.right)
 
 
@@ -44,16 +55,28 @@ def _run_session(pack: str, snapshot_path: str | None, report_path: str | None) 
             for item in result.pack.unreadable:
                 sys.stderr.write(f"{item.code}: {item.reason}\n")
         return 2
-    text = serialize_session_report(result.session)
+    text = serialize_local_session_report(result)
     try:
         if snapshot_path:
             write_snapshot_file(snapshot_path, result.session.snapshot)
         if report_path:
-            write_session_report_file(report_path, result.session)
+            write_local_session_report_file(report_path, result)
     except SnapshotFileError as exc:
         sys.stderr.write(f"{exc.code}: {exc.reason}\n")
         return 2
     sys.stdout.write(text + "\n")
+    return 0
+
+
+def _run_replay(snapshot_path: str, report_path: str | None) -> int:
+    try:
+        session = run_session_from_snapshot_file(snapshot_path)
+        if report_path:
+            write_session_report_file(report_path, session)
+    except SnapshotFileError as exc:
+        sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+        return 2
+    sys.stdout.write(serialize_session_report(session) + "\n")
     return 0
 
 

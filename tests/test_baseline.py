@@ -23,6 +23,11 @@ class BaselineTests(unittest.TestCase):
         self.assertEqual(report.status, "MEASURED")
         self.assertEqual(report.claim_level, "LEVEL 0 — MEASURED")
         self.assertEqual(report.changes, ("0.5", "-0.5"))
+        self.assertEqual(len(report.change_records), 2)
+        self.assertEqual(report.change_records[0].from_close, "10.0")
+        self.assertEqual(report.change_records[0].to_close, "10.5")
+        self.assertEqual(report.change_records[0].difference, "0.5")
+        self.assertTrue(report.change_records[0].from_market_timestamp)
         self.assertIn("not a threshold, signal, or edge", report.notes)
 
     def test_single_observation_is_insufficient(self) -> None:

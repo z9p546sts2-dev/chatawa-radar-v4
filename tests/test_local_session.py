@@ -16,6 +16,7 @@ from radar_v4.local_session import (
     run_session_from_snapshot,
     run_session_from_snapshot_file,
 )
+from radar_v4.session_report import serialize_local_session_report
 from radar_v4.observation import Observation, ObservationPayload
 from radar_v4.session import run_dataset_session
 from radar_v4.snapshot_files import write_snapshot_file
@@ -94,6 +95,10 @@ class LocalSessionTests(unittest.TestCase):
         result = run_session_from_pack("/tmp/radar-v4-no-such-local-session")
         self.assertEqual(result.error_code, "PACK_NOT_USABLE")
         self.assertIsNone(result.session)
+        document = json.loads(serialize_local_session_report(result))
+        self.assertIsNone(document["session"])
+        self.assertEqual(document["error_code"], "PACK_NOT_USABLE")
+        self.assertIn("UNREADABLE_PACK", document["pack_unreadable_codes"])
 
     def test_snapshot_round_trip_replays_baseline(self) -> None:
         first = _obs(7, "10.00")

@@ -4,7 +4,7 @@ This package does not implement market methods, features, signals,
 thresholds, data access, or trading.
 """
 
-from radar_v4.baseline import BaselineReport, close_to_close_changes
+from radar_v4.baseline import BaselineReport, CloseToCloseChange, close_to_close_changes
 from radar_v4.dataset import DatasetDeclaration, admit_to_dataset
 from radar_v4.dataset_pack import DatasetPackReport, load_dataset_pack
 from radar_v4.declaration_json import DeclarationIntakeReport, intake_declaration_json
@@ -36,7 +36,13 @@ from radar_v4.local_session import (
     run_session_from_snapshot_file,
 )
 from radar_v4.session import SessionResult, run_dataset_session
-from radar_v4.session_report import serialize_session_report, write_session_report_file
+from radar_v4.reason_codes import REASON_CODES, RESULT_STATUSES
+from radar_v4.session_report import (
+    serialize_local_session_report,
+    serialize_session_report,
+    write_local_session_report_file,
+    write_session_report_file,
+)
 from radar_v4.snapshot import DatasetSnapshot, make_snapshot
 from radar_v4.snapshot_compare import (
     SnapshotComparison,
@@ -53,6 +59,7 @@ from radar_v4.validation import ValidationIssue, ValidationResult, validate_enve
 __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
     "BaselineReport",
+    "CloseToCloseChange",
     "DatasetDeclaration",
     "DatasetPackReport",
     "DatasetSnapshot",
@@ -76,6 +83,8 @@ __all__ = [
     "ValidationIssue",
     "ValidationResult",
     "PACK_ALLOWED_PROVENANCE",
+    "REASON_CODES",
+    "RESULT_STATUSES",
     "admit_to_dataset",
     "close_to_close_changes",
     "compare_snapshot_files",
@@ -90,7 +99,9 @@ __all__ = [
     "run_session_from_pack",
     "run_session_from_snapshot",
     "run_session_from_snapshot_file",
+    "serialize_local_session_report",
     "serialize_session_report",
+    "write_local_session_report_file",
     "write_session_report_file",
     "write_snapshot_file",
     "intake_envelopes",

@@ -57,6 +57,8 @@ class SessionReportTests(unittest.TestCase):
         self.assertEqual(document["baseline"]["status"], "MEASURED")
         self.assertEqual(document["baseline"]["claim_level"], "LEVEL 0 — MEASURED")
         self.assertEqual(document["kept_observation_count"], 2)
+        self.assertEqual(len(document["snapshot_checksum"]), 64)
+        self.assertEqual(document["baseline"]["change_records"][0]["difference"], "0.25")
 
     def test_directory_path_is_refused(self) -> None:
         declaration = DatasetDeclaration(
