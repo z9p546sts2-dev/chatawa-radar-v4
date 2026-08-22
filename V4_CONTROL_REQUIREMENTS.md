@@ -2,14 +2,16 @@
 
 **Status:** Foundation control record  
 **Scope:** Documentation only  
-**Implementation authorized:** No  
+**Implementation authorized:** Phase 5 local workshop only; vendor, Phase 6, and paper trading remain unauthorized  
 **Purpose:** Convert verified V1/V2 failures and strengths into enforceable controls for any future Radar V4 work.
+
+**Later current status (2026-08-22):** Phase 5 units 7–150 are complete within scope on the local FIXTURE/SYNTHETIC workshop. This control record still binds. It does not authorize vendor data, Phase 6, paper trading, or a market method.
 
 ---
 
 ## 1. Governing posture
 
-Radar V4 remains parked. This document does not authorize code, data ingestion, feature design, backtesting, live observation, broker connectivity, or autonomous trading.
+This document does not authorize vendor data ingestion, feature design, backtesting, live observation, broker connectivity, or autonomous trading. Later Phase 5 local-workshop authorization did not lift those bans.
 
 The controls below were earned from the bounded forensic review of `legacy-radar-v1` and `legacy-radar-v2`.
 
@@ -447,11 +449,11 @@ The standard for determining whether a result is meaningfully different from bas
 Legacy V1/V2 postmortem: CLOSED
 Failure-to-control matrix: ACCEPTED
 V4 control requirements: DOCUMENTED
-V4 methodology: NOT DEFINED
-V4 implementation: NOT AUTHORIZED
-V4 code: NOT STARTED
-V4 data ingestion: NOT STARTED
-Radar V4: PARKED
+V4 research methodology: DEFINED / AUDITED
+SPECIFIC MARKET METHOD: NOT DEFINED
+PHASE 5 LOCAL WORKSHOP: UNITS 7–150 COMPLETE WITHIN SCOPE
+VENDOR / HISTORICAL ACCESS: NOT AUTHORIZED
+Radar V4: LOCAL EVIDENCE WORKSHOP — NOT A TRADER
 Sebastian: NOT DISPLACED
 ```
 

@@ -225,6 +225,13 @@ Acceptance of this unit is not authorization of market data or Phase 5.
 
 These units still do not ingest vendor data or define a market method.
 
+## Historical planning records
+
+These remain evidence, not present authorization:
+
+- `RADAR_V4_HORIZON_ROADMAP.md` — long-horizon Product A before Product B. Years do not authorize stages.
+- `RADAR_V4_REACTIVATION_REVIEW_TC.md` — pre-Build-Unit-1 check. Later superseded as current status by completed Units 1–6 and Phase 5 units 7–150.
+
 ## Legacy relationship
 
 The historical repositories remain:

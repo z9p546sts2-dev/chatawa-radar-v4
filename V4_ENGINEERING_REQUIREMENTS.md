@@ -1,8 +1,8 @@
 # Radar V4 Engineering Requirements
 
 **Scope:** Evidence-backed engineering requirements only  
-**Implementation authorized:** No  
-**Methodology defined:** No
+**Implementation authorized:** Phase 5 local workshop only; vendor, Phase 6, and paper trading remain unauthorized  
+**Methodology defined:** Research methodology documented; no market method defined
 
 ---
 
@@ -382,15 +382,14 @@ The evidence-backed optimization targets are:
 Legacy postmortem: CLOSED
 V4 control requirements: DOCUMENTED
 V4 engineering requirements: ACCEPTED WITH REDUCTION
-Further V4 documentation: PAUSED
-V4 methodology: NOT DEFINED
-V4 implementation: NOT AUTHORIZED
-V4 code: NOT STARTED
-V4 data ingestion: NOT STARTED
-Sebastian methodological gate: PRIORITY
+V4 research methodology: DEFINED / AUDITED
+SPECIFIC MARKET METHOD: NOT DEFINED
+PHASE 5 LOCAL WORKSHOP: UNITS 7–150 COMPLETE WITHIN SCOPE
+VENDOR / HISTORICAL ACCESS: NOT AUTHORIZED
+Sebastian methodological gate: STILL BINDS
 ```
 
-No fourth V4 foundation document is authorized at this time.
+No vendor, Phase 6, or paper-trading document is authorized at this time.
 
 ---
 
