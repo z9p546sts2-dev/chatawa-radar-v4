@@ -3,7 +3,10 @@
 **Review type:** Bounded forensic readiness review (read-only)  
 **Reviewer:** Claude, external auditor role  
 **Repositories reviewed:** `legacy-radar-v1-main`, `legacy-radar-v2-main`  
-**Status:** CLOSED
+**Status:** CLOSED  
+**Subsequent V4 program status:** See `README.md` — PRE-BUILD / BUILD UNIT 1 AWAITING TODD AUTHORIZATION
+
+The forensic disposition `V4 — PARKED` below is the postmortem conclusion at close of review. Later separately recorded methodology and Build Unit 1 planning work advanced the program to pre-build. This file does not authorize implementation.
 
 ---
 

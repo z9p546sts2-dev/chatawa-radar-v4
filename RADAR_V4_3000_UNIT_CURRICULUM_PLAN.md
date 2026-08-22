@@ -4,6 +4,8 @@
 
 **PLANNED — CONTENT NOT YET GENERATED**
 
+The V1/V2 forensic review that this architecture waited on is complete. See `postmortem/RADAR_V1_V2_FINAL_FINDINGS.md`. Curriculum content has still not been generated, and this document does not authorize generation.
+
 This document defines the architecture for a 3,000-unit educational corpus supporting future Radar V4 design judgment.
 
 The curriculum is educational only. It is not a signal library, strategy library, backtest library, or proof of market edge.

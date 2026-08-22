@@ -2,11 +2,11 @@
 
 ## Status
 
-**READY TO SEND — REVIEW NOT YET STARTED**
+**SUPERSEDED — LEGACY FORENSIC REVIEW COMPLETE**
 
-This handoff defines the requested Claude work for `legacy-radar-v1` and `legacy-radar-v2` in support of the future `chatawa-radar-v4` program.
+This handoff is retained as the original review request. The bounded forensic review has been completed and banked in `postmortem/RADAR_V1_V2_FINAL_FINDINGS.md`. Current Radar V4 program status is in `README.md`.
 
-The purpose is forensic review, not repair or activation.
+The body below remains the original request text. It does not restart the review and does not authorize implementation.
 
 ## Repositories
 
@@ -256,7 +256,7 @@ Claude verifies and reports.
 
 Todd authorizes.
 
-Radar V4 remains parked until Todd approves a later gate.
+Radar V4 remains pre-build. This handoff does not authorize implementation. See `README.md` for current program status.
 
 Learning and Earning It.  
 Stay on course.  

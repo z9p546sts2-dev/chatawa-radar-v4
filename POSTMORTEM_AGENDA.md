@@ -2,11 +2,11 @@
 
 ## Status
 
-**ON THE BOOKS — NOT YET STARTED**
+**SUPERSEDED — LEGACY FORENSIC REVIEW COMPLETE**
 
-This agenda records the approved future review sequence for understanding why the legacy Radar efforts failed, what evidence supports those conclusions, and how the findings should shape Radar V4.
+This agenda is retained as the original review sequence. The bounded forensic review has been completed and banked in `postmortem/RADAR_V1_V2_FINAL_FINDINGS.md`. Current Radar V4 program status is in `README.md`.
 
-It does not authorize code reuse, implementation, backtesting, live data, trading, execution, or automatic migration.
+The body below remains the original agenda. It does not restart the review and does not authorize implementation.
 
 Todd retains final authority over timing, scope, evidence acceptance, phase advancement, and all future Radar V4 decisions.
 
@@ -207,13 +207,14 @@ The agenda is recorded, but execution begins only when Todd explicitly authorize
 
 ## Current disposition
 
-- Agenda: RECORDED
-- Phase 1 inspection: NOT YET STARTED
-- V1 review: PLANNED
-- V2 review: PLANNED
+- Agenda: SUPERSEDED BY COMPLETED REVIEW
+- Phase 1 inspection: COMPLETE
+- V1 review: COMPLETE
+- V2 review: COMPLETE
+- Banked findings: `postmortem/RADAR_V1_V2_FINAL_FINDINGS.md`
 - Legacy code reuse: NOT AUTHORIZED
-- Learning corpus design: WAITING ON POSTMORTEM FINDINGS
-- Radar V4 replacement roadmap: WAITING ON ROOT-CAUSE EVIDENCE
+- Learning corpus: ARCHITECTURE PLANNED; CONTENT NOT GENERATED
+- Radar V4 program status: PRE-BUILD / BUILD UNIT 1 AWAITING TODD AUTHORIZATION
 
 ## Governing principle
 

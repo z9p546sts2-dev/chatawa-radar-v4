@@ -2,7 +2,8 @@
 
 **Scope:** Evidence-backed engineering requirements only  
 **Implementation authorized:** No  
-**Methodology defined:** No
+**Research methodology defined:** Yes, separately audited  
+**Specific market method defined:** No
 
 ---
 
@@ -382,15 +383,18 @@ The evidence-backed optimization targets are:
 Legacy postmortem: CLOSED
 V4 control requirements: DOCUMENTED
 V4 engineering requirements: ACCEPTED WITH REDUCTION
-Further V4 documentation: PAUSED
-V4 methodology: NOT DEFINED
+V4 research methodology: DEFINED / AUDITED
+Specific market method: NOT DEFINED
+Build Unit 1 proposal: COMPLETE / AUDITED
+Build Unit 1 authorization readiness: PASS
+Build Unit 1 execution: NOT AUTHORIZED
 V4 implementation: NOT AUTHORIZED
 V4 code: NOT STARTED
 V4 data ingestion: NOT STARTED
-Sebastian methodological gate: PRIORITY
+Sebastian: NOT DISPLACED
 ```
 
-No fourth V4 foundation document is authorized at this time.
+This file remains an engineering-requirements record only. Later methodology and Build Unit 1 records are separately bounded and do not expand this document into a market method or implementation authorization.
 
 ---
 

@@ -2,11 +2,11 @@
 
 ## Status
 
-**APPROVED FOR PLANNING — REVIEW NOT YET STARTED**
+**SUPERSEDED — LEGACY FORENSIC REVIEW COMPLETE**
 
-This roadmap defines how `legacy-radar-v1` and `legacy-radar-v2` will be examined before any legacy component is considered for Radar V4.
+This roadmap is retained as the original review plan. The bounded forensic review has been completed and banked in `postmortem/RADAR_V1_V2_FINAL_FINDINGS.md`. Current Radar V4 program status is in `README.md`.
 
-The review is evidence-first. It does not authorize code copying, migration, backtesting, live data, trading, execution, or production deployment.
+The body below remains the original plan. It does not restart the review and does not authorize implementation.
 
 Todd retains final authority over scope, evidence acceptance, reuse decisions, curriculum direction, and Radar V4 activation.
 
@@ -298,14 +298,9 @@ Possible decisions:
 
 ## Current authorization
 
-Authorized:
+The forensic review planned by this document is complete. Current Radar V4 authorization is recorded in `README.md`, `ROADMAP.md`, and `GOVERNANCE.md`.
 
-- roadmap creation;
-- postmortem planning;
-- Claude handoff preparation;
-- curriculum architecture planning.
-
-Not yet authorized:
+Still not authorized:
 
 - legacy code copying;
 - modification of V1 or V2;
@@ -314,7 +309,8 @@ Not yet authorized:
 - backtesting;
 - signal design;
 - trading or execution;
-- Radar V4 implementation.
+- Radar V4 implementation;
+- Build Unit 1 execution.
 
 ## Main principle
 

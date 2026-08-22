@@ -61,7 +61,7 @@ The historical repositories remain:
 - `legacy-radar-v1`
 - `legacy-radar-v2`
 
-Their bounded forensic review is complete. Their value is evidence, comparison, failure analysis, and engineering lessons—not automatic code reuse.
+Their bounded forensic review is complete and banked in `postmortem/RADAR_V1_V2_FINAL_FINDINGS.md`. The original review request, review roadmap, and postmortem agenda are retained as superseded planning evidence. Their value is evidence, comparison, failure analysis, and engineering lessons—not automatic code reuse.
 
 Any future legacy component decision must be classified as:
 

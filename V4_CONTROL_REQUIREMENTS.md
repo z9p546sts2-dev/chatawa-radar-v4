@@ -9,7 +9,7 @@
 
 ## 1. Governing posture
 
-Radar V4 remains parked. This document does not authorize code, data ingestion, feature design, backtesting, live observation, broker connectivity, or autonomous trading.
+Radar V4 is pre-build and awaiting an explicit Todd authorization decision on Build Unit 1. This document does not authorize code, data ingestion, feature design, backtesting, live observation, broker connectivity, or autonomous trading.
 
 The controls below were earned from the bounded forensic review of `legacy-radar-v1` and `legacy-radar-v2`.
 
@@ -447,11 +447,15 @@ The standard for determining whether a result is meaningfully different from bas
 Legacy V1/V2 postmortem: CLOSED
 Failure-to-control matrix: ACCEPTED
 V4 control requirements: DOCUMENTED
-V4 methodology: NOT DEFINED
+V4 research methodology: DEFINED / AUDITED
+Specific market method: NOT DEFINED
+Build Unit 1 proposal: COMPLETE / AUDITED
+Build Unit 1 authorization readiness: PASS
+Build Unit 1 execution: NOT AUTHORIZED
 V4 implementation: NOT AUTHORIZED
 V4 code: NOT STARTED
 V4 data ingestion: NOT STARTED
-Radar V4: PARKED
+Radar V4: PRE-BUILD / BUILD UNIT 1 AWAITING TODD AUTHORIZATION
 Sebastian: NOT DISPLACED
 ```
 
