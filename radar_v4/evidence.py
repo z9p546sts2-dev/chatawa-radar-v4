@@ -176,6 +176,21 @@ class EvidenceEnvelope:
     def compute_checksum(self) -> str:
         return sha256(self.canonical_bytes()).hexdigest()
 
+    def identity_key(self) -> tuple[object, ...]:
+        """Subject identity, excluding retrieval time and checksum.
+
+        Used to detect contradictory records of the same evidence item.
+        """
+        return (
+            self.provenance_class,
+            self.provider,
+            self.symbol_or_universe,
+            _canonical_timestamp_or_none(self.market_timestamp),
+            self.interval,
+            self.timezone,
+            self.transformation_version,
+        )
+
     def serialize(self) -> str:
         """Deterministic JSON including the checksum field."""
         document = dict(self.canonical_payload())

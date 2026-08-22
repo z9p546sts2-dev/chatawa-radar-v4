@@ -1,10 +1,10 @@
 # Chatawa Radar V4
 
-## Status: BUILD UNITS 1–2 COMPLETE WITHIN SCOPE / ACCEPTED-TC
+## Status: BUILD UNITS 1–6 COMPLETE WITHIN SCOPE
 
-Radar V4 has a bounded evidence-envelope, provenance-gate, and intake/quarantine software foundation. Todd accepted Build Unit 2 on 2026-08-22.
+Radar V4 has a bounded evidence foundation: envelope, validation, intake/quarantine, JSON document intake, in-memory registry, and identity-collision gate.
 
-No later unit is authorized. This is not a market method, data feed, signal, or trading system.
+Todd authorized continued building without per-unit stops. Phase 5 market data is still not authorized. This is not a market method, data feed, signal, or trading system.
 
 ## Intended future role
 
@@ -22,7 +22,12 @@ V4 RESEARCH METHODOLOGY — DEFINED / AUDITED
 SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
-BUILD UNIT 3 — NOT AUTHORIZED
+BUILD UNIT 3 — JSON DOCUMENT INTAKE — COMPLETE WITHIN SCOPE
+BUILD UNIT 4 — IN-MEMORY REGISTRY — COMPLETE WITHIN SCOPE
+BUILD UNIT 5 — IDENTITY COLLISION GATE — COMPLETE WITHIN SCOPE
+BUILD UNIT 6 — FIXTURE PACK LOADER — COMPLETE WITHIN SCOPE
+BUILD UNIT 7 — NOT STARTED
+LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED
@@ -65,7 +70,16 @@ It validates a batch of envelopes and partitions them into accepted and quaranti
 
 See `README_BUILD_UNIT_2.md` and `RADAR_V4_BUILD_UNIT_2_ACCEPTANCE_TC.md`.
 
-Acceptance of this unit is not authorization of Build Unit 3, market data, or Phase 5.
+Acceptance of this unit is not authorization of market data or Phase 5.
+
+## Build Units 3–5
+
+- **Unit 3** — JSON document intake (`README_BUILD_UNIT_3.md`)
+- **Unit 4** — in-memory evidence registry (`README_BUILD_UNIT_4.md`)
+- **Unit 5** — identity collision / contradiction gate (`README_BUILD_UNIT_5.md`)
+- **Unit 6** — fixture pack loader (`README_BUILD_UNIT_6.md`)
+
+These units still do not ingest vendor data or define a market method.
 
 ## Legacy relationship
 
@@ -98,7 +112,8 @@ Until Todd explicitly authorizes a later bounded unit:
 - no signals or edge claims;
 - no trading or execution;
 - no automatic reuse of legacy components;
-- no Build Unit 3;
+- no Build Unit 7;
+- no Phase 5 dataset;
 - no assumption that V1 or V2 behavior remains valid.
 
 The repository now has a small evidence/provenance and intake/quarantine software foundation. It is not a trading-system authorization.

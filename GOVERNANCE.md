@@ -2,11 +2,11 @@
 
 ## Status
 
-**BUILD UNITS 1–2 COMPLETE WITHIN SCOPE — ACCEPTED-TC**
+**BUILD UNITS 1–5 COMPLETE WITHIN SCOPE**
 
-Radar V4 has a bounded evidence-envelope, provenance-gate, and intake/quarantine software foundation. Todd accepted Build Unit 2 on 2026-08-22.
+Radar V4 has a bounded evidence foundation through JSON intake, in-memory registry, and identity-collision quarantine. Todd authorized continued building without per-unit stops.
 
-No later unit is authorized.
+Phase 5 market data is not authorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -34,6 +34,7 @@ The repository has earned the following progression:
 7. Build Unit 1 authorization-readiness review — PASS.
 8. Build Unit 1 execution — complete within scope / Accepted-TC.
 9. Build Unit 2 execution — complete within scope / Accepted-TC.
+10. Build Units 3–6 — complete within scope (JSON intake, registry, collision gate, fixture pack).
 
 The accepted bounded units are:
 
@@ -117,7 +118,7 @@ Authorized now:
 
 Not authorized now:
 
-1. Build Unit 3 or any automatic continuation after Build Unit 2.
+1. Build Unit 6, Phase 5 data ingestion, or any market-method unit.
 2. Market-data ingestion.
 3. Live or historical market-data calls.
 4. Market schemas beyond a separately authorized build boundary.
@@ -294,7 +295,8 @@ V4 RESEARCH METHODOLOGY — DEFINED / AUDITED
 SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
-BUILD UNIT 3 — NOT AUTHORIZED
+BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
+PHASE 5 MARKET DATA — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED

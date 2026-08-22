@@ -9,17 +9,30 @@ from radar_v4.evidence import (
     EvidenceEnvelope,
     ProvenanceClass,
 )
+from radar_v4.fixture_pack import PACK_ALLOWED_PROVENANCE, load_fixture_pack
 from radar_v4.intake import IntakeRecord, IntakeReport, intake_envelopes
+from radar_v4.json_intake import (
+    DocumentIntakeReport,
+    UnreadableDocument,
+    intake_json_text,
+)
+from radar_v4.registry import EvidenceRegistry
 from radar_v4.validation import ValidationIssue, ValidationResult, validate_envelope
 
 __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
+    "DocumentIntakeReport",
     "EvidenceEnvelope",
+    "EvidenceRegistry",
     "IntakeRecord",
     "IntakeReport",
     "ProvenanceClass",
+    "UnreadableDocument",
     "ValidationIssue",
     "ValidationResult",
+    "PACK_ALLOWED_PROVENANCE",
     "intake_envelopes",
+    "intake_json_text",
+    "load_fixture_pack",
     "validate_envelope",
 ]
