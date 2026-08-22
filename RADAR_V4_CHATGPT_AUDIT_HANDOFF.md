@@ -7,7 +7,7 @@ BRANCH — cursor/phase-5-dataset-session-9fd5
 PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/8
 AUDITED SOFTWARE HEAD — 053fc2808d6fe3b53de984b20f2e9ef6a1a3c15a
 HANDOFF-ONLY HEAD — 9851692131c925a8576c6971a6fe984b6a209a50
-REMEDIATION HEAD — this commit (after independent audit)
+REMEDIATION SOFTWARE HEAD — 7edc0eeedb21a619d93373390b1581da6c921cbe
 BASE / main — 1ff2333 (Phase 5 units 7–11 only)
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
@@ -178,7 +178,8 @@ Honest auditor note: units 58–100 do not change the claim class. They make the
 ```text
 LANGUAGE — Python 3.12, stdlib only
 TEST COMMAND — PYTHONPATH=. python3 -m unittest discover -s tests -v
-TESTS AT HEAD — 166 passed
+TESTS AT 053fc28 — 166 passed (implementer-reported)
+TESTS AT REMEDIATION HEAD — rerun required on this head
 REASON CODES — catalog present (python -m radar_v4 codes)
 CLI — python -m radar_v4
 NETWORK — none in this package
