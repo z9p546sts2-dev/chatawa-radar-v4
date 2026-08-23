@@ -208,6 +208,8 @@ from radar_v4.cadence_bind import cadence_bind
 from radar_v4.cadence_lock import cadence_lock, compare_cadence_lock
 from radar_v4.current_claim import current_claim
 from radar_v4.freshness_lock import freshness_lock, compare_freshness_lock
+from radar_v4.horizon_bind import horizon_bind
+from radar_v4.horizon_lock import horizon_lock, compare_horizon_lock
 from radar_v4.member_align import member_align
 from radar_v4.member_bind import member_bind
 from radar_v4.member_lock import member_lock, compare_member_lock
@@ -404,8 +406,11 @@ __all__ = [
     "cadence_lock",
     "compare_cadence_lock",
     "compare_freshness_lock",
+    "compare_horizon_lock",
     "current_claim",
     "freshness_lock",
+    "horizon_bind",
+    "horizon_lock",
     "compare_member_lock",
     "compare_member_set",
     "member_align",

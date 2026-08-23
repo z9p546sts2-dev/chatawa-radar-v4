@@ -30,6 +30,7 @@ SKIP_FILENAMES = frozenset(
         "ruler.json",
         "cadence.json",
         "freshness.json",
+        "horizon.json",
     }
 )
 
