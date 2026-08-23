@@ -225,6 +225,21 @@ from radar_v4.freshness_lock import (
     verify_freshness_record,
     write_freshness_record,
 )
+from radar_v4.horizon_bind import (
+    horizon_bind,
+    horizon_bind_determinism,
+    horizon_bind_status,
+    verify_horizon_bind_record,
+    write_horizon_bind_record,
+)
+from radar_v4.horizon_lock import (
+    compare_horizon_lock,
+    horizon_lock,
+    horizon_lock_determinism,
+    horizon_status_bind,
+    verify_horizon_record,
+    write_horizon_record,
+)
 from radar_v4.member_align import (
     member_align,
     member_align_determinism,
@@ -2209,6 +2224,81 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     current_status.add_argument("--freshness", required=True)
     current_status.add_argument("--pack", required=True)
 
+    horizon_lock_cmd = sub.add_parser(
+        "horizon-lock",
+        help="lock a horizon window; include_through may not be after as_of",
+    )
+    horizon_lock_cmd.add_argument("--path", required=True)
+
+    horizon_eq = sub.add_parser(
+        "horizon-eq",
+        help="repeat horizon-lock; equality is not a method",
+    )
+    horizon_eq.add_argument("--path", required=True)
+
+    cmp_horizon = sub.add_parser(
+        "compare-horizon",
+        help="compare horizon identity of two documents",
+    )
+    cmp_horizon.add_argument("--left", required=True)
+    cmp_horizon.add_argument("--right", required=True)
+
+    write_horizon = sub.add_parser(
+        "write-horizon-lock",
+        help="write a local horizon-lock record; not market evidence",
+    )
+    write_horizon.add_argument("--path", required=True)
+    write_horizon.add_argument("--out", required=True)
+    write_horizon.add_argument("--replace", action="store_true")
+
+    verify_horizon = sub.add_parser(
+        "verify-horizon",
+        help="verify a local horizon-lock record",
+    )
+    verify_horizon.add_argument("--path", required=True)
+
+    horizon_status = sub.add_parser(
+        "horizon-status",
+        help="bind horizon-lock to status highest-unit; not a measurement",
+    )
+    horizon_status.add_argument("--path", required=True)
+
+    hbind = sub.add_parser(
+        "horizon-bind",
+        help="refuse a pack bar after as_of; not a method",
+    )
+    hbind.add_argument("--horizon", required=True)
+    hbind.add_argument("--pack", required=True)
+
+    hbind_eq = sub.add_parser(
+        "horizon-bind-eq",
+        help="repeat horizon-bind; equality is not a method",
+    )
+    hbind_eq.add_argument("--horizon", required=True)
+    hbind_eq.add_argument("--pack", required=True)
+
+    write_hbind = sub.add_parser(
+        "write-horizon-bind",
+        help="write a local horizon-bind record; not market evidence",
+    )
+    write_hbind.add_argument("--horizon", required=True)
+    write_hbind.add_argument("--pack", required=True)
+    write_hbind.add_argument("--out", required=True)
+    write_hbind.add_argument("--replace", action="store_true")
+
+    verify_hbind = sub.add_parser(
+        "verify-horizon-bind",
+        help="verify a local horizon-bind record",
+    )
+    verify_hbind.add_argument("--path", required=True)
+
+    hbind_status = sub.add_parser(
+        "horizon-bind-status",
+        help="bind horizon-bind to status highest-unit; not a measurement",
+    )
+    hbind_status.add_argument("--horizon", required=True)
+    hbind_status.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -3366,6 +3456,49 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "current-claim-status":
         check = current_claim_status(Path(args.freshness), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "horizon-lock":
+        check = horizon_lock(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "horizon-eq":
+        check = horizon_lock_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-horizon":
+        check = compare_horizon_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-horizon-lock":
+        try:
+            record = write_horizon_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-horizon":
+        check = verify_horizon_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "horizon-status":
+        check = horizon_status_bind(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "horizon-bind":
+        check = horizon_bind(Path(args.horizon), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "horizon-bind-eq":
+        check = horizon_bind_determinism(Path(args.horizon), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-horizon-bind":
+        try:
+            record = write_horizon_bind_record(
+                Path(args.horizon), Path(args.pack), Path(args.out), args.replace
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-horizon-bind":
+        check = verify_horizon_bind_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "horizon-bind-status":
+        check = horizon_bind_status(Path(args.horizon), Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

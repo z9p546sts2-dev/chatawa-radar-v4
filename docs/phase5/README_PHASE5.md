@@ -88,6 +88,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 1101–1150** — member-set of lock records (member map, not digest) and member-align of a stored map to a live copy path. Verify still uses `source_path`. Highest-unit lock at 1150. Inspectability only; not a research result.
 - **Units 1151–1200** — cadence lock: evaluation cadence may not outrun bar interval (`CADENCE_OVERRUN`). This records the V1/V2 flat-score lesson as a refusal, not a score. Highest-unit lock at 1200. Inspectability only; not a research result.
 - **Units 1201–1250** — freshness lock: a later stamp may not claim the daily series is current (`FRESH_STAMP_STALE_BARS`). An honest later stamp (`claim_current: false`) is valid. Highest-unit lock at 1250. Inspectability only; not a research result.
+- **Units 1251–1300** — horizon lock: `include_through` may not be after `as_of` (`LOOKAHEAD_WINDOW`), and a pack bar after `as_of` is refused (`LOOKAHEAD_BAR`). This is the inverse of freshness, not a wrap of it. Highest-unit lock at 1300. Inspectability only; not a research result.
 
 Locked question: `docs/phase5/RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
