@@ -1,19 +1,19 @@
-# ChatGPT Audit Handoff — Radar V4 through Unit 950
+# ChatGPT Audit Handoff — Radar V4 through Unit 1000
 
 ```text
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
-CURRENT BRANCH — cursor/phase-5-units-901-950-9fd5
-CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/24
-CURRENT SOFTWARE HEAD — e6f282c9b10a6871cc6422907ea6e0ce5530136b
-IMPLEMENTATION HEAD — e6f282c (units 901–950)
-TEST-COUNT HEAD — e6f282c (277 passed)
-BASE / main — 56db82f (Phase 5 units 7–200 merged)
-STACKED OPEN PRS — #10 (201–250) through #24 (901–950); not merged
+CURRENT BRANCH — cursor/phase-5-units-951-1000-9fd5
+CURRENT PR — pending draft to main
+CURRENT SOFTWARE HEAD — pending implementation commit
+IMPLEMENTATION HEAD — pending (units 951–1000)
+TEST-COUNT HEAD — pending
+BASE / main — 04b7f52 (Phase 5 units 7–950 merged via #25)
+STACKED OPEN PRS — none; #10–#24 closed after #25
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PASSES; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PENDING TEST COUNT; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 

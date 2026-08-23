@@ -61,13 +61,13 @@ class Units901To950Tests(unittest.TestCase):
         py_compile(str(ROOT / "radar_v4/lock_set.py"), doraise=True)
 
     def test_highest_unit_is_950(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 950)
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 950)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 950)
+        self.assertGreaterEqual(status["highest_unit"], 950)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 950)
+        self.assertGreaterEqual(stop["highest_unit"], 950)
         self.assertFalse(stop["vendor_authorized"])
 
     def test_same_source_locks_bind_and_set(self) -> None:

@@ -164,6 +164,21 @@ from radar_v4.layout_lock import (
     verify_layout_record,
     write_layout_record,
 )
+from radar_v4.content_bind import (
+    content_bind,
+    content_bind_determinism,
+    content_bind_status,
+    verify_content_bind_record,
+    write_content_bind_record,
+)
+from radar_v4.content_lock import (
+    compare_content_lock,
+    content_lock,
+    content_lock_determinism,
+    content_status_bind,
+    verify_content_record,
+    write_content_record,
+)
 from radar_v4.digest_lock import (
     compare_digest_lock,
     digest_lock,
@@ -1665,6 +1680,81 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     set_status.add_argument("--path", required=True)
 
+    content_lock_cmd = sub.add_parser(
+        "content-lock",
+        help="lock content identity; path is not equality",
+    )
+    content_lock_cmd.add_argument("--path", required=True)
+
+    content_eq = sub.add_parser(
+        "content-eq",
+        help="repeat content-lock; equality is not a method",
+    )
+    content_eq.add_argument("--path", required=True)
+
+    cmp_content = sub.add_parser(
+        "compare-content",
+        help="compare content identity of two paths; path is ignored",
+    )
+    cmp_content.add_argument("--left", required=True)
+    cmp_content.add_argument("--right", required=True)
+
+    write_content = sub.add_parser(
+        "write-content-lock",
+        help="write a local content-lock record; not market evidence",
+    )
+    write_content.add_argument("--path", required=True)
+    write_content.add_argument("--out", required=True)
+    write_content.add_argument("--replace", action="store_true")
+
+    verify_content = sub.add_parser(
+        "verify-content",
+        help="verify a local content-lock record",
+    )
+    verify_content.add_argument("--path", required=True)
+
+    content_status = sub.add_parser(
+        "content-status",
+        help="bind content-lock to status highest-unit; not a measurement",
+    )
+    content_status.add_argument("--path", required=True)
+
+    content_bind_cmd = sub.add_parser(
+        "content-bind",
+        help="require two lock records to share source_digest",
+    )
+    content_bind_cmd.add_argument("--left", required=True)
+    content_bind_cmd.add_argument("--right", required=True)
+
+    content_bind_eq = sub.add_parser(
+        "content-bind-eq",
+        help="repeat content-bind; equality is not a method",
+    )
+    content_bind_eq.add_argument("--left", required=True)
+    content_bind_eq.add_argument("--right", required=True)
+
+    write_cbind = sub.add_parser(
+        "write-content-bind",
+        help="write a local content-bind record; not market evidence",
+    )
+    write_cbind.add_argument("--left", required=True)
+    write_cbind.add_argument("--right", required=True)
+    write_cbind.add_argument("--out", required=True)
+    write_cbind.add_argument("--replace", action="store_true")
+
+    verify_cbind = sub.add_parser(
+        "verify-content-bind",
+        help="verify a local content-bind record",
+    )
+    verify_cbind.add_argument("--path", required=True)
+
+    cbind_status = sub.add_parser(
+        "content-bind-status",
+        help="bind content-bind to status highest-unit; not a measurement",
+    )
+    cbind_status.add_argument("--left", required=True)
+    cbind_status.add_argument("--right", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -2563,6 +2653,49 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "lock-set-status":
         check = lock_set_status(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "content-lock":
+        check = content_lock(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "content-eq":
+        check = content_lock_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-content":
+        check = compare_content_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-content-lock":
+        try:
+            record = write_content_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-content":
+        check = verify_content_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "content-status":
+        check = content_status_bind(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "content-bind":
+        check = content_bind(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "content-bind-eq":
+        check = content_bind_determinism(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-content-bind":
+        try:
+            record = write_content_bind_record(
+                Path(args.left), Path(args.right), Path(args.out), args.replace
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-content-bind":
+        check = verify_content_bind_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "content-bind-status":
+        check = content_bind_status(Path(args.left), Path(args.right))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
