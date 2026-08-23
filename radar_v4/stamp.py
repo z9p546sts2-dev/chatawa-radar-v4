@@ -179,3 +179,99 @@ def export_name_check(directory: Path, destination: Path) -> IntegrityCheck:
         ),
         {"failed": [], "directory": str(written)},
     )
+
+
+def kind_lock_determinism(directory: Path) -> IntegrityCheck:
+    first = kind_lock(directory)
+    second = kind_lock(directory)
+    equal = first.serialize() == second.serialize()
+    return IntegrityCheck(
+        "radar_v4.kind_determinism",
+        equal,
+        None if equal else "DETERMINISM_MISMATCH",
+        ("Kind lock ran twice. Equality is not a taxonomy score.",),
+        {"equal": equal, "valid": first.valid},
+    )
+
+
+def compare_kind_lock(left_dir: Path, right_dir: Path) -> IntegrityCheck:
+    left = kind_lock(left_dir)
+    right = kind_lock(right_dir)
+    equal = left.serialize() == right.serialize()
+    return IntegrityCheck(
+        "radar_v4.compare_kind_lock",
+        equal,
+        None if equal else "RECORD_MISMATCH",
+        ("Compared kind-lock records. Equality is not a method.",),
+        {"equal": equal},
+    )
+
+
+def write_kind_record(
+    directory: Path, destination: Path, replace: bool = False
+) -> IntegrityCheck:
+    if file_exists_without_replace(destination, replace):
+        raise SnapshotFileError("FILE_EXISTS", f"{destination} already exists")
+    record = kind_lock(directory)
+    write_text_atomic(destination, record.serialize() + "\n")
+    return record
+
+
+def verify_kind_record(path: Path) -> IntegrityCheck:
+    target = Path(path)
+    try:
+        raw = loads(target.read_text(encoding="utf-8"))
+    except OSError:
+        return IntegrityCheck(
+            "radar_v4.kind_verify",
+            False,
+            "UNREADABLE_JSON",
+            ("unreadable kind-lock record",),
+            {"path": str(target)},
+        )
+    except JSONDecodeError:
+        return IntegrityCheck(
+            "radar_v4.kind_verify",
+            False,
+            "UNREADABLE_JSON",
+            ("kind-lock record is not JSON",),
+            {"path": str(target)},
+        )
+    if not isinstance(raw, dict):
+        return IntegrityCheck(
+            "radar_v4.kind_verify",
+            False,
+            "UNREADABLE_JSON",
+            ("kind-lock record must be an object",),
+            {"path": str(target)},
+        )
+    ok = raw.get("document_kind") == "radar_v4.kind_lock" and raw.get("valid") is True
+    return IntegrityCheck(
+        "radar_v4.kind_verify",
+        ok,
+        None if ok else "KIND_RECORD_INVALID",
+        ("Verified a local kind-lock record. Not market evidence.",),
+        {"path": str(target)},
+    )
+
+
+def stamp_status_bind(directory: Path) -> IntegrityCheck:
+    stamped = workshop_stamp(directory)
+    status = loads(workshop_status())
+    status_unit = int(status.get("highest_unit") or 0)
+    matched = (
+        stamped.valid
+        and status_unit == PHASE5_HIGHEST_UNIT
+        and status.get("measured") is False
+    )
+    return IntegrityCheck(
+        "radar_v4.stamp_status_bind",
+        matched,
+        None if matched else "STAMP_STATUS_MISMATCH",
+        ("Stamp and status share the locked unit. Not a measurement.",),
+        {
+            "locked_unit": PHASE5_HIGHEST_UNIT,
+            "stamp_valid": stamped.valid,
+            "status_unit": status_unit,
+        },
+    )

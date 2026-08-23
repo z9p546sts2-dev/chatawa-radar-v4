@@ -2,7 +2,7 @@
 
 ## Status
 
-**PHASE 5 AUTHORIZED — UNITS 7–450 COMPLETE WITHIN SCOPE**
+**PHASE 5 AUTHORIZED — UNITS 7–500 COMPLETE WITHIN SCOPE**
 
 Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software. Todd authorized continued building without per-unit stops. Vendor download and method research remain unauthorized.
 
@@ -188,9 +188,9 @@ This phase must not begin automatically after Build Unit 1.
 
 Before any real dataset is admitted, required controls include provenance, source identity, interval/cadence semantics, timestamps, timezone, transformation identity, integrity checks, and quarantine of contradictory or unknown-provenance data.
 
-**Status:** AUTHORIZED-TC / UNITS 7–450 COMPLETE WITHIN SCOPE FOR LOCAL SOFTWARE ONLY
+**Status:** AUTHORIZED-TC / UNITS 7–500 COMPLETE WITHIN SCOPE FOR LOCAL SOFTWARE ONLY
 
-Vendor download, paper trading, and method research remain unauthorized. Completing units 7–450 does not authorize a data purchase.
+Vendor download, paper trading, and method research remain unauthorized. Completing units 7–500 does not authorize a data purchase.
 
 # Phase 6 — Candidate feature / method research
 
@@ -260,7 +260,7 @@ Authorized now:
 - completed forensic-evidence review and preservation;
 - methodology review and maintenance;
 - Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software;
-- Phase 5 units 7–450 dataset declaration through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, and a workshop stop record.
+- Phase 5 units 7–500 dataset declaration through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, and a workshop stop record.
 
 Not authorized now:
 
@@ -277,7 +277,7 @@ Not authorized now:
 
 ## Immediate next action
 
-Vendor download, paper trading, and Phase 6 still require a separate named authorization. Do not buy an API or open a paper account because Units 7–450 exist. The in-repo fixture pack is SYNTHETIC and is not market evidence.
+Vendor download, paper trading, and Phase 6 still require a separate named authorization. Do not buy an API or open a paper account because Units 7–500 exist. The in-repo fixture pack is SYNTHETIC and is not market evidence.
 
 ## Current roadmap status
 
@@ -289,7 +289,7 @@ PHASE 3 — BUILD UNIT 1 PROPOSAL / AUTH READINESS     COMPLETE / PASS
 PHASE 4 — BUILD UNIT 1 EXECUTION                     COMPLETE WITHIN SCOPE / ACCEPTED-TC
 PHASE 4A — BUILD UNIT 2 INTAKE / QUARANTINE          COMPLETE WITHIN SCOPE / ACCEPTED-TC
 PHASE 4B — BUILD UNITS 3–6 JSON / REGISTRY / COLLISION / FIXTURE PACK  COMPLETE WITHIN SCOPE
-PHASE 5 — DATA / RESEARCH FOUNDATION                 AUTHORIZED-TC / UNITS 7–450 COMPLETE
+PHASE 5 — DATA / RESEARCH FOUNDATION                 AUTHORIZED-TC / UNITS 7–500 COMPLETE
 PHASE 6 — FEATURE / METHOD RESEARCH                  NOT AUTHORIZED
 PHASE 7 — BOUNDED OFFLINE PILOT                      NOT AUTHORIZED
 PHASE 8 — HUMAN REVIEW INTERFACE                     NOT AUTHORIZED

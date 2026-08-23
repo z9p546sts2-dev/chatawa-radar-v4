@@ -93,6 +93,13 @@ from radar_v4.bind_check import (
     write_byte_record,
 )
 from radar_v4.byte_check import byte_check, claim_word_scan, count_check, filename_date_check
+from radar_v4.journal_lock import (
+    compare_journal_lock,
+    journal_lock,
+    journal_lock_determinism,
+    verify_journal_record,
+    write_journal_record,
+)
 from radar_v4.kind_lock import kind_describe, kind_lock
 from radar_v4.name_lock import name_lock
 from radar_v4.path_lock import path_lock
@@ -110,12 +117,17 @@ from radar_v4.record_eq import (
     write_path_record,
 )
 from radar_v4.stamp import (
+    compare_kind_lock,
     compare_stamp,
     export_name_check,
+    kind_lock_determinism,
     name_status_bind,
     stamp_determinism,
+    stamp_status_bind,
+    verify_kind_record,
     verify_stamp_record,
     workshop_stamp,
+    write_kind_record,
     write_stamp_record,
 )
 from radar_v4.freeze import (
@@ -780,6 +792,72 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     export_name.add_argument("--pack", required=True)
     export_name.add_argument("--out", required=True)
 
+    journallock = sub.add_parser(
+        "journal-lock",
+        help="lock journal kind, entries, sources, and catalog codes",
+    )
+    journallock.add_argument("--journal", required=True)
+
+    journal_eq = sub.add_parser(
+        "journal-eq",
+        help="run journal-lock twice; equality is not a score",
+    )
+    journal_eq.add_argument("--journal", required=True)
+
+    cmp_journal = sub.add_parser(
+        "compare-journal-lock",
+        help="compare journal-lock of two journals",
+    )
+    cmp_journal.add_argument("--left", required=True)
+    cmp_journal.add_argument("--right", required=True)
+
+    write_journal = sub.add_parser(
+        "write-journal",
+        help="write a local journal-lock record; not a method",
+    )
+    write_journal.add_argument("--journal", required=True)
+    write_journal.add_argument("--out", required=True)
+    write_journal.add_argument("--replace", action="store_true")
+
+    verify_journal = sub.add_parser(
+        "verify-journal",
+        help="verify a local journal-lock record",
+    )
+    verify_journal.add_argument("--path", required=True)
+
+    kind_eq = sub.add_parser(
+        "kind-lock-eq",
+        help="run kind-lock twice; equality is not a taxonomy score",
+    )
+    kind_eq.add_argument("--pack", required=True)
+
+    cmp_kind = sub.add_parser(
+        "compare-kind-lock",
+        help="compare kind-lock of two packs",
+    )
+    cmp_kind.add_argument("--left", required=True)
+    cmp_kind.add_argument("--right", required=True)
+
+    write_kind = sub.add_parser(
+        "write-kind",
+        help="write a local kind-lock record; not market evidence",
+    )
+    write_kind.add_argument("--pack", required=True)
+    write_kind.add_argument("--out", required=True)
+    write_kind.add_argument("--replace", action="store_true")
+
+    verify_kind = sub.add_parser(
+        "verify-kind",
+        help="verify a local kind-lock record",
+    )
+    verify_kind.add_argument("--path", required=True)
+
+    stamp_bind = sub.add_parser(
+        "stamp-bind",
+        help="bind stamp to status highest-unit; not a measurement",
+    )
+    stamp_bind.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -1230,6 +1308,44 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "export-name":
         check = export_name_check(Path(args.pack), Path(args.out))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "journal-lock":
+        check = journal_lock(Path(args.journal))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "journal-eq":
+        check = journal_lock_determinism(Path(args.journal))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-journal-lock":
+        check = compare_journal_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-journal":
+        try:
+            record = write_journal_record(Path(args.journal), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-journal":
+        check = verify_journal_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "kind-lock-eq":
+        check = kind_lock_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-kind-lock":
+        check = compare_kind_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-kind":
+        try:
+            record = write_kind_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-kind":
+        check = verify_kind_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "stamp-bind":
+        check = stamp_status_bind(Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
