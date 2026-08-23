@@ -28,6 +28,7 @@ SKIP_FILENAMES = frozenset(
         "registry.json",
         "quarantine.json",
         "ruler.json",
+        "cadence.json",
     }
 )
 
