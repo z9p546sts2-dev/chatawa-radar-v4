@@ -83,6 +83,19 @@ from radar_v4.lineage import (
     volume_describe,
     write_lineage_record,
 )
+from radar_v4.byte_check import byte_check, claim_word_scan, count_check, filename_date_check
+from radar_v4.freeze import (
+    certify_determinism,
+    command_catalog_determinism,
+    compare_certify,
+    compare_freeze,
+    compare_lineage,
+    readme_unit_lock,
+    self_test_determinism,
+    verify_freeze_record,
+    workshop_freeze,
+    write_freeze_record,
+)
 from radar_v4.workshop_record import (
     inspect_question_lock,
     package_source_identity,
@@ -472,6 +485,81 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     sub.add_parser("commands", help="list local CLI commands; a command is not a method")
     sub.add_parser("self-test", help="check local workshop invariants; not market evidence")
 
+    byte = sub.add_parser(
+        "byte-check",
+        help="refuse trailing whitespace, null bytes, shebang, tabs, and count mismatch",
+    )
+    byte.add_argument("--pack", required=True)
+
+    filename = sub.add_parser(
+        "filename-date",
+        help="require obs_YYYY-MM-DD filenames to match admitted market dates",
+    )
+    filename.add_argument("--pack", required=True)
+
+    counts = sub.add_parser(
+        "count-check",
+        help="require observation file count to match admitted count",
+    )
+    counts.add_argument("--pack", required=True)
+
+    claim_words = sub.add_parser(
+        "claim-words",
+        help="refuse edge/buy/sell/paper values in a JSON document",
+    )
+    claim_words.add_argument("--path", required=True)
+
+    cmp_cert = sub.add_parser(
+        "compare-certify",
+        help="compare certify results of two packs; equality is not a method",
+    )
+    cmp_cert.add_argument("--left", required=True)
+    cmp_cert.add_argument("--right", required=True)
+
+    cmp_lineage = sub.add_parser(
+        "compare-lineage",
+        help="compare admission lineage of two packs",
+    )
+    cmp_lineage.add_argument("--left", required=True)
+    cmp_lineage.add_argument("--right", required=True)
+
+    cert_eq = sub.add_parser(
+        "certify-eq",
+        help="certify the same pack twice; equality is not market evidence",
+    )
+    cert_eq.add_argument("--pack", required=True)
+
+    sub.add_parser("self-test-eq", help="run self-test twice; equality is not a result")
+    sub.add_parser("commands-eq", help="list commands twice; a command is not a method")
+    sub.add_parser("readme-lock", help="require README to name the locked highest unit")
+
+    freeze = sub.add_parser(
+        "freeze",
+        help="print a workshop capability freeze; does not measure",
+    )
+    freeze.add_argument("--pack", help="optional pack for certify/byte checks")
+
+    write_freeze = sub.add_parser(
+        "write-freeze",
+        help="write a local freeze record; not a method",
+    )
+    write_freeze.add_argument("--out", required=True)
+    write_freeze.add_argument("--pack")
+    write_freeze.add_argument("--replace", action="store_true")
+
+    verify_freeze = sub.add_parser(
+        "verify-freeze",
+        help="verify a local freeze record; not market evidence",
+    )
+    verify_freeze.add_argument("--path", required=True)
+
+    cmp_freeze = sub.add_parser(
+        "compare-freeze",
+        help="compare two freeze records; same freeze is not a method",
+    )
+    cmp_freeze.add_argument("--left", required=True)
+    cmp_freeze.add_argument("--right", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -762,6 +850,62 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(command_catalog().serialize(), 0)
     if command == "self-test":
         check = self_test()
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "byte-check":
+        check = byte_check(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "filename-date":
+        check = filename_date_check(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "count-check":
+        check = count_check(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "claim-words":
+        check = claim_word_scan(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-certify":
+        check = compare_certify(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-lineage":
+        check = compare_lineage(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "certify-eq":
+        check = certify_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "self-test-eq":
+        check = self_test_determinism()
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "commands-eq":
+        check = command_catalog_determinism()
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "readme-lock":
+        check = readme_unit_lock()
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "freeze":
+        check = workshop_freeze(Path(args.pack) if args.pack else None)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-freeze":
+        try:
+            record = write_freeze_record(
+                Path(args.out),
+                Path(args.pack) if args.pack else None,
+                args.replace,
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-freeze":
+        check = verify_freeze_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-freeze":
+        try:
+            left = Path(args.left).read_text(encoding="utf-8")
+            right = Path(args.right).read_text(encoding="utf-8")
+        except OSError as exc:
+            sys.stderr.write(f"UNREADABLE_JSON: {exc}\n")
+            return 2
+        check = compare_freeze(left, right)
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

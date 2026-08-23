@@ -11,6 +11,9 @@ from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT
 FORBIDDEN_IMPORTS = frozenset(
     {
         "aiohttp",
+        "ftplib",
+        "http.client",
+        "http.server",
         "httpx",
         "requests",
         "urllib.request",
@@ -45,7 +48,7 @@ def workshop_bounds() -> str:
                 "signals, scores, thresholds, or edge",
             ],
             "notes": [
-                "units 201-250 are inspectability, not a research result",
+                "units 251-300 are inspectability, not a research result",
                 "authorization does not earn data correctness",
                 "SYNTHETIC and FIXTURE numbers are not HISTORICAL evidence",
             ],
