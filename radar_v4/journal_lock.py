@@ -7,7 +7,11 @@ from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.bind_check import journal_code_catalog
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.snapshot_files import SnapshotFileError
 
 JOURNAL_KIND = "radar_v4.quarantine_journal"
@@ -206,14 +210,16 @@ def journal_lock(path: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Journal lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                path, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.journal_lock",
         True,
         None,
         ("Journal lock passed. Not a scoring system.",),
-        {"failed": []},
+        lock_source_details(path, {"failed": []}),
     )
 
 
@@ -254,38 +260,10 @@ def write_journal_record(
 
 
 def verify_journal_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.journal_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable journal-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.journal_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("journal-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.journal_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("journal-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.journal_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.journal_verify",
-        ok,
-        None if ok else "JOURNAL_RECORD_INVALID",
-        ("Verified a local journal-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.journal_lock",
+        verify_kind="radar_v4.journal_verify",
+        invalid_code="JOURNAL_RECORD_INVALID",
+        recompute=journal_lock,
     )

@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.snapshot_files import SnapshotFileError
 from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
 from radar_v4.workshop_record import read_disposition
@@ -20,14 +24,14 @@ def disposition_lock(path: Path) -> IntegrityCheck:
             False,
             inner.error_code,
             ("Disposition lock failed.",) + inner.notes,
-            {"failed": [inner.document_kind]},
+            lock_source_details(path, {"failed": [inner.document_kind]}),
         )
     return IntegrityCheck(
         "radar_v4.disposition_lock",
         True,
         None,
         ("Disposition lock passed. Not a trade approval.",),
-        {"failed": []},
+        lock_source_details(path, {"failed": []}),
     )
 
 
@@ -68,40 +72,12 @@ def write_disposition_record(
 
 
 def verify_disposition_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.disposition_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable disposition-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.disposition_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("disposition-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.disposition_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("disposition-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.disposition_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.disposition_verify",
-        ok,
-        None if ok else "DISPOSITION_RECORD_INVALID",
-        ("Verified a local disposition-lock record. Not a trade approval.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.disposition_lock",
+        verify_kind="radar_v4.disposition_verify",
+        invalid_code="DISPOSITION_RECORD_INVALID",
+        recompute=disposition_lock,
     )
 
 

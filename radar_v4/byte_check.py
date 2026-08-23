@@ -7,7 +7,7 @@ from json import JSONDecodeError, loads
 from pathlib import Path
 
 from radar_v4.dataset_pack import SKIP_FILENAMES, load_dataset_pack
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import IntegrityCheck, lock_source_details
 from radar_v4.pack_describe import pack_readiness
 
 OBS_DATE_RE = re.compile(r"obs_(\d{4}-\d{2}-\d{2})")
@@ -282,12 +282,14 @@ def byte_check(directory: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Byte-level pack checks failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                directory, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.byte_check",
         True,
         None,
         ("Byte-level pack checks passed. Not market evidence.",),
-        {"failed": []},
+        lock_source_details(directory, {"failed": []}),
     )

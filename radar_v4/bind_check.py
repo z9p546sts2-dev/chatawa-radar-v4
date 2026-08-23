@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
@@ -17,7 +17,7 @@ from radar_v4.byte_check import (
 )
 from radar_v4.dataset_pack import load_dataset_pack
 from radar_v4.freeze import workshop_freeze
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import IntegrityCheck, verify_recomputed_lock_record
 from radar_v4.local_session import run_session_from_pack
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
 from radar_v4.path_lock import path_lock
@@ -102,40 +102,12 @@ def write_byte_record(
 
 
 def verify_byte_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.byte_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable byte record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.byte_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("byte record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.byte_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("byte record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.byte_check" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.byte_verify",
-        ok,
-        None if ok else "BYTE_RECORD_INVALID",
-        ("Verified a local byte-check record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.byte_check",
+        verify_kind="radar_v4.byte_verify",
+        invalid_code="BYTE_RECORD_INVALID",
+        recompute=byte_check,
     )
 
 

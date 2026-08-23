@@ -49,9 +49,7 @@ README, ROADMAP, and GOVERNANCE headlines now say this is a **stacked draft bran
 
 They now require `details.source_path`, recompute the lock from that path, and compare canonical bytes. A fabricated `{document_kind, valid: true}` object is refused. A record written against a pack that later gains leftovers is refused.
 
-Remaining earlier `verify-*` commands still use the shallow pattern. That is recorded, not silently claimed closed.
-
-Highest unit remains **850**. Claim class unchanged. Not merged.
+A later repair-only pass applied the same recompute+`source_path` rule to the remaining lock-record verifies (`audit`, `chain`, `bundle`, `export`, `sidecar`, `snapshot`, `disposition`, `report`, `ruler`, `journal`, `path`, `name`, `kind`, `stamp`, `byte`, `freeze`). No unit 851. Highest unit remains **850**. Claim class unchanged. Not merged.
 
 ---
 

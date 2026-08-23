@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.freeze import workshop_freeze
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import IntegrityCheck, verify_recomputed_lock_record
 from radar_v4.local_session import run_session_from_pack
 from radar_v4.name_lock import name_lock
 from radar_v4.pack_describe import pack_readiness
@@ -117,40 +116,12 @@ def write_path_record(
 
 
 def verify_path_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.path_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable path-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.path_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("path-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.path_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("path-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.path_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.path_verify",
-        ok,
-        None if ok else "PATH_RECORD_INVALID",
-        ("Verified a local path-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.path_lock",
+        verify_kind="radar_v4.path_verify",
+        invalid_code="PATH_RECORD_INVALID",
+        recompute=path_lock,
     )
 
 
@@ -165,40 +136,12 @@ def write_name_record(
 
 
 def verify_name_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.name_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable name-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.name_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("name-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.name_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("name-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.name_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.name_verify",
-        ok,
-        None if ok else "NAME_RECORD_INVALID",
-        ("Verified a local name-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.name_lock",
+        verify_kind="radar_v4.name_verify",
+        invalid_code="NAME_RECORD_INVALID",
+        recompute=name_lock,
     )
 
 

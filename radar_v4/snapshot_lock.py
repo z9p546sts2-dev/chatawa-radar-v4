@@ -7,7 +7,11 @@ from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.fixture_pack import PACK_ALLOWED_PROVENANCE
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.local_session import run_session_from_pack
 from radar_v4.snapshot_files import SnapshotFileError
 from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
@@ -120,14 +124,16 @@ def _compose(raw: dict[str, object], source: str) -> IntegrityCheck:
             False,
             first.error_code,
             ("Snapshot lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                Path(source), {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.snapshot_lock",
         True,
         None,
         ("Snapshot lock passed. Not market evidence.",),
-        {"failed": []},
+        lock_source_details(Path(source), {"failed": []}),
     )
 
 
@@ -139,7 +145,7 @@ def snapshot_lock(path: Path) -> IntegrityCheck:
             False,
             error.error_code,
             ("Snapshot lock failed.",) + error.notes,
-            {"failed": [error.document_kind]},
+            lock_source_details(path, {"failed": [error.document_kind]}),
         )
     assert raw is not None
     return _compose(raw, str(path))
@@ -153,7 +159,7 @@ def pack_snapshot_lock(directory: Path) -> IntegrityCheck:
             False,
             result.error_code or "PACK_NOT_USABLE",
             ("Snapshot lock needs a usable pack.",),
-            {"failed": []},
+            lock_source_details(directory, {"failed": []}),
         )
     raw = loads(result.session.snapshot.serialize())
     if not isinstance(raw, dict):
@@ -162,7 +168,7 @@ def pack_snapshot_lock(directory: Path) -> IntegrityCheck:
             False,
             "UNREADABLE_SNAPSHOT_FILE",
             ("Serialized snapshot is not an object.",),
-            {"failed": []},
+            lock_source_details(directory, {"failed": []}),
         )
     return _compose(raw, str(directory))
 
@@ -211,40 +217,12 @@ def write_snapshot_record(
 
 
 def verify_snapshot_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.snapshot_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable snapshot-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.snapshot_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("snapshot-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.snapshot_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("snapshot-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.snapshot_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.snapshot_verify",
-        ok,
-        None if ok else "SNAPSHOT_RECORD_INVALID",
-        ("Verified a local snapshot-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.snapshot_lock",
+        verify_kind="radar_v4.snapshot_verify",
+        invalid_code="SNAPSHOT_RECORD_INVALID",
+        recompute=snapshot_lock_any,
     )
 
 

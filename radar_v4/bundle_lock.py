@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.bundle_verify import verify_snapshot_bundle
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.snapshot_files import SnapshotFileError, read_snapshot_file
 from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
 
@@ -107,14 +111,16 @@ def bundle_lock(path: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Bundle lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                path, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.bundle_lock",
         True,
         None,
         ("Bundle lock passed. Not market evidence.",),
-        {"failed": []},
+        lock_source_details(path, {"failed": []}),
     )
 
 
@@ -155,40 +161,12 @@ def write_bundle_record(
 
 
 def verify_bundle_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.bundle_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable bundle-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.bundle_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("bundle-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.bundle_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("bundle-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.bundle_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.bundle_verify",
-        ok,
-        None if ok else "BUNDLE_RECORD_INVALID",
-        ("Verified a local bundle-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.bundle_lock",
+        verify_kind="radar_v4.bundle_verify",
+        invalid_code="BUNDLE_RECORD_INVALID",
+        recompute=bundle_lock,
     )
 
 

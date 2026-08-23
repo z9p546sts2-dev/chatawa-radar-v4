@@ -12,8 +12,22 @@ from pathlib import Path
 from py_compile import compile as py_compile
 from shutil import copytree
 
+from radar_v4.audit_lock import verify_audit_record
+from radar_v4.bind_check import verify_byte_record
+from radar_v4.bundle_lock import verify_bundle_record
 from radar_v4.catalog_audit import audit_document_kinds, audit_reason_catalog
+from radar_v4.chain_lock import verify_chain_record
 from radar_v4.cli import main
+from radar_v4.disp_lock import verify_disposition_record
+from radar_v4.export_lock import verify_export_record
+from radar_v4.freeze import verify_freeze_record
+from radar_v4.journal_lock import verify_journal_record
+from radar_v4.record_eq import verify_name_record, verify_path_record
+from radar_v4.report_lock import verify_report_record
+from radar_v4.ruler_lock import verify_ruler_record
+from radar_v4.sidecar_lock import verify_sidecar_record
+from radar_v4.snapshot_lock import verify_snapshot_record
+from radar_v4.stamp import verify_kind_record, verify_stamp_record
 from radar_v4.leftover_lock import (
     compare_leftover_lock,
     leftover_lock,
@@ -147,6 +161,37 @@ class Units801To850Tests(unittest.TestCase):
                 code = main(command)
             self.assertEqual(code, 0, f"{command} {stderr.getvalue()}")
             self.assertIn("document_kind", json.loads(stdout.getvalue()))
+
+    def test_remaining_verify_refuses_kind_valid_only(self) -> None:
+        cases = (
+            (verify_audit_record, "radar_v4.audit_lock", "AUDIT_RECORD_INVALID"),
+            (verify_bundle_record, "radar_v4.bundle_lock", "BUNDLE_RECORD_INVALID"),
+            (verify_byte_record, "radar_v4.byte_check", "BYTE_RECORD_INVALID"),
+            (verify_chain_record, "radar_v4.chain_lock", "CHAIN_RECORD_INVALID"),
+            (verify_disposition_record, "radar_v4.disposition_lock", "DISPOSITION_RECORD_INVALID"),
+            (verify_export_record, "radar_v4.export_lock", "EXPORT_RECORD_INVALID"),
+            (verify_freeze_record, "radar_v4.freeze", "FREEZE_FAILED"),
+            (verify_journal_record, "radar_v4.journal_lock", "JOURNAL_RECORD_INVALID"),
+            (verify_kind_record, "radar_v4.kind_lock", "KIND_RECORD_INVALID"),
+            (verify_name_record, "radar_v4.name_lock", "NAME_RECORD_INVALID"),
+            (verify_path_record, "radar_v4.path_lock", "PATH_RECORD_INVALID"),
+            (verify_report_record, "radar_v4.report_lock", "REPORT_RECORD_INVALID"),
+            (verify_ruler_record, "radar_v4.ruler_lock", "RULER_RECORD_INVALID"),
+            (verify_sidecar_record, "radar_v4.sidecar_lock", "SIDECAR_RECORD_INVALID"),
+            (verify_snapshot_record, "radar_v4.snapshot_lock", "SNAPSHOT_RECORD_INVALID"),
+            (verify_stamp_record, "radar_v4.workshop_stamp", "STAMP_RECORD_INVALID"),
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            for verify, kind, code in cases:
+                path = root / f"{kind.replace('.', '_')}.json"
+                path.write_text(
+                    json.dumps({"document_kind": kind, "valid": True}) + "\n",
+                    encoding="utf-8",
+                )
+                check = verify(path)
+                self.assertFalse(check.valid, kind)
+                self.assertEqual(check.error_code, code, kind)
 
 
 if __name__ == "__main__":

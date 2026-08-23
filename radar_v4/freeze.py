@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.byte_check import byte_check
 from radar_v4.certify import certify_pack, command_catalog, self_test
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.lineage import admission_vs_kept
 from radar_v4.snapshot_files import SnapshotFileError
 from radar_v4.workshop_bounds import workshop_bounds
@@ -145,16 +149,19 @@ def workshop_freeze(directory: Path | None = None) -> IntegrityCheck:
             "Workshop freeze is a capability lock, not a research result.",
             "This does not authorize a vendor, paper trading, or Phase 6.",
         ),
-        {
-            "highest_unit": PHASE5_HIGHEST_UNIT,
-            "measured": status.get("measured"),
-            "vendor_authorized": bounds.get("vendor_authorized"),
-            "paper_trading_authorized": stop.get("paper_trading_authorized"),
-            "self_test": tested.valid,
-            "certify": certified.valid,
-            "byte_check": bytes_ok.valid,
-            "readme_lock": readme.valid,
-        },
+        lock_source_details(
+            pack,
+            {
+                "highest_unit": PHASE5_HIGHEST_UNIT,
+                "measured": status.get("measured"),
+                "vendor_authorized": bounds.get("vendor_authorized"),
+                "paper_trading_authorized": stop.get("paper_trading_authorized"),
+                "self_test": tested.valid,
+                "certify": certified.valid,
+                "byte_check": bytes_ok.valid,
+                "readme_lock": readme.valid,
+            },
+        ),
     )
 
 
@@ -169,41 +176,12 @@ def write_freeze_record(
 
 
 def verify_freeze_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = _load_object(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.freeze_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable freeze record",),
-            {"path": str(target)},
-        )
-    except (JSONDecodeError, SnapshotFileError):
-        return IntegrityCheck(
-            "radar_v4.freeze_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("freeze record is not a JSON object",),
-            {"path": str(target)},
-        )
-    details = raw.get("details")
-    detail_map = details if isinstance(details, dict) else {}
-    ok = (
-        raw.get("document_kind") == "radar_v4.freeze"
-        and raw.get("valid") is True
-        and detail_map.get("measured") is False
-        and detail_map.get("vendor_authorized") is False
-        and detail_map.get("paper_trading_authorized") is False
-        and int(detail_map.get("highest_unit") or 0) == PHASE5_HIGHEST_UNIT
-    )
-    return IntegrityCheck(
-        "radar_v4.freeze_verify",
-        ok,
-        None if ok else "FREEZE_FAILED",
-        ("Verified a local freeze record. Not market evidence.",),
-        {"path": str(target), "highest_unit": detail_map.get("highest_unit")},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.freeze",
+        verify_kind="radar_v4.freeze_verify",
+        invalid_code="FREEZE_FAILED",
+        recompute=workshop_freeze,
     )
 
 

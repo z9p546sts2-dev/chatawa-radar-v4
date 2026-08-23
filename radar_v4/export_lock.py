@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.dataset_pack import load_dataset_pack
 from radar_v4.fixture_pack import PACK_ALLOWED_PROVENANCE
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.manifest_lock import manifest_lock
 from radar_v4.pack_describe import inspect_pack_layout
 from radar_v4.snapshot_files import SnapshotFileError
@@ -112,14 +116,16 @@ def export_lock(path: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Export lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                path, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.export_lock",
         True,
         None,
         ("Export lock passed. Not market evidence.",),
-        {"failed": []},
+        lock_source_details(path, {"failed": []}),
     )
 
 
@@ -160,40 +166,12 @@ def write_export_record(
 
 
 def verify_export_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.export_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable export-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.export_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("export-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.export_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("export-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.export_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.export_verify",
-        ok,
-        None if ok else "EXPORT_RECORD_INVALID",
-        ("Verified a local export-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.export_lock",
+        verify_kind="radar_v4.export_verify",
+        invalid_code="EXPORT_RECORD_INVALID",
+        recompute=export_lock,
     )
 
 

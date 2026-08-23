@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import IntegrityCheck, lock_source_details
 
 BACKUP_SUFFIXES = frozenset({".bak", ".orig", ".rej", ".swp"})
 
@@ -94,12 +94,14 @@ def path_lock(directory: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Path lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                directory, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.path_lock",
         True,
         None,
         ("Path lock passed. Not market evidence.",),
-        {"failed": []},
+        lock_source_details(directory, {"failed": []}),
     )

@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.checksum_sidecar import sidecar_path, verify_checksum_sidecar
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.snapshot_files import SnapshotFileError
 from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
 
@@ -60,14 +64,14 @@ def sidecar_lock(path: Path) -> IntegrityCheck:
             False,
             digest.error_code,
             ("Sidecar lock failed.",) + digest.notes,
-            {"failed": [digest.document_kind]},
+            lock_source_details(path, {"failed": [digest.document_kind]}),
         )
     return IntegrityCheck(
         "radar_v4.sidecar_lock",
         True,
         None,
         ("Sidecar lock passed. Not a repair.",),
-        {"failed": []},
+        lock_source_details(path, {"failed": []}),
     )
 
 
@@ -146,40 +150,12 @@ def write_sidecar_record(
 
 
 def verify_sidecar_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.sidecar_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable sidecar-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.sidecar_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("sidecar-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.sidecar_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("sidecar-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.sidecar_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.sidecar_verify",
-        ok,
-        None if ok else "SIDECAR_RECORD_INVALID",
-        ("Verified a local sidecar-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.sidecar_lock",
+        verify_kind="radar_v4.sidecar_verify",
+        invalid_code="SIDECAR_RECORD_INVALID",
+        recompute=sidecar_lock,
     )
 
 

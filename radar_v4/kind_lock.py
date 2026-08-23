@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from radar_v4.document_kind import detect_document_kind
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import IntegrityCheck, lock_source_details
 
 
 def _json_files(directory: Path) -> list[Path]:
@@ -132,12 +132,14 @@ def kind_lock(directory: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Kind lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                directory, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.kind_lock",
         True,
         None,
         ("Kind lock passed. Not a taxonomy score.",),
-        {"failed": []},
+        lock_source_details(directory, {"failed": []}),
     )

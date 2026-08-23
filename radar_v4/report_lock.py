@@ -6,7 +6,11 @@ from json import JSONDecodeError, loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.snapshot_files import SnapshotFileError
 from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
 
@@ -157,14 +161,16 @@ def report_lock(path: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Report lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                path, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.report_lock",
         True,
         None,
         ("Report lock passed. Not a measurement claim.",),
-        {"failed": []},
+        lock_source_details(path, {"failed": []}),
     )
 
 
@@ -205,40 +211,12 @@ def write_report_record(
 
 
 def verify_report_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.report_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable report-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.report_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("report-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.report_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("report-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.report_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.report_verify",
-        ok,
-        None if ok else "REPORT_RECORD_INVALID",
-        ("Verified a local report-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.report_lock",
+        verify_kind="radar_v4.report_verify",
+        invalid_code="REPORT_RECORD_INVALID",
+        recompute=report_lock,
     )
 
 

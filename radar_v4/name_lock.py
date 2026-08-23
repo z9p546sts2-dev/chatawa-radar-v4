@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import IntegrityCheck, lock_source_details
 from radar_v4.path_lock import path_lock
 
 RESERVED_STEMS = frozenset(
@@ -137,12 +137,14 @@ def name_lock(directory: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Name lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                directory, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.name_lock",
         True,
         None,
         ("Name lock passed. Not market evidence.",),
-        {"failed": []},
+        lock_source_details(directory, {"failed": []}),
     )

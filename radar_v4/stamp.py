@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.kind_lock import kind_lock
 from radar_v4.local_session import run_session_from_pack
 from radar_v4.name_lock import name_lock
@@ -30,14 +34,16 @@ def workshop_stamp(directory: Path) -> IntegrityCheck:
             False,
             first.error_code or "STAMP_FAILED",
             ("Workshop stamp failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                directory, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.workshop_stamp",
         True,
         None,
         ("Workshop stamp passed. Not a research result.",),
-        {"failed": []},
+        lock_source_details(directory, {"failed": []}),
     )
 
 
@@ -78,40 +84,12 @@ def write_stamp_record(
 
 
 def verify_stamp_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.stamp_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable stamp record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.stamp_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("stamp record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.stamp_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("stamp record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.workshop_stamp" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.stamp_verify",
-        ok,
-        None if ok else "STAMP_RECORD_INVALID",
-        ("Verified a local stamp record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.workshop_stamp",
+        verify_kind="radar_v4.stamp_verify",
+        invalid_code="STAMP_RECORD_INVALID",
+        recompute=workshop_stamp,
     )
 
 
@@ -218,40 +196,12 @@ def write_kind_record(
 
 
 def verify_kind_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.kind_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable kind-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.kind_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("kind-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.kind_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("kind-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.kind_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.kind_verify",
-        ok,
-        None if ok else "KIND_RECORD_INVALID",
-        ("Verified a local kind-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.kind_lock",
+        verify_kind="radar_v4.kind_verify",
+        invalid_code="KIND_RECORD_INVALID",
+        recompute=kind_lock,
     )
 
 

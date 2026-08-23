@@ -7,7 +7,11 @@ from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
 from radar_v4.dataset_pack import load_dataset_pack
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.report_lock import _load_report, report_lock
 from radar_v4.ruler import ruler_checksum
 from radar_v4.ruler_file import serialize_ruler
@@ -122,7 +126,7 @@ def ruler_lock(path: Path) -> IntegrityCheck:
             False,
             error.error_code,
             ("Ruler lock failed.",) + error.notes,
-            {"failed": [error.document_kind]},
+            lock_source_details(path, {"failed": [error.document_kind]}),
         )
     assert raw is not None
     return _compose_ruler(raw, str(path))
@@ -136,7 +140,7 @@ def pack_ruler_lock(directory: Path) -> IntegrityCheck:
             False,
             "UNREADABLE_DECLARATION",
             ("Ruler lock needs a usable declaration.",),
-            {"failed": ["radar_v4.ruler_kind"]},
+            lock_source_details(directory, {"failed": ["radar_v4.ruler_kind"]}),
         )
     raw = loads(serialize_ruler(pack.declaration))
     if not isinstance(raw, dict):
@@ -145,7 +149,7 @@ def pack_ruler_lock(directory: Path) -> IntegrityCheck:
             False,
             "UNREADABLE_RULER_SIDECAR",
             ("Serialized ruler is not an object.",),
-            {"failed": []},
+            lock_source_details(directory, {"failed": []}),
         )
     return _compose_ruler(raw, str(directory))
 
@@ -160,14 +164,16 @@ def _compose_ruler(raw: dict[str, object], source: str) -> IntegrityCheck:
             False,
             first.error_code,
             ("Ruler lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                Path(source), {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.ruler_lock",
         True,
         None,
         ("Ruler lock passed. Not a market calendar.",),
-        {"failed": []},
+        lock_source_details(Path(source), {"failed": []}),
     )
 
 
@@ -215,40 +221,12 @@ def write_ruler_record(
 
 
 def verify_ruler_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.ruler_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable ruler-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.ruler_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("ruler-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.ruler_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("ruler-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.ruler_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.ruler_verify",
-        ok,
-        None if ok else "RULER_RECORD_INVALID",
-        ("Verified a local ruler-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.ruler_lock",
+        verify_kind="radar_v4.ruler_verify",
+        invalid_code="RULER_RECORD_INVALID",
+        recompute=ruler_lock_any,
     )
 
 
