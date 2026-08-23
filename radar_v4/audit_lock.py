@@ -6,7 +6,7 @@ from json import JSONDecodeError, loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
-from radar_v4.audit_bundle import AUDIT_MANIFEST, verify_audit_bundle
+from radar_v4.audit_bundle import AUDIT_MANIFEST, AuditBundleError, verify_audit_bundle
 from radar_v4.integrity import IntegrityCheck
 from radar_v4.snapshot_files import SnapshotFileError
 from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
@@ -124,7 +124,16 @@ def audit_copy_scan(path: Path) -> IntegrityCheck:
     raw, error = _load_audit(path)
     if error is not None:
         return error
-    verification = verify_audit_bundle(_audit_dir(path))
+    try:
+        verification = verify_audit_bundle(_audit_dir(path))
+    except AuditBundleError as exc:
+        return IntegrityCheck(
+            "radar_v4.audit_copy",
+            False,
+            exc.code,
+            (exc.reason,),
+            {"path": str(path)},
+        )
     if not verification.matched:
         return IntegrityCheck(
             "radar_v4.audit_copy",
