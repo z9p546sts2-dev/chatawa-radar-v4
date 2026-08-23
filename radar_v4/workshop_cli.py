@@ -195,6 +195,21 @@ from radar_v4.copy_set import (
     verify_copy_set_record,
     write_copy_set_record,
 )
+from radar_v4.member_bind import (
+    member_bind,
+    member_bind_determinism,
+    member_bind_status,
+    verify_member_bind_record,
+    write_member_bind_record,
+)
+from radar_v4.member_lock import (
+    compare_member_lock,
+    member_lock,
+    member_lock_determinism,
+    member_status_bind,
+    verify_member_record,
+    write_member_record,
+)
 from radar_v4.digest_lock import (
     compare_digest_lock,
     digest_lock,
@@ -1849,6 +1864,81 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     copies_status.add_argument("--path", required=True)
 
+    member_lock_cmd = sub.add_parser(
+        "member-lock",
+        help="lock named file members; a digest does not name the file",
+    )
+    member_lock_cmd.add_argument("--path", required=True)
+
+    member_eq = sub.add_parser(
+        "member-eq",
+        help="repeat member-lock; equality is not a method",
+    )
+    member_eq.add_argument("--path", required=True)
+
+    cmp_members = sub.add_parser(
+        "compare-members",
+        help="compare named members of two paths",
+    )
+    cmp_members.add_argument("--left", required=True)
+    cmp_members.add_argument("--right", required=True)
+
+    write_member = sub.add_parser(
+        "write-member-lock",
+        help="write a local member-lock record; not market evidence",
+    )
+    write_member.add_argument("--path", required=True)
+    write_member.add_argument("--out", required=True)
+    write_member.add_argument("--replace", action="store_true")
+
+    verify_member = sub.add_parser(
+        "verify-member",
+        help="verify a local member-lock record",
+    )
+    verify_member.add_argument("--path", required=True)
+
+    member_status = sub.add_parser(
+        "member-status",
+        help="bind member-lock to status highest-unit; not a measurement",
+    )
+    member_status.add_argument("--path", required=True)
+
+    member_bind_cmd = sub.add_parser(
+        "member-bind",
+        help="require two lock records to share the named member map",
+    )
+    member_bind_cmd.add_argument("--left", required=True)
+    member_bind_cmd.add_argument("--right", required=True)
+
+    member_bind_eq = sub.add_parser(
+        "member-bind-eq",
+        help="repeat member-bind; equality is not a method",
+    )
+    member_bind_eq.add_argument("--left", required=True)
+    member_bind_eq.add_argument("--right", required=True)
+
+    write_mbind = sub.add_parser(
+        "write-member-bind",
+        help="write a local member-bind record; not market evidence",
+    )
+    write_mbind.add_argument("--left", required=True)
+    write_mbind.add_argument("--right", required=True)
+    write_mbind.add_argument("--out", required=True)
+    write_mbind.add_argument("--replace", action="store_true")
+
+    verify_mbind = sub.add_parser(
+        "verify-member-bind",
+        help="verify a local member-bind record",
+    )
+    verify_mbind.add_argument("--path", required=True)
+
+    mbind_status = sub.add_parser(
+        "member-bind-status",
+        help="bind member-bind to status highest-unit; not a measurement",
+    )
+    mbind_status.add_argument("--left", required=True)
+    mbind_status.add_argument("--right", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -2834,6 +2924,49 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "copy-set-status":
         check = copy_set_status(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-lock":
+        check = member_lock(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-eq":
+        check = member_lock_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-members":
+        check = compare_member_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-member-lock":
+        try:
+            record = write_member_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-member":
+        check = verify_member_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-status":
+        check = member_status_bind(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-bind":
+        check = member_bind(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-bind-eq":
+        check = member_bind_determinism(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-member-bind":
+        try:
+            record = write_member_bind_record(
+                Path(args.left), Path(args.right), Path(args.out), args.replace
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-member-bind":
+        check = verify_member_bind_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-bind-status":
+        check = member_bind_status(Path(args.left), Path(args.right))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

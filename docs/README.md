@@ -6,7 +6,7 @@ Controlling files stay at the repository root:
 
 | File | Role |
 |---|---|
-| `README.md` | Current status. Must keep `UNITS 7–1050` in the status line. |
+| `README.md` | Current status. Must keep `UNITS 7–1100` in the status line. |
 | `GOVERNANCE.md` | Authority and stop rules |
 | `ROADMAP.md` | Near-term foundation roadmap |
 | `V4_CONTROL_REQUIREMENTS.md` | Control requirements |

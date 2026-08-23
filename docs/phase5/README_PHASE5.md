@@ -84,6 +84,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 901–950** — lock-record bind and lock-set: two lock files or a folder of lock files must name the same source, highest-unit lock at 950. Inspectability only; not a research result.
 - **Units 951–1000** — path-independent content identity and content-bind of lock records from copied packs, highest-unit lock at 1000. Inspectability only; not a research result.
 - **Units 1001–1050** — content-set of lock records (digest only) and copy-set of pack directories; lock-set still requires the same path. Highest-unit lock at 1050. Inspectability only; not a research result.
+- **Units 1051–1100** — named member identity and member-bind: a pack digest does not name the changed file; digest-only bind is not member identity. Highest-unit lock at 1100. Inspectability only; not a research result.
 
 Locked question: `docs/phase5/RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
