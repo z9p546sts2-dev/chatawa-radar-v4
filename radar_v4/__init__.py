@@ -192,7 +192,9 @@ from radar_v4.name_lock import name_lock
 from radar_v4.path_lock import path_lock
 from radar_v4.record_eq import snapshot_count_bind
 from radar_v4.disp_lock import disposition_lock
+from radar_v4.audit_lock import audit_lock
 from radar_v4.bundle_lock import bundle_lock
+from radar_v4.chain_lock import chain_lock
 from radar_v4.export_lock import export_lock
 from radar_v4.manifest_lock import manifest_lock
 from radar_v4.report_lock import report_lock
@@ -365,9 +367,11 @@ __all__ = [
     "package_source_identity",
     "workshop_stop_record",
     "admission_vs_kept",
+    "audit_lock",
     "bundle_lock",
     "byte_check",
     "certify_pack",
+    "chain_lock",
     "export_lock",
     "freeze_status_bind",
     "disposition_lock",

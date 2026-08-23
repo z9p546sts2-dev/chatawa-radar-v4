@@ -245,6 +245,12 @@ Authorized by `Tools verify. Todd authorizes. Stay on course.`. These units add 
 
 They do **not** change the claim class. Completing unit 700 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
 
+### Phase 5 units 701–750 (inspectability continuation)
+
+Authorized by `Tools verify. Todd authorizes. Stay on course.`. These units add local audit-copy kind/files/verify lock, pack three-way chain lock, and status binds.
+
+They do **not** change the claim class. Completing unit 750 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
+
 ---
 
 ## Software facts at HEAD
@@ -266,6 +272,7 @@ TESTS AFTER UNITS 501–550 — 228 passed at 4ceca2b
 TESTS AFTER UNITS 551–600 — 234 passed at 931e5fd
 TESTS AFTER UNITS 601–650 — 240 passed at d658c64
 TESTS AFTER UNITS 651–700 — 246 passed at 3fff5fb
+TESTS AFTER UNITS 701–750 — pending implementer record on this branch
 REASON CODES — catalog present (python -m radar_v4 codes)
 CLI — python -m radar_v4
 NETWORK — none in this package
@@ -294,7 +301,7 @@ The workshop will not invent market calendars, exchange hours, or missing bars.
 
 ## Still unauthorized
 
-These remain unauthorized even though units 7–700 exist:
+These remain unauthorized even though units 7–750 exist:
 
 - purchased historical-stock API or any named vendor;
 - live capture;
@@ -362,7 +369,7 @@ The local evidence workshop on PR #8 can load, refuse, measure LEVEL 0 close-to-
 
 **No edge. No HISTORICAL measurement. No vendor. No method. No paper trading.**
 
-Completion of units 7–700 does not authorize a data purchase or Phase 6.
+Completion of units 7–750 does not authorize a data purchase or Phase 6.
 
 ---
 
@@ -408,7 +415,9 @@ Units 601–650 add pack-manifest kind/files/digest lock, pack-manifest verify, 
 
 Units 651–700 add snapshot-bundle sidecar/ruler lock, portable FIXTURE/SYNTHETIC export lock, and status binds.
 
-Passing `bundle-lock` or `export-lock` on a local snapshot bundle or the SYNTHETIC fixture is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
+Units 701–750 add local audit-copy kind/files/verify lock, pack three-way chain lock, and status binds.
+
+Passing `audit-lock` or `chain-lock` on a local audit copy or the SYNTHETIC fixture is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
 
 ---
 
@@ -416,9 +425,9 @@ Passing `bundle-lock` or `export-lock` on a local snapshot bundle or the SYNTHET
 
 ```text
 RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF + OPEN-ITEM REMEDIATION
-SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–700
+SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–750
 INDEPENDENT AUDIT THROUGH UNIT 100 — PASS WITH MATERIAL OPEN ITEMS
-UNITS 101–700 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
+UNITS 101–750 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
 CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 166 TESTS AT 053fc28 — IMPLEMENTER-REPORTED
 167 TESTS AT 4318a5c — IMPLEMENTER-REPORTED AFTER REMEDIATION
@@ -433,7 +442,8 @@ CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 228 TESTS AFTER UNITS 501–550 — IMPLEMENTER-REPORTED
 234 TESTS AFTER UNITS 551–600 — IMPLEMENTER-REPORTED
 240 TESTS AFTER UNITS 601–650 — IMPLEMENTER-REPORTED
-246 TESTS AFTER UNITS 651–700 — IMPLEMENTER-REPORTED ON THIS BRANCH
+246 TESTS AFTER UNITS 651–700 — IMPLEMENTER-REPORTED
+252 TESTS AFTER UNITS 701–750 — PENDING IMPLEMENTER RECORD ON THIS BRANCH
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN

@@ -124,6 +124,14 @@ from radar_v4.disp_lock import (
     verify_disposition_record,
     write_disposition_record,
 )
+from radar_v4.audit_lock import (
+    audit_lock,
+    audit_lock_determinism,
+    audit_status_bind,
+    compare_audit_lock,
+    verify_audit_record,
+    write_audit_record,
+)
 from radar_v4.bundle_lock import (
     bundle_lock,
     bundle_lock_determinism,
@@ -131,6 +139,14 @@ from radar_v4.bundle_lock import (
     compare_bundle_lock,
     verify_bundle_record,
     write_bundle_record,
+)
+from radar_v4.chain_lock import (
+    chain_lock,
+    chain_lock_determinism,
+    chain_status_bind,
+    compare_chain_lock,
+    verify_chain_record,
+    write_chain_record,
 )
 from radar_v4.export_lock import (
     compare_export_lock,
@@ -1246,6 +1262,84 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     export_status.add_argument("--pack", required=True)
 
+    audit_lock_cmd = sub.add_parser(
+        "audit-lock",
+        help="lock a local audit copy; not market evidence",
+    )
+    audit_lock_cmd.add_argument("--path", required=True)
+
+    audit_eq = sub.add_parser(
+        "audit-eq",
+        help="run audit-lock twice; equality is not a method",
+    )
+    audit_eq.add_argument("--path", required=True)
+
+    cmp_audit = sub.add_parser(
+        "compare-audit-lock",
+        help="compare audit-lock of two audit copies",
+    )
+    cmp_audit.add_argument("--left", required=True)
+    cmp_audit.add_argument("--right", required=True)
+
+    write_audit_lock = sub.add_parser(
+        "write-audit-lock",
+        help="write a local audit-lock record; not market evidence",
+    )
+    write_audit_lock.add_argument("--path", required=True)
+    write_audit_lock.add_argument("--out", required=True)
+    write_audit_lock.add_argument("--replace", action="store_true")
+
+    verify_audit_lock = sub.add_parser(
+        "verify-audit-lock",
+        help="verify a local audit-lock record",
+    )
+    verify_audit_lock.add_argument("--path", required=True)
+
+    audit_status = sub.add_parser(
+        "audit-status",
+        help="bind audit-lock to status highest-unit; not a measurement",
+    )
+    audit_status.add_argument("--path", required=True)
+
+    chain_lock_cmd = sub.add_parser(
+        "chain-lock",
+        help="lock pack filesystem/inventory/manifest identity; not a method",
+    )
+    chain_lock_cmd.add_argument("--pack", required=True)
+
+    chain_eq = sub.add_parser(
+        "chain-eq",
+        help="run chain-lock twice; equality is not a method",
+    )
+    chain_eq.add_argument("--pack", required=True)
+
+    cmp_chain = sub.add_parser(
+        "compare-chain-lock",
+        help="compare chain-lock of two packs",
+    )
+    cmp_chain.add_argument("--left", required=True)
+    cmp_chain.add_argument("--right", required=True)
+
+    write_chain = sub.add_parser(
+        "write-chain-lock",
+        help="write a local chain-lock record; not a method",
+    )
+    write_chain.add_argument("--pack", required=True)
+    write_chain.add_argument("--out", required=True)
+    write_chain.add_argument("--replace", action="store_true")
+
+    verify_chain = sub.add_parser(
+        "verify-chain",
+        help="verify a local chain-lock record",
+    )
+    verify_chain.add_argument("--path", required=True)
+
+    chain_status = sub.add_parser(
+        "chain-status",
+        help="bind chain-lock to status highest-unit; not a measurement",
+    )
+    chain_status.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -1947,6 +2041,50 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "export-status":
         check = export_status_bind(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "audit-lock":
+        check = audit_lock(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "audit-eq":
+        check = audit_lock_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-audit-lock":
+        check = compare_audit_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-audit-lock":
+        try:
+            record = write_audit_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-audit-lock":
+        check = verify_audit_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "audit-status":
+        check = audit_status_bind(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "chain-lock":
+        check = chain_lock(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "chain-eq":
+        check = chain_lock_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-chain-lock":
+        check = compare_chain_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-chain-lock":
+        try:
+            record = write_chain_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-chain":
+        check = verify_chain_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "chain-status":
+        check = chain_status_bind(Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
