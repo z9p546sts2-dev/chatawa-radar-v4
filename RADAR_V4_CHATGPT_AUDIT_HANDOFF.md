@@ -35,6 +35,26 @@ This record is for independent audit. It is not a method claim, not a performanc
 
 ---
 
+## ChatGPT independent audit of PR #22 — remediations
+
+ChatGPT disposition on `2991557`: **PASS WITH MATERIAL OPEN ITEMS**. Merge not recommended until the two open items were repaired. Cursor repaired only. No unit 851. No new claim class.
+
+### OPEN ITEM A — branch custody in controlling headlines
+
+README, ROADMAP, and GOVERNANCE headlines now say this is a **stacked draft branch** through unit 850 and that **`main` is currently through unit 200**.
+
+### OPEN ITEM B — `verify` must recompute
+
+`verify_safety_record`, `verify_leftover_record`, `verify_inventory_record`, `verify_layout_record`, and `verify_manifest_record` no longer accept `document_kind` + `valid: true` alone.
+
+They now require `details.source_path`, recompute the lock from that path, and compare canonical bytes. A fabricated `{document_kind, valid: true}` object is refused. A record written against a pack that later gains leftovers is refused.
+
+Remaining earlier `verify-*` commands still use the shallow pattern. That is recorded, not silently claimed closed.
+
+Highest unit remains **850**. Claim class unchanged. Not merged.
+
+---
+
 ## Implementer-executed audit snapshot — 2026-08-23
 
 This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.

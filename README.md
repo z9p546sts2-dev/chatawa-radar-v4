@@ -1,6 +1,6 @@
 # Chatawa Radar V4
 
-## Status: PHASE 5 AUTHORIZED — UNITS 7–850 COMPLETE WITHIN SCOPE
+## Status: STACKED DRAFT — PHASE 5 AUTHORIZED — UNITS 7–850 COMPLETE WITHIN LOCAL-SOFTWARE SCOPE; MAIN THROUGH UNIT 200
 
 Radar V4 has a bounded evidence foundation plus a local Phase 5 path: admit a declared dataset, describe ordinary close-to-close differences, persist/verify/export snapshots, journal refusals, bind a measurement ruler, and verify pack-file integrity.
 

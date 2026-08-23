@@ -2,9 +2,9 @@
 
 ## Status
 
-**PHASE 5 AUTHORIZED — UNITS 7–850 COMPLETE WITHIN SCOPE**
+**STACKED DRAFT BRANCH STATUS — PHASE 5 UNITS 7–850 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE; MAIN CURRENTLY THROUGH UNIT 200.**
 
-Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software. Todd authorized continued building without per-unit stops. Vendor download and method research remain unauthorized.
+Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software on this stacked draft branch. `main` currently carries units 7–200 only. Todd authorized continued building without per-unit stops. Vendor download and method research remain unauthorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, deployment, and any future operational role.
 
@@ -188,7 +188,7 @@ This phase must not begin automatically after Build Unit 1.
 
 Before any real dataset is admitted, required controls include provenance, source identity, interval/cadence semantics, timestamps, timezone, transformation identity, integrity checks, and quarantine of contradictory or unknown-provenance data.
 
-**Status:** AUTHORIZED-TC / UNITS 7–850 COMPLETE WITHIN SCOPE FOR LOCAL SOFTWARE ONLY
+**Status:** AUTHORIZED-TC / STACKED DRAFT UNITS 7–850 COMPLETE WITHIN SCOPE FOR LOCAL SOFTWARE ONLY; MAIN CURRENTLY THROUGH UNIT 200
 
 Vendor download, paper trading, and method research remain unauthorized. Completing units 7–850 does not authorize a data purchase.
 
@@ -289,7 +289,7 @@ PHASE 3 — BUILD UNIT 1 PROPOSAL / AUTH READINESS     COMPLETE / PASS
 PHASE 4 — BUILD UNIT 1 EXECUTION                     COMPLETE WITHIN SCOPE / ACCEPTED-TC
 PHASE 4A — BUILD UNIT 2 INTAKE / QUARANTINE          COMPLETE WITHIN SCOPE / ACCEPTED-TC
 PHASE 4B — BUILD UNITS 3–6 JSON / REGISTRY / COLLISION / FIXTURE PACK  COMPLETE WITHIN SCOPE
-PHASE 5 — DATA / RESEARCH FOUNDATION                 AUTHORIZED-TC / UNITS 7–850 COMPLETE
+PHASE 5 — DATA / RESEARCH FOUNDATION                 AUTHORIZED-TC / STACKED DRAFT 7–850; MAIN THROUGH 200
 PHASE 6 — FEATURE / METHOD RESEARCH                  NOT AUTHORIZED
 PHASE 7 — BOUNDED OFFLINE PILOT                      NOT AUTHORIZED
 PHASE 8 — HUMAN REVIEW INTERFACE                     NOT AUTHORIZED

@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.pack_inventory import inventory_pack
 from radar_v4.snapshot_files import SnapshotFileError
 from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
@@ -115,14 +119,16 @@ def inventory_lock(path: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Inventory lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                path, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.inventory_lock",
         True,
         None,
         ("Inventory lock passed. Not market evidence.",),
-        {"failed": []},
+        lock_source_details(path, {"failed": []}),
     )
 
 
@@ -163,40 +169,12 @@ def write_inventory_record(
 
 
 def verify_inventory_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.inventory_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable inventory-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.inventory_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("inventory-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.inventory_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("inventory-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.inventory_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.inventory_verify",
-        ok,
-        None if ok else "INVENTORY_RECORD_INVALID",
-        ("Verified a local inventory-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.inventory_lock",
+        verify_kind="radar_v4.inventory_verify",
+        invalid_code="INVENTORY_RECORD_INVALID",
+        recompute=inventory_lock,
     )
 
 

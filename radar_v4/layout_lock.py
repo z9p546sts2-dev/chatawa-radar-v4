@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.pack_describe import inspect_pack_layout
 from radar_v4.snapshot_files import SnapshotFileError
 from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
@@ -107,14 +111,16 @@ def layout_lock(path: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Layout lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                path, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.layout_lock",
         True,
         None,
         ("Layout lock passed. Not market evidence.",),
-        {"failed": []},
+        lock_source_details(path, {"failed": []}),
     )
 
 
@@ -155,40 +161,12 @@ def write_layout_record(
 
 
 def verify_layout_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.layout_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable layout-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.layout_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("layout-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.layout_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("layout-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.layout_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.layout_verify",
-        ok,
-        None if ok else "LAYOUT_RECORD_INVALID",
-        ("Verified a local layout-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.layout_lock",
+        verify_kind="radar_v4.layout_verify",
+        invalid_code="LAYOUT_RECORD_INVALID",
+        recompute=layout_lock,
     )
 
 

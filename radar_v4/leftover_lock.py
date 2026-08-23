@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.record_check import inspect_leftovers
 from radar_v4.snapshot_files import SnapshotFileError
 from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
@@ -14,20 +18,21 @@ from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
 
 def leftover_lock(path: Path) -> IntegrityCheck:
     leftovers = inspect_leftovers(path)
+    details = lock_source_details(path, leftovers.details)
     if not leftovers.valid:
         return IntegrityCheck(
             "radar_v4.leftover_lock",
             False,
             leftovers.error_code,
             ("Leftover lock failed. Leftovers are not repaired.",) + leftovers.notes,
-            leftovers.details,
+            details,
         )
     return IntegrityCheck(
         "radar_v4.leftover_lock",
         True,
         None,
         ("Leftover lock passed. Not market evidence.",),
-        leftovers.details,
+        details,
     )
 
 
@@ -68,40 +73,12 @@ def write_leftover_record(
 
 
 def verify_leftover_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.leftover_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable leftover-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.leftover_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("leftover-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.leftover_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("leftover-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.leftover_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.leftover_verify",
-        ok,
-        None if ok else "LEFTOVER_RECORD_INVALID",
-        ("Verified a local leftover-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.leftover_lock",
+        verify_kind="radar_v4.leftover_verify",
+        invalid_code="LEFTOVER_RECORD_INVALID",
+        recompute=leftover_lock,
     )
 
 

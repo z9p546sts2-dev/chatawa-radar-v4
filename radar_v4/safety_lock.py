@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
-from json import JSONDecodeError, loads
+from json import loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.pack_safety import inspect_pack_safety
 from radar_v4.snapshot_files import SnapshotFileError
 from radar_v4.workshop_check import PHASE5_HIGHEST_UNIT, workshop_status
@@ -39,7 +43,9 @@ def safety_lock(path: Path) -> IntegrityCheck:
             False,
             readable.error_code,
             ("Safety lock failed.",) + readable.notes,
-            {"failed": [readable.document_kind], "issue_codes": []},
+            lock_source_details(
+                path, {"failed": [readable.document_kind], "issue_codes": []}
+            ),
         )
     report = inspect_pack_safety(path)
     if not report.safe:
@@ -49,17 +55,20 @@ def safety_lock(path: Path) -> IntegrityCheck:
             False,
             first,
             ("Safety lock failed. Unsafe pack files are not repaired.",),
-            {
-                "failed": ["radar_v4.pack_safety"],
-                "issue_codes": list(report.issues),
-            },
+            lock_source_details(
+                path,
+                {
+                    "failed": ["radar_v4.pack_safety"],
+                    "issue_codes": list(report.issues),
+                },
+            ),
         )
     return IntegrityCheck(
         "radar_v4.safety_lock",
         True,
         None,
         ("Safety lock passed. Not market evidence.",),
-        {"failed": [], "issue_codes": []},
+        lock_source_details(path, {"failed": [], "issue_codes": []}),
     )
 
 
@@ -100,40 +109,12 @@ def write_safety_record(
 
 
 def verify_safety_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.safety_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable safety-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.safety_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("safety-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.safety_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("safety-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.safety_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.safety_verify",
-        ok,
-        None if ok else "SAFETY_RECORD_INVALID",
-        ("Verified a local safety-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.safety_lock",
+        verify_kind="radar_v4.safety_verify",
+        invalid_code="SAFETY_RECORD_INVALID",
+        recompute=safety_lock,
     )
 
 

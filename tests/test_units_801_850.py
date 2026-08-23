@@ -75,6 +75,29 @@ class Units801To850Tests(unittest.TestCase):
             written_leftover = write_leftover_record(PACK, leftover_path)
             self.assertTrue(written_leftover.valid)
             self.assertTrue(verify_leftover_record(leftover_path).valid)
+            fabricated = root / "fabricated.json"
+            fabricated.write_text(
+                '{"document_kind":"radar_v4.safety_lock","valid":true}\n',
+                encoding="utf-8",
+            )
+            fake = verify_safety_record(fabricated)
+            self.assertFalse(fake.valid)
+            self.assertEqual(fake.error_code, "SAFETY_RECORD_INVALID")
+            leftover_fake = root / "leftover-fabricated.json"
+            leftover_fake.write_text(
+                '{"document_kind":"radar_v4.leftover_lock","valid":true}\n',
+                encoding="utf-8",
+            )
+            leftover_check = verify_leftover_record(leftover_fake)
+            self.assertFalse(leftover_check.valid)
+            self.assertEqual(leftover_check.error_code, "LEFTOVER_RECORD_INVALID")
+            stale = root / "stale"
+            copytree(PACK, stale)
+            stale_record = root / "stale-leftover.json"
+            self.assertTrue(write_leftover_record(stale, stale_record).valid)
+            (stale / "foo.tmp").write_text("leftover\n", encoding="utf-8")
+            stale_verify = verify_leftover_record(stale_record)
+            self.assertFalse(stale_verify.valid)
 
     def test_refusals(self) -> None:
         with tempfile.TemporaryDirectory() as raw:

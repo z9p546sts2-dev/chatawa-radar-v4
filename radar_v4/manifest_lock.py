@@ -6,7 +6,11 @@ from json import JSONDecodeError, loads
 from pathlib import Path
 
 from radar_v4.atomic_write import file_exists_without_replace, write_text_atomic
-from radar_v4.integrity import IntegrityCheck
+from radar_v4.integrity import (
+    IntegrityCheck,
+    lock_source_details,
+    verify_recomputed_lock_record,
+)
 from radar_v4.pack_manifest import (
     MANIFEST_FILENAME,
     PackManifestError,
@@ -178,14 +182,16 @@ def manifest_lock(target: Path) -> IntegrityCheck:
             False,
             first.error_code,
             ("Manifest lock failed.",) + first.notes,
-            {"failed": [part.document_kind for part in failed]},
+            lock_source_details(
+                path, {"failed": [part.document_kind for part in failed]}
+            ),
         )
     return IntegrityCheck(
         "radar_v4.manifest_lock",
         True,
         None,
         ("Manifest lock passed. Not market evidence.",),
-        {"failed": []},
+        lock_source_details(path, {"failed": []}),
     )
 
 
@@ -226,40 +232,12 @@ def write_manifest_record(
 
 
 def verify_manifest_record(path: Path) -> IntegrityCheck:
-    target = Path(path)
-    try:
-        raw = loads(target.read_text(encoding="utf-8"))
-    except OSError:
-        return IntegrityCheck(
-            "radar_v4.manifest_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("unreadable manifest-lock record",),
-            {"path": str(target)},
-        )
-    except JSONDecodeError:
-        return IntegrityCheck(
-            "radar_v4.manifest_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("manifest-lock record is not JSON",),
-            {"path": str(target)},
-        )
-    if not isinstance(raw, dict):
-        return IntegrityCheck(
-            "radar_v4.manifest_verify",
-            False,
-            "UNREADABLE_JSON",
-            ("manifest-lock record must be an object",),
-            {"path": str(target)},
-        )
-    ok = raw.get("document_kind") == "radar_v4.manifest_lock" and raw.get("valid") is True
-    return IntegrityCheck(
-        "radar_v4.manifest_verify",
-        ok,
-        None if ok else "MANIFEST_RECORD_INVALID",
-        ("Verified a local manifest-lock record. Not market evidence.",),
-        {"path": str(target)},
+    return verify_recomputed_lock_record(
+        path,
+        expected_kind="radar_v4.manifest_lock",
+        verify_kind="radar_v4.manifest_verify",
+        invalid_code="MANIFEST_RECORD_INVALID",
+        recompute=manifest_lock,
     )
 
 

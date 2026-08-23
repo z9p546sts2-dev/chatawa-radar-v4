@@ -75,6 +75,14 @@ class Units751To800Tests(unittest.TestCase):
             written_layout = write_layout_record(PACK, layout_path)
             self.assertTrue(written_layout.valid)
             self.assertTrue(verify_layout_record(layout_path).valid)
+            fabricated = root / "fabricated.json"
+            fabricated.write_text(
+                '{"document_kind":"radar_v4.inventory_lock","valid":true}\n',
+                encoding="utf-8",
+            )
+            fake = verify_inventory_record(fabricated)
+            self.assertFalse(fake.valid)
+            self.assertEqual(fake.error_code, "INVENTORY_RECORD_INVALID")
 
     def test_refusals(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
