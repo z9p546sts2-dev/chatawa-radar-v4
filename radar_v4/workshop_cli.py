@@ -195,6 +195,21 @@ from radar_v4.copy_set import (
     verify_copy_set_record,
     write_copy_set_record,
 )
+from radar_v4.cadence_bind import (
+    cadence_bind,
+    cadence_bind_determinism,
+    cadence_bind_status,
+    verify_cadence_bind_record,
+    write_cadence_bind_record,
+)
+from radar_v4.cadence_lock import (
+    cadence_lock,
+    cadence_lock_determinism,
+    cadence_status_bind,
+    compare_cadence_lock,
+    verify_cadence_record,
+    write_cadence_record,
+)
 from radar_v4.member_align import (
     member_align,
     member_align_determinism,
@@ -2029,6 +2044,81 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     align_status.add_argument("--record", required=True)
     align_status.add_argument("--live", required=True)
 
+    cadence_lock_cmd = sub.add_parser(
+        "cadence-lock",
+        help="refuse evaluation cadence that outruns bar interval",
+    )
+    cadence_lock_cmd.add_argument("--path", required=True)
+
+    cadence_eq = sub.add_parser(
+        "cadence-eq",
+        help="repeat cadence-lock; equality is not a method",
+    )
+    cadence_eq.add_argument("--path", required=True)
+
+    cmp_cadence = sub.add_parser(
+        "compare-cadence",
+        help="compare cadence identity of two documents",
+    )
+    cmp_cadence.add_argument("--left", required=True)
+    cmp_cadence.add_argument("--right", required=True)
+
+    write_cadence = sub.add_parser(
+        "write-cadence-lock",
+        help="write a local cadence-lock record; not market evidence",
+    )
+    write_cadence.add_argument("--path", required=True)
+    write_cadence.add_argument("--out", required=True)
+    write_cadence.add_argument("--replace", action="store_true")
+
+    verify_cadence = sub.add_parser(
+        "verify-cadence",
+        help="verify a local cadence-lock record",
+    )
+    verify_cadence.add_argument("--path", required=True)
+
+    cadence_status = sub.add_parser(
+        "cadence-status",
+        help="bind cadence-lock to status highest-unit; not a measurement",
+    )
+    cadence_status.add_argument("--path", required=True)
+
+    cadence_bind_cmd = sub.add_parser(
+        "cadence-bind",
+        help="require cadence interval to match the pack declaration",
+    )
+    cadence_bind_cmd.add_argument("--cadence", required=True)
+    cadence_bind_cmd.add_argument("--pack", required=True)
+
+    cadence_bind_eq = sub.add_parser(
+        "cadence-bind-eq",
+        help="repeat cadence-bind; equality is not a method",
+    )
+    cadence_bind_eq.add_argument("--cadence", required=True)
+    cadence_bind_eq.add_argument("--pack", required=True)
+
+    write_cbind = sub.add_parser(
+        "write-cadence-bind",
+        help="write a local cadence-bind record; not market evidence",
+    )
+    write_cbind.add_argument("--cadence", required=True)
+    write_cbind.add_argument("--pack", required=True)
+    write_cbind.add_argument("--out", required=True)
+    write_cbind.add_argument("--replace", action="store_true")
+
+    verify_cbind = sub.add_parser(
+        "verify-cadence-bind",
+        help="verify a local cadence-bind record",
+    )
+    verify_cbind.add_argument("--path", required=True)
+
+    cbind_status = sub.add_parser(
+        "cadence-bind-status",
+        help="bind cadence-bind to status highest-unit; not a measurement",
+    )
+    cbind_status.add_argument("--cadence", required=True)
+    cbind_status.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -3100,6 +3190,49 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "member-align-status":
         check = member_align_status(Path(args.record), Path(args.live))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "cadence-lock":
+        check = cadence_lock(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "cadence-eq":
+        check = cadence_lock_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-cadence":
+        check = compare_cadence_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-cadence-lock":
+        try:
+            record = write_cadence_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-cadence":
+        check = verify_cadence_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "cadence-status":
+        check = cadence_status_bind(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "cadence-bind":
+        check = cadence_bind(Path(args.cadence), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "cadence-bind-eq":
+        check = cadence_bind_determinism(Path(args.cadence), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-cadence-bind":
+        try:
+            record = write_cadence_bind_record(
+                Path(args.cadence), Path(args.pack), Path(args.out), args.replace
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-cadence-bind":
+        check = verify_cadence_bind_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "cadence-bind-status":
+        check = cadence_bind_status(Path(args.cadence), Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

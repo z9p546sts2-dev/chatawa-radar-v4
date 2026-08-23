@@ -48,13 +48,13 @@ class Units1101To1150Tests(unittest.TestCase):
         py_compile(str(ROOT / "radar_v4/member_align.py"), doraise=True)
 
     def test_highest_unit_is_1150(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 1150)
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 1150)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 1150)
+        self.assertGreaterEqual(status["highest_unit"], 1150)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 1150)
+        self.assertGreaterEqual(stop["highest_unit"], 1150)
         self.assertFalse(stop["vendor_authorized"])
 
     def test_set_of_copies_and_align_to_other_path(self) -> None:
