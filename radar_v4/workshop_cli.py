@@ -172,6 +172,21 @@ from radar_v4.digest_lock import (
     verify_digest_record,
     write_digest_record,
 )
+from radar_v4.lock_bind import (
+    bind_lock_records,
+    lock_bind_determinism,
+    lock_bind_status,
+    verify_lock_bind_record,
+    write_lock_bind_record,
+)
+from radar_v4.lock_set import (
+    compare_lock_set,
+    lock_set,
+    lock_set_determinism,
+    lock_set_status,
+    verify_lock_set_record,
+    write_lock_set_record,
+)
 from radar_v4.leftover_lock import (
     compare_leftover_lock,
     leftover_lock,
@@ -1575,6 +1590,81 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     digest_status.add_argument("--path", required=True)
 
+    bind_locks = sub.add_parser(
+        "bind-locks",
+        help="require two lock records to name the same source",
+    )
+    bind_locks.add_argument("--left", required=True)
+    bind_locks.add_argument("--right", required=True)
+
+    bind_eq = sub.add_parser(
+        "bind-eq",
+        help="repeat bind-locks; equality is not a method",
+    )
+    bind_eq.add_argument("--left", required=True)
+    bind_eq.add_argument("--right", required=True)
+
+    write_bind = sub.add_parser(
+        "write-lock-bind",
+        help="write a local lock-bind record; not market evidence",
+    )
+    write_bind.add_argument("--left", required=True)
+    write_bind.add_argument("--right", required=True)
+    write_bind.add_argument("--out", required=True)
+    write_bind.add_argument("--replace", action="store_true")
+
+    verify_bind = sub.add_parser(
+        "verify-lock-bind",
+        help="verify a local lock-bind record",
+    )
+    verify_bind.add_argument("--path", required=True)
+
+    bind_status = sub.add_parser(
+        "bind-status",
+        help="bind lock-bind to status highest-unit; not a measurement",
+    )
+    bind_status.add_argument("--left", required=True)
+    bind_status.add_argument("--right", required=True)
+
+    lock_set_cmd = sub.add_parser(
+        "lock-set",
+        help="require a folder of lock records to name the same source",
+    )
+    lock_set_cmd.add_argument("--path", required=True)
+
+    lock_set_eq = sub.add_parser(
+        "lock-set-eq",
+        help="repeat lock-set; equality is not a method",
+    )
+    lock_set_eq.add_argument("--path", required=True)
+
+    cmp_lock_set = sub.add_parser(
+        "compare-lock-set",
+        help="compare lock-set of two folders",
+    )
+    cmp_lock_set.add_argument("--left", required=True)
+    cmp_lock_set.add_argument("--right", required=True)
+
+    write_set = sub.add_parser(
+        "write-lock-set",
+        help="write a local lock-set record; not market evidence",
+    )
+    write_set.add_argument("--path", required=True)
+    write_set.add_argument("--out", required=True)
+    write_set.add_argument("--replace", action="store_true")
+
+    verify_set = sub.add_parser(
+        "verify-lock-set",
+        help="verify a local lock-set record",
+    )
+    verify_set.add_argument("--path", required=True)
+
+    set_status = sub.add_parser(
+        "lock-set-status",
+        help="bind lock-set to status highest-unit; not a measurement",
+    )
+    set_status.add_argument("--path", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -2430,6 +2520,49 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "digest-status":
         check = digest_status_bind(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "bind-locks":
+        check = bind_lock_records(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "bind-eq":
+        check = lock_bind_determinism(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-lock-bind":
+        try:
+            record = write_lock_bind_record(
+                Path(args.left), Path(args.right), Path(args.out), args.replace
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-lock-bind":
+        check = verify_lock_bind_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "bind-status":
+        check = lock_bind_status(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "lock-set":
+        check = lock_set(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "lock-set-eq":
+        check = lock_set_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-lock-set":
+        check = compare_lock_set(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-lock-set":
+        try:
+            record = write_lock_set_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-lock-set":
+        check = verify_lock_set_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "lock-set-status":
+        check = lock_set_status(Path(args.path))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

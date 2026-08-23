@@ -42,13 +42,13 @@ class Units851To900Tests(unittest.TestCase):
         py_compile(str(ROOT / "radar_v4/integrity.py"), doraise=True)
 
     def test_highest_unit_is_900(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 900)
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 900)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 900)
+        self.assertGreaterEqual(status["highest_unit"], 900)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 900)
+        self.assertGreaterEqual(stop["highest_unit"], 900)
         self.assertFalse(stop["vendor_authorized"])
 
     def test_synthetic_digest_and_source_identity(self) -> None:

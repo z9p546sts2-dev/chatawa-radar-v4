@@ -1,19 +1,19 @@
-# ChatGPT Audit Handoff — Radar V4 through Unit 900
+# ChatGPT Audit Handoff — Radar V4 through Unit 950
 
 ```text
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
-CURRENT BRANCH — cursor/phase-5-units-851-900-9fd5
-CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/23
-CURRENT SOFTWARE HEAD — 5c157dca69e4ae1837ee3785c7c2771833c0948f
-IMPLEMENTATION HEAD — 5c157dc (units 851–900)
-TEST-COUNT HEAD — 5c157dc (271 passed)
+CURRENT BRANCH — cursor/phase-5-units-901-950-9fd5
+CURRENT PR — stacked draft on PR #23; not merged
+CURRENT SOFTWARE HEAD — pending implementation commit
+IMPLEMENTATION HEAD — pending (units 901–950)
+TEST-COUNT HEAD — pending
 BASE / main — 56db82f (Phase 5 units 7–200 merged)
-STACKED OPEN PRS — #10 (201–250) through #23 (851–900); not merged
+STACKED OPEN PRS — #10 (201–250) through #23 (851–900) plus this 901–950 draft; not merged
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PASSES; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PENDING TEST COUNT; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 
@@ -409,6 +409,12 @@ Authorized by `Tools verify. Todd authorizes. Stay on course.`. These units add 
 
 They do **not** change the claim class. Completing unit 900 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
 
+### Phase 5 units 901–950 (inspectability continuation)
+
+Authorized by `Tools verify. Todd authorizes. Stay on course.`. These units add lock-record bind and lock-set: two lock files, or a folder of lock files, must name the same source. Mixing locks from different packs is refused.
+
+They do **not** change the claim class. Completing unit 950 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
+
 ---
 
 ## Software facts at HEAD
@@ -434,6 +440,7 @@ TESTS AFTER UNITS 701–750 — 252 passed at 4e30ef0
 TESTS AFTER UNITS 751–800 — 258 passed at dd43d7f
 TESTS AFTER UNITS 801–850 — 264 passed at 0895354
 TESTS AFTER UNITS 851–900 — 271 passed at 5c157dc
+TESTS AFTER UNITS 901–950 — pending implementer count
 REASON CODES — catalog present (python -m radar_v4 codes)
 CLI — python -m radar_v4
 NETWORK — none in this package
@@ -462,7 +469,7 @@ The workshop will not invent market calendars, exchange hours, or missing bars.
 
 ## Still unauthorized
 
-These remain unauthorized even though units 7–900 exist:
+These remain unauthorized even though units 7–950 exist:
 
 - purchased historical-stock API or any named vendor;
 - live capture;
@@ -482,7 +489,7 @@ Do not buy a historical-stock API until a question is locked **and** Todd names 
 
 ## Controlling-record honesty
 
-`main` HEAD is `56db82f` — Phase 5 units **7–200** merged. Units **201–900** are stacked open draft PRs and are **not** on `main`.
+`main` HEAD is `56db82f` — Phase 5 units **7–200** merged. Units **201–950** are stacked open draft PRs and are **not** on `main`.
 
 Current software under this snapshot is the 851–900 stacked draft on PR #22 (`cursor/phase-5-units-801-850-9fd5`), not on `main`.
 
@@ -507,16 +514,17 @@ PYTHONPATH=. python3 -m radar_v4 digest-lock --path fixtures/synthetic_one_symbo
 PYTHONPATH=. python3 -m radar_v4 digest-status --path fixtures/synthetic_one_symbol_1d
 ```
 
-Expected on the current 851–900 branch:
+Expected on the current 901–950 branch:
 
-- full unittest suite: **271 passed** at `5c157dc` (implementer-executed);
-- `status` reports `highest_unit: 900`, `measured: false`, and does not emit `claim_level`;
+- full unittest suite: implementer count pending on this pre-test revision;
+- `status` reports `highest_unit: 950`, `measured: false`, and does not emit `claim_level`;
 - `status` denies method, vendor, historical evidence, and paper trading;
 - `session` on the fixture pack is `MEASURED` with SYNTHETIC changes `0.50`, `-0.50`;
 - `determinism` is equal;
 - `pack-verify` matches the stored manifest;
 - `safety-lock`, `leftover-lock`, and `digest-lock` are valid on the SYNTHETIC fixture;
-- a same-path clean-pack swap fails `verify` because `source_digest` changed.
+- a same-path clean-pack swap fails `verify` because `source_digest` changed;
+- two lock records from the same pack bind; mixed-source locks refuse `LOCK_BIND_MISMATCH`.
 
 If any command invents a session for a missing pack, downloads data, or prints an edge claim, that is a fail.
 
@@ -538,7 +546,7 @@ The local evidence workshop on this 851–900 stacked draft can load, refuse, me
 
 **No edge. No HISTORICAL measurement. No vendor. No method. No paper trading.**
 
-Completion of units 7–900 does not authorize a data purchase or Phase 6. Unit-count completion is inspectability, not a research result.
+Completion of units 7–950 does not authorize a data purchase or Phase 6. Unit-count completion is inspectability, not a research result.
 
 ---
 
@@ -592,7 +600,9 @@ Units 801–850 add pack safety inspectability lock, leftover tmp/orphan sidecar
 
 Units 851–900 add source-digest custody on lock records and refuse a same-path clean-pack swap that would otherwise keep an old lock verified.
 
-Passing `digest-lock` on the SYNTHETIC fixture is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
+Units 901–950 add lock-record bind and lock-set: two lock files, or a folder of lock files, must name the same source.
+
+Passing `bind-locks` or `lock-set` on SYNTHETIC lock files is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
 
 ---
 
@@ -600,9 +610,9 @@ Passing `digest-lock` on the SYNTHETIC fixture is inspectability. It is not mark
 
 ```text
 RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF + OPEN-ITEM REMEDIATION
-SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–900
+SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–950
 INDEPENDENT AUDIT THROUGH UNIT 100 — PASS WITH MATERIAL OPEN ITEMS
-UNITS 101–900 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
+UNITS 101–950 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
 CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 166 TESTS AT 053fc28 — IMPLEMENTER-REPORTED
 167 TESTS AT 4318a5c — IMPLEMENTER-REPORTED AFTER REMEDIATION
@@ -621,7 +631,8 @@ CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 252 TESTS AFTER UNITS 701–750 — IMPLEMENTER-REPORTED
 258 TESTS AFTER UNITS 751–800 — IMPLEMENTER-REPORTED
 264 TESTS AFTER UNITS 801–850 — IMPLEMENTER-REPORTED ON PR #22
-271 TESTS AFTER UNITS 851–900 — IMPLEMENTER-REPORTED ON THIS BRANCH
+271 TESTS AFTER UNITS 851–900 — IMPLEMENTER-REPORTED ON PR #23
+TESTS AFTER UNITS 901–950 — PENDING IMPLEMENTER COUNT
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN

@@ -200,6 +200,8 @@ from radar_v4.export_lock import export_lock
 from radar_v4.inventory_lock import inventory_lock
 from radar_v4.layout_lock import layout_lock
 from radar_v4.digest_lock import digest_lock
+from radar_v4.lock_bind import bind_lock_records
+from radar_v4.lock_set import lock_set
 from radar_v4.leftover_lock import leftover_lock
 from radar_v4.safety_lock import safety_lock
 from radar_v4.manifest_lock import manifest_lock
@@ -382,7 +384,9 @@ __all__ = [
     "freeze_status_bind",
     "inventory_lock",
     "layout_lock",
+    "bind_lock_records",
     "digest_lock",
+    "lock_set",
     "leftover_lock",
     "safety_lock",
     "source_digest",

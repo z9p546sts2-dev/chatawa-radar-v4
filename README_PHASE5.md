@@ -81,6 +81,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 751–800** — pack inventory role lock, pack layout declaration/observations/manifest lock, highest-unit lock at 800. Inspectability only; not a research result.
 - **Units 801–850** — pack safety inspectability lock, leftover tmp/orphan sidecar lock, highest-unit lock at 850. Inspectability only; not a research result.
 - **Units 851–900** — source-digest custody on lock records, same-path clean-pack swap refused, highest-unit lock at 900. Inspectability only; not a research result.
+- **Units 901–950** — lock-record bind and lock-set: two lock files or a folder of lock files must name the same source, highest-unit lock at 950. Inspectability only; not a research result.
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 

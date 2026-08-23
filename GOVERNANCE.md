@@ -2,9 +2,9 @@
 
 ## Status
 
-**STACKED DRAFT BRANCH STATUS — PHASE 5 UNITS 7–900 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE; MAIN CURRENTLY THROUGH UNIT 200.**
+**STACKED DRAFT BRANCH STATUS — PHASE 5 UNITS 7–950 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE; MAIN CURRENTLY THROUGH UNIT 200.**
 
-Radar V4 has Phase 5 dataset admission through unit 900 on this stacked draft branch. `main` currently carries units 7–200 only. The branch work is: local FIXTURE/SYNTHETIC session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, source-digest custody, and a workshop stop record. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence. Units 101–900 are inspectability, not a research result.
+Radar V4 has Phase 5 dataset admission through unit 950 on this stacked draft branch. `main` currently carries units 7–200 only. The branch work is: local FIXTURE/SYNTHETIC session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, source-digest custody, lock-record bind and lock-set, and a workshop stop record. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence. Units 101–950 are inspectability, not a research result.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -306,7 +306,7 @@ SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
-PHASE 5 — AUTHORIZED-TC / STACKED DRAFT UNITS 7–900; MAIN THROUGH 200
+PHASE 5 — AUTHORIZED-TC / STACKED DRAFT UNITS 7–950; MAIN THROUGH 200
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED

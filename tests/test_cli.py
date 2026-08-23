@@ -272,7 +272,7 @@ class CliTests(unittest.TestCase):
                 self.assertEqual(main(["status"]), 0)
             self.assertEqual(
                 json.loads(status_out.getvalue())["highest_unit"],
-                900,
+                950,
             )
             describe_out = io.StringIO()
             with redirect_stdout(describe_out), redirect_stderr(io.StringIO()):
