@@ -1,23 +1,114 @@
-# ChatGPT Audit Handoff — Radar V4 through Unit 400
+# ChatGPT Audit Handoff — Radar V4 through Unit 850
 
 ```text
-DATE — 2026-08-22
+CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
-BRANCH — cursor/phase-5-dataset-session-9fd5
-PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/8
-AUDITED SOFTWARE HEAD — 053fc2808d6fe3b53de984b20f2e9ef6a1a3c15a
-HANDOFF-ONLY HEAD — 9851692131c925a8576c6971a6fe984b6a209a50
-REMEDIATION SOFTWARE HEAD — 7edc0eeedb21a619d93373390b1581da6c921cbe
-BASE / main — 1ff2333 (Phase 5 units 7–11 only)
+CURRENT BRANCH — cursor/phase-5-units-801-850-9fd5
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/22
+CURRENT SOFTWARE HEAD — b15f8dec2172ae0e852cc14de1a1755ed0f85b77
+IMPLEMENTATION HEAD — 0895354 (units 801–850)
+TEST-COUNT HEAD — b15f8de (264 passed)
+BASE / main — 56db82f (Phase 5 units 7–200 merged)
+STACKED OPEN PRS — #10 (201–250) through #22 (801–850); not merged
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-AUDITOR DISPOSITION — PASS WITH MATERIAL OPEN ITEMS
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PASSES; CLAIM CLASS UNCHANGED
+FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
+```
+
+The block below is the original first-audit identity. Keep it as history. Do not treat it as current HEAD.
+
+```text
+FIRST AUDIT DATE — 2026-08-22
+FIRST AUDIT BRANCH — cursor/phase-5-dataset-session-9fd5
+FIRST AUDIT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/8
+AUDITED SOFTWARE HEAD — 053fc2808d6fe3b53de984b20f2e9ef6a1a3c15a
+HANDOFF-ONLY HEAD — 9851692131c925a8576c6971a6fe984b6a209a50
+REMEDIATION SOFTWARE HEAD — 7edc0eeedb21a619d93373390b1581da6c921cbe
+FIRST-AUDIT BASE / main — 1ff2333 (then Phase 5 units 7–11 only)
 ```
 
 This record is for independent audit. It is not a method claim, not a performance report, and not authorization of the next class of work.
 
 **Tools verify. Todd authorizes.**
+
+---
+
+## Implementer-executed audit snapshot — 2026-08-23
+
+This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
+
+### Verified on this branch
+
+Commands run from `cursor/phase-5-units-801-850-9fd5` at `b15f8de`:
+
+```text
+PYTHONPATH=. python3 -m unittest discover -s tests -v
+PYTHONPATH=. python3 -c "catalog + status + bounds + stop + network scan"
+PYTHONPATH=. python3 -m radar_v4 status
+PYTHONPATH=. python3 -m radar_v4 pack-describe --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 session --pack fixtures/synthetic_one_symbol_1d --require-manifest
+PYTHONPATH=. python3 -m radar_v4 determinism --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 pack-verify --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 safety-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 leftover-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 safety-status --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 leftover-status --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 inventory-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 layout-lock --pack fixtures/synthetic_one_symbol_1d
+```
+
+Observed:
+
+| Check | Result |
+|---|---|
+| Unittest suite | 264 passed, 0 failed (at `0895354`) |
+| Reason-code catalog | valid; 213 codes; no `CATALOG_GAP` |
+| Document-kind catalog | valid; 268 kinds; no unknown kinds |
+| Network-import scan | valid; no vendor/network client imports |
+| `status` | `highest_unit=850`, `measured=false`, no `claim_level`, vendor/paper/method/historical all false |
+| `session` on SYNTHETIC pack | `MEASURED`, claim `LEVEL 0 — MEASURED`, changes `0.50`, `-0.50`, ruler `403b2863229368350ac8f20a07a800a6927dc017f0efa6ec0b15305234fc9cee` |
+| `determinism` | equal; snapshot `33c25a654b07a7f4adc3f7f0b5ee9a9050ca203caba11aec500010b7a0d78e53` |
+| `pack-verify` | stored manifest matches |
+| `safety-lock` / `leftover-lock` | valid on the fixture; leftover details `tmp_files=[]`, `orphans=[]` |
+| `safety-status` / `leftover-status` | valid; locked unit 850 |
+| `inventory-lock` / `layout-lock` | valid |
+
+Those SYNTHETIC numbers are software-test material. They are **not** market evidence.
+
+### Claim-class table now
+
+| Class | Status now |
+|---|---|
+| Software correctness | Local SYNTHETIC path plus inspectability locks: 264 tests implementer-executed. Not independently re-run by ChatGPT yet. |
+| Data correctness | **Not earned.** No HISTORICAL records. Fixture is SYNTHETIC. |
+| Method validity | **Not defined.** No Phase 6 authorization. |
+| Usefulness / edge | **Not asked. Not shown.** |
+
+### What units 801–850 added
+
+Inspectability wrappers only:
+
+- `radar_v4.safety_lock` wraps `inspect_pack_safety` (BOM, symlink, empty, nested JSON, casefold, UTF-8, size).
+- `radar_v4.leftover_lock` wraps `inspect_leftovers` (`.tmp` leftovers, orphan `.sha256`).
+- Write/verify/status binds. Highest-unit lock at 850.
+
+They do not measure a market, define a method, or change provenance.
+
+### Merge / authorization facts
+
+- `main` = `56db82f` (units 7–200 only).
+- Units 201–850 live on stacked draft PRs #10–#22. **Not merged.**
+- Completing unit 850 does **not** authorize a vendor API, Phase 6, paper trading, or Product B.
+- `enough_for_close_to_close: true` on pack-describe is descriptive readiness, not a measurement.
+
+### Press these if auditing
+
+1. Unit count 850 can be misread as research progress. It is inspectability.
+2. Repeated `MEASURED` on the SYNTHETIC fixture is not a result.
+3. Later lock commands wrap earlier inspectors. Ask whether each new lock refuses a new misread, or only restates an old refusal.
+4. Older handoff paragraphs still mention first-audit PR #8. Current HEAD is PR #22.
 
 ---
 
@@ -335,9 +426,11 @@ Do not buy a historical-stock API until a question is locked **and** Todd names 
 
 ## Controlling-record honesty
 
-`main` has **not** been fast-forwarded to this branch. `main` HEAD remains the series/snapshot slice (units 7–11). The unit 12–100 work lives on PR #8.
+`main` HEAD is `56db82f` — Phase 5 units **7–200** merged. Units **201–850** are stacked open draft PRs and are **not** on `main`.
 
-If a controlling record on `main` disagrees with this branch, the auditor should report the conflict rather than choose an interpretation.
+Current software under this snapshot is PR #22 (`cursor/phase-5-units-801-850-9fd5` at `b15f8de`), stacked on PR #21 (751–800), not on `main`.
+
+If a controlling record on `main` disagrees with this branch, the auditor should report the conflict rather than choose an interpretation. Do not treat PR #8 as current HEAD.
 
 ---
 
@@ -352,16 +445,19 @@ PYTHONPATH=. python3 -m radar_v4 pack-describe --pack fixtures/synthetic_one_sym
 PYTHONPATH=. python3 -m radar_v4 session --pack fixtures/synthetic_one_symbol_1d --require-manifest
 PYTHONPATH=. python3 -m radar_v4 determinism --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 pack-verify --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 safety-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 leftover-lock --pack fixtures/synthetic_one_symbol_1d
 ```
 
-Expected:
+Expected on the current 801–850 branch:
 
-- full unittest suite: 167 passed at `4318a5c` (implementer-executed after remediation);
-- `status` reports `measured: false` and does not emit `claim_level`;
+- full unittest suite: **264 passed** at `0895354` (implementer-executed);
+- `status` reports `highest_unit: 850`, `measured: false`, and does not emit `claim_level`;
 - `status` denies method, vendor, historical evidence, and paper trading;
 - `session` on the fixture pack is `MEASURED` with SYNTHETIC changes `0.50`, `-0.50`;
 - `determinism` is equal;
-- `pack-verify` matches the stored manifest.
+- `pack-verify` matches the stored manifest;
+- `safety-lock` and `leftover-lock` are valid on the SYNTHETIC fixture.
 
 If any command invents a session for a missing pack, downloads data, or prints an edge claim, that is a fail.
 
@@ -379,11 +475,11 @@ If any command invents a session for a missing pack, downloads data, or prints a
 
 ## Honest current claim
 
-The local evidence workshop on PR #8 can load, refuse, measure LEVEL 0 close-to-close on a SYNTHETIC one-symbol daily pack, lock a ruler, journal refusals, snapshot, verify, export, tamper-check, inspect, and compare local artifacts.
+The local evidence workshop on PR #22 can load, refuse, measure LEVEL 0 close-to-close on a SYNTHETIC one-symbol daily pack, lock a ruler, journal refusals, snapshot, verify, export, tamper-check, inspect, compare, certify, hygiene/lineage/decimal-check, freeze, path/name/kind lock, stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, and bind counts/records.
 
 **No edge. No HISTORICAL measurement. No vendor. No method. No paper trading.**
 
-Completion of units 7–850 does not authorize a data purchase or Phase 6.
+Completion of units 7–850 does not authorize a data purchase or Phase 6. Unit-count completion is inspectability, not a research result.
 
 ---
 
