@@ -102,4 +102,7 @@ PYTHONPATH=. python3 -m radar_v4 determinism --pack fixtures/synthetic_one_symbo
 PYTHONPATH=. python3 -m radar_v4 locked-scope --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 pack-safety --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 no-network
+PYTHONPATH=. python3 -m radar_v4 replay-eq --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 question-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 stop-record
 ```
