@@ -162,3 +162,54 @@ def write_name_record(
     record = name_lock(directory)
     write_text_atomic(destination, record.serialize() + "\n")
     return record
+
+
+def verify_name_record(path: Path) -> IntegrityCheck:
+    target = Path(path)
+    try:
+        raw = loads(target.read_text(encoding="utf-8"))
+    except OSError:
+        return IntegrityCheck(
+            "radar_v4.name_verify",
+            False,
+            "UNREADABLE_JSON",
+            ("unreadable name-lock record",),
+            {"path": str(target)},
+        )
+    except JSONDecodeError:
+        return IntegrityCheck(
+            "radar_v4.name_verify",
+            False,
+            "UNREADABLE_JSON",
+            ("name-lock record is not JSON",),
+            {"path": str(target)},
+        )
+    if not isinstance(raw, dict):
+        return IntegrityCheck(
+            "radar_v4.name_verify",
+            False,
+            "UNREADABLE_JSON",
+            ("name-lock record must be an object",),
+            {"path": str(target)},
+        )
+    ok = raw.get("document_kind") == "radar_v4.name_lock" and raw.get("valid") is True
+    return IntegrityCheck(
+        "radar_v4.name_verify",
+        ok,
+        None if ok else "NAME_RECORD_INVALID",
+        ("Verified a local name-lock record. Not market evidence.",),
+        {"path": str(target)},
+    )
+
+
+def compare_name_lock(left_dir: Path, right_dir: Path) -> IntegrityCheck:
+    left = name_lock(left_dir)
+    right = name_lock(right_dir)
+    equal = left.serialize() == right.serialize()
+    return IntegrityCheck(
+        "radar_v4.compare_name_lock",
+        equal,
+        None if equal else "RECORD_MISMATCH",
+        ("Compared name-lock records. Equality is not a method.",),
+        {"equal": equal},
+    )

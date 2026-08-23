@@ -71,6 +71,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 251–300** — byte-level pack identity, filename-date and count checks, claim-word value refusal, certify/lineage/self-test determinism, README unit lock, workshop freeze compose/verify, highest-unit lock at 300. Inspectability only; not a research result.
 - **Units 301–350** — path lock, journal-code catalog bind, freeze-versus-status bind, byte-record write/verify, close-sign and retrieval-unique describe, export portable byte-check, highest-unit lock at 350. Inspectability only; not a research result.
 - **Units 351–400** — reserved-stem / leading-hyphen / double-json / empty-pack name lock, path/name/freeze/package determinism, snapshot-count bind, path-lock record write/verify, highest-unit lock at 400. Inspectability only; not a research result.
+- **Units 401–450** — unlabeled/unknown/unreadable JSON kind lock, name-lock verify/compare, workshop stamp compose/determinism/write/verify, name-status bind, export portable name/kind check, highest-unit lock at 450. Inspectability only; not a research result.
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -126,4 +127,7 @@ PYTHONPATH=. python3 -m radar_v4 close-sign --pack fixtures/synthetic_one_symbol
 PYTHONPATH=. python3 -m radar_v4 name-lock --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 snapshot-count --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 freeze-eq --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 kind-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 stamp --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 name-bind --pack fixtures/synthetic_one_symbol_1d
 ```

@@ -93,18 +93,30 @@ from radar_v4.bind_check import (
     write_byte_record,
 )
 from radar_v4.byte_check import byte_check, claim_word_scan, count_check, filename_date_check
+from radar_v4.kind_lock import kind_describe, kind_lock
 from radar_v4.name_lock import name_lock
 from radar_v4.path_lock import path_lock
 from radar_v4.record_eq import (
+    compare_name_lock,
     compare_path_lock,
     freeze_determinism,
     name_lock_determinism,
     package_identity_determinism,
     path_lock_determinism,
     snapshot_count_bind,
+    verify_name_record,
     verify_path_record,
     write_name_record,
     write_path_record,
+)
+from radar_v4.stamp import (
+    compare_stamp,
+    export_name_check,
+    name_status_bind,
+    stamp_determinism,
+    verify_stamp_record,
+    workshop_stamp,
+    write_stamp_record,
 )
 from radar_v4.freeze import (
     certify_determinism,
@@ -697,6 +709,77 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     write_name.add_argument("--out", required=True)
     write_name.add_argument("--replace", action="store_true")
 
+    verify_name = sub.add_parser(
+        "verify-name",
+        help="verify a local name-lock record",
+    )
+    verify_name.add_argument("--path", required=True)
+
+    cmp_name = sub.add_parser(
+        "compare-name-lock",
+        help="compare name-lock of two packs",
+    )
+    cmp_name.add_argument("--left", required=True)
+    cmp_name.add_argument("--right", required=True)
+
+    kindlock = sub.add_parser(
+        "kind-lock",
+        help="refuse unlabeled, unknown, or unreadable JSON kinds",
+    )
+    kindlock.add_argument("--pack", required=True)
+
+    kinddesc = sub.add_parser(
+        "kind-describe",
+        help="describe JSON document kinds; not a score",
+    )
+    kinddesc.add_argument("--pack", required=True)
+
+    stamp = sub.add_parser(
+        "stamp",
+        help="compose name-lock, kind-lock, and snapshot-count; not a result",
+    )
+    stamp.add_argument("--pack", required=True)
+
+    stamp_eq = sub.add_parser(
+        "stamp-eq",
+        help="run stamp twice; equality is not a method",
+    )
+    stamp_eq.add_argument("--pack", required=True)
+
+    cmp_stamp = sub.add_parser(
+        "compare-stamp",
+        help="compare workshop stamps of two packs",
+    )
+    cmp_stamp.add_argument("--left", required=True)
+    cmp_stamp.add_argument("--right", required=True)
+
+    write_stamp = sub.add_parser(
+        "write-stamp",
+        help="write a local stamp record; not market evidence",
+    )
+    write_stamp.add_argument("--pack", required=True)
+    write_stamp.add_argument("--out", required=True)
+    write_stamp.add_argument("--replace", action="store_true")
+
+    verify_stamp = sub.add_parser(
+        "verify-stamp",
+        help="verify a local stamp record",
+    )
+    verify_stamp.add_argument("--path", required=True)
+
+    name_bind = sub.add_parser(
+        "name-bind",
+        help="bind name-lock to status highest-unit; not a measurement",
+    )
+    name_bind.add_argument("--pack", required=True)
+
+    export_name = sub.add_parser(
+        "export-name",
+        help="export a snapshot and run portable name/kind checks",
+    )
+    export_name.add_argument("--pack", required=True)
+    export_name.add_argument("--out", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -1112,6 +1195,42 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
             sys.stderr.write(f"{exc.code}: {exc.reason}\n")
             return 2
         return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-name":
+        check = verify_name_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-name-lock":
+        check = compare_name_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "kind-lock":
+        check = kind_lock(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "kind-describe":
+        return _print(kind_describe(Path(args.pack)).serialize(), 0)
+    if command == "stamp":
+        check = workshop_stamp(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "stamp-eq":
+        check = stamp_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-stamp":
+        check = compare_stamp(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-stamp":
+        try:
+            record = write_stamp_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-stamp":
+        check = verify_stamp_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "name-bind":
+        check = name_status_bind(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "export-name":
+        check = export_name_check(Path(args.pack), Path(args.out))
+        return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
 

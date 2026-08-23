@@ -209,6 +209,12 @@ Authorized by `Tools verify. Todd authorizes. Stay on course.`. These units add 
 
 They do **not** change the claim class. Completing unit 400 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
 
+### Phase 5 units 401–450 (inspectability continuation)
+
+Authorized by `Tools verify. Todd authorizes. Stay on course.`. These units add unlabeled/unknown/unreadable JSON kind lock, name-lock verify/compare, workshop stamp compose/determinism/write/verify, name-status bind, and export portable name/kind check.
+
+They do **not** change the claim class. Completing unit 450 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
+
 ---
 
 ## Software facts at HEAD
@@ -224,6 +230,7 @@ TESTS AFTER UNITS 201–250 — 192 passed at d842cb6
 TESTS AFTER UNITS 251–300 — 198 passed at fe30854
 TESTS AFTER UNITS 301–350 — 204 passed at 2c18597
 TESTS AFTER UNITS 351–400 — 210 passed at ffa8df6
+TESTS AFTER UNITS 401–450 — implementer-executed on this branch before merge
 REASON CODES — catalog present (python -m radar_v4 codes)
 CLI — python -m radar_v4
 NETWORK — none in this package
@@ -252,7 +259,7 @@ The workshop will not invent market calendars, exchange hours, or missing bars.
 
 ## Still unauthorized
 
-These remain unauthorized even though units 7–400 exist:
+These remain unauthorized even though units 7–450 exist:
 
 - purchased historical-stock API or any named vendor;
 - live capture;
@@ -320,7 +327,7 @@ The local evidence workshop on PR #8 can load, refuse, measure LEVEL 0 close-to-
 
 **No edge. No HISTORICAL measurement. No vendor. No method. No paper trading.**
 
-Completion of units 7–400 does not authorize a data purchase or Phase 6.
+Completion of units 7–450 does not authorize a data purchase or Phase 6.
 
 ---
 
@@ -354,7 +361,9 @@ This branch continues the same Phase 5 evidence-ops class: byte-level pack ident
 
 Units 351–400 add reserved-stem / leading-hyphen / double-json / empty-pack name lock, path/name/freeze/package determinism, snapshot-count bind, and path-lock record write/verify.
 
-Passing `name-lock`, `freeze`, or `certify` on the SYNTHETIC fixture is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
+Units 401–450 add unlabeled/unknown/unreadable JSON kind lock, name-lock verify/compare, workshop stamp compose/determinism/write/verify, name-status bind, and export portable name/kind check.
+
+Passing `kind-lock`, `stamp`, or `name-bind` on the SYNTHETIC fixture is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
 
 ---
 
@@ -362,9 +371,9 @@ Passing `name-lock`, `freeze`, or `certify` on the SYNTHETIC fixture is inspecta
 
 ```text
 RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF + OPEN-ITEM REMEDIATION
-SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–400
+SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–450
 INDEPENDENT AUDIT THROUGH UNIT 100 — PASS WITH MATERIAL OPEN ITEMS
-UNITS 101–400 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
+UNITS 101–450 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
 CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 166 TESTS AT 053fc28 — IMPLEMENTER-REPORTED
 167 TESTS AT 4318a5c — IMPLEMENTER-REPORTED AFTER REMEDIATION
@@ -373,13 +382,14 @@ CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 192 TESTS AFTER UNITS 201–250 — IMPLEMENTER-REPORTED
 198 TESTS AFTER UNITS 251–300 — IMPLEMENTER-REPORTED
 204 TESTS AFTER UNITS 301–350 — IMPLEMENTER-REPORTED
-210 TESTS AFTER UNITS 351–400 — IMPLEMENTER-REPORTED ON THIS BRANCH
+210 TESTS AFTER UNITS 351–400 — IMPLEMENTER-REPORTED
+UNITS 401–450 — KIND LOCK / WORKSHOP STAMP; IMPLEMENTER-REPORTED ON THIS BRANCH
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN
 VENDOR / LIVE / PAPER — NOT AUTHORIZED
 V1/V2 INHERITANCE — FORBIDDEN
-NEXT CLASS OF WORK — NOT AUTHORIZED BY UNIT 400
+NEXT CLASS OF WORK — NOT AUTHORIZED BY UNIT 450
 ```
 
 Learning and Earning It.  
