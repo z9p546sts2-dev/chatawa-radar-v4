@@ -179,6 +179,22 @@ from radar_v4.content_lock import (
     verify_content_record,
     write_content_record,
 )
+from radar_v4.content_set import (
+    compare_content_set,
+    content_set,
+    content_set_determinism,
+    content_set_status,
+    verify_content_set_record,
+    write_content_set_record,
+)
+from radar_v4.copy_set import (
+    compare_copy_set,
+    copy_set,
+    copy_set_determinism,
+    copy_set_status,
+    verify_copy_set_record,
+    write_copy_set_record,
+)
 from radar_v4.digest_lock import (
     compare_digest_lock,
     digest_lock,
@@ -1755,6 +1771,84 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     cbind_status.add_argument("--left", required=True)
     cbind_status.add_argument("--right", required=True)
 
+    content_set_cmd = sub.add_parser(
+        "content-set",
+        help="require lock records in a folder to share source_digest",
+    )
+    content_set_cmd.add_argument("--path", required=True)
+
+    content_set_eq = sub.add_parser(
+        "content-set-eq",
+        help="repeat content-set; equality is not a method",
+    )
+    content_set_eq.add_argument("--path", required=True)
+
+    cmp_cset = sub.add_parser(
+        "compare-content-set",
+        help="compare content-set digest of two folders; path is ignored",
+    )
+    cmp_cset.add_argument("--left", required=True)
+    cmp_cset.add_argument("--right", required=True)
+
+    write_cset = sub.add_parser(
+        "write-content-set",
+        help="write a local content-set record; not market evidence",
+    )
+    write_cset.add_argument("--path", required=True)
+    write_cset.add_argument("--out", required=True)
+    write_cset.add_argument("--replace", action="store_true")
+
+    verify_cset = sub.add_parser(
+        "verify-content-set",
+        help="verify a local content-set record",
+    )
+    verify_cset.add_argument("--path", required=True)
+
+    cset_status = sub.add_parser(
+        "content-set-status",
+        help="bind content-set to status highest-unit; not a measurement",
+    )
+    cset_status.add_argument("--path", required=True)
+
+    copy_set_cmd = sub.add_parser(
+        "copy-set",
+        help="require pack directories in a folder to share source_digest",
+    )
+    copy_set_cmd.add_argument("--path", required=True)
+
+    copy_set_eq = sub.add_parser(
+        "copy-set-eq",
+        help="repeat copy-set; equality is not a method",
+    )
+    copy_set_eq.add_argument("--path", required=True)
+
+    cmp_copies = sub.add_parser(
+        "compare-copy-set",
+        help="compare copy-set digest of two folders; path is ignored",
+    )
+    cmp_copies.add_argument("--left", required=True)
+    cmp_copies.add_argument("--right", required=True)
+
+    write_copies = sub.add_parser(
+        "write-copy-set",
+        help="write a local copy-set record; not market evidence",
+    )
+    write_copies.add_argument("--path", required=True)
+    write_copies.add_argument("--out", required=True)
+    write_copies.add_argument("--replace", action="store_true")
+
+    verify_copies = sub.add_parser(
+        "verify-copy-set",
+        help="verify a local copy-set record",
+    )
+    verify_copies.add_argument("--path", required=True)
+
+    copies_status = sub.add_parser(
+        "copy-set-status",
+        help="bind copy-set to status highest-unit; not a measurement",
+    )
+    copies_status.add_argument("--path", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -2696,6 +2790,50 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "content-bind-status":
         check = content_bind_status(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "content-set":
+        check = content_set(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "content-set-eq":
+        check = content_set_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-content-set":
+        check = compare_content_set(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-content-set":
+        try:
+            record = write_content_set_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-content-set":
+        check = verify_content_set_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "content-set-status":
+        check = content_set_status(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "copy-set":
+        check = copy_set(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "copy-set-eq":
+        check = copy_set_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-copy-set":
+        check = compare_copy_set(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-copy-set":
+        try:
+            record = write_copy_set_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-copy-set":
+        check = verify_copy_set_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "copy-set-status":
+        check = copy_set_status(Path(args.path))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

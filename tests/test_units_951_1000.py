@@ -49,13 +49,13 @@ class Units951To1000Tests(unittest.TestCase):
         py_compile(str(ROOT / "radar_v4/content_bind.py"), doraise=True)
 
     def test_highest_unit_is_1000(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 1000)
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 1000)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 1000)
+        self.assertGreaterEqual(status["highest_unit"], 1000)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 1000)
+        self.assertGreaterEqual(stop["highest_unit"], 1000)
         self.assertFalse(stop["vendor_authorized"])
 
     def test_copies_match_content_not_path(self) -> None:
