@@ -4,16 +4,16 @@
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 CURRENT BRANCH — cursor/phase-5-units-901-950-9fd5
-CURRENT PR — stacked draft on PR #23; not merged
-CURRENT SOFTWARE HEAD — pending implementation commit
-IMPLEMENTATION HEAD — pending (units 901–950)
-TEST-COUNT HEAD — pending
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/24
+CURRENT SOFTWARE HEAD — e6f282c9b10a6871cc6422907ea6e0ce5530136b
+IMPLEMENTATION HEAD — e6f282c (units 901–950)
+TEST-COUNT HEAD — e6f282c (277 passed)
 BASE / main — 56db82f (Phase 5 units 7–200 merged)
-STACKED OPEN PRS — #10 (201–250) through #23 (851–900) plus this 901–950 draft; not merged
+STACKED OPEN PRS — #10 (201–250) through #24 (901–950); not merged
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PENDING TEST COUNT; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PASSES; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 
@@ -32,6 +32,31 @@ FIRST-AUDIT BASE / main — 1ff2333 (then Phase 5 units 7–11 only)
 This record is for independent audit. It is not a method claim, not a performance report, and not authorization of the next class of work.
 
 **Tools verify. Todd authorizes.**
+
+---
+
+## Implementer-executed snapshot — units 901–950
+
+This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
+
+Commands run from `cursor/phase-5-units-901-950-9fd5` at `e6f282c`:
+
+```text
+PYTHONPATH=. python3 -m unittest discover -s tests -v
+```
+
+Observed:
+
+| Check | Result |
+|---|---|
+| Unittest suite | 277 passed, 0 failed (at `e6f282c`) |
+| Reason-code catalog | valid; 224 codes |
+| Document-kind catalog | valid; 284 kinds |
+| `status` | `highest_unit=950`, `measured=false`, no `claim_level` |
+| Same-source lock bind / lock-set | valid |
+| Mixed-source locks | `LOCK_BIND_MISMATCH` |
+
+Completing unit 950 does **not** authorize a vendor API, Phase 6, paper trading, or Product B.
 
 ---
 
@@ -440,7 +465,7 @@ TESTS AFTER UNITS 701–750 — 252 passed at 4e30ef0
 TESTS AFTER UNITS 751–800 — 258 passed at dd43d7f
 TESTS AFTER UNITS 801–850 — 264 passed at 0895354
 TESTS AFTER UNITS 851–900 — 271 passed at 5c157dc
-TESTS AFTER UNITS 901–950 — pending implementer count
+TESTS AFTER UNITS 901–950 — 277 passed at e6f282c
 REASON CODES — catalog present (python -m radar_v4 codes)
 CLI — python -m radar_v4
 NETWORK — none in this package
@@ -516,7 +541,7 @@ PYTHONPATH=. python3 -m radar_v4 digest-status --path fixtures/synthetic_one_sym
 
 Expected on the current 901–950 branch:
 
-- full unittest suite: implementer count pending on this pre-test revision;
+- full unittest suite: **277 passed** at `e6f282c` (implementer-executed);
 - `status` reports `highest_unit: 950`, `measured: false`, and does not emit `claim_level`;
 - `status` denies method, vendor, historical evidence, and paper trading;
 - `session` on the fixture pack is `MEASURED` with SYNTHETIC changes `0.50`, `-0.50`;
@@ -632,7 +657,7 @@ CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 258 TESTS AFTER UNITS 751–800 — IMPLEMENTER-REPORTED
 264 TESTS AFTER UNITS 801–850 — IMPLEMENTER-REPORTED ON PR #22
 271 TESTS AFTER UNITS 851–900 — IMPLEMENTER-REPORTED ON PR #23
-TESTS AFTER UNITS 901–950 — PENDING IMPLEMENTER COUNT
+277 TESTS AFTER UNITS 901–950 — IMPLEMENTER-REPORTED ON THIS BRANCH
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN
