@@ -192,8 +192,10 @@ from radar_v4.name_lock import name_lock
 from radar_v4.path_lock import path_lock
 from radar_v4.record_eq import snapshot_count_bind
 from radar_v4.disp_lock import disposition_lock
+from radar_v4.manifest_lock import manifest_lock
 from radar_v4.report_lock import report_lock
 from radar_v4.ruler_lock import pack_ruler_lock
+from radar_v4.sidecar_lock import sidecar_lock
 from radar_v4.snapshot_lock import snapshot_lock
 from radar_v4.stamp import stamp_status_bind, workshop_stamp
 
@@ -367,10 +369,12 @@ __all__ = [
     "disposition_lock",
     "journal_lock",
     "kind_lock",
+    "manifest_lock",
     "name_lock",
     "pack_ruler_lock",
     "path_lock",
     "report_lock",
+    "sidecar_lock",
     "snapshot_count_bind",
     "snapshot_lock",
     "stamp_status_bind",

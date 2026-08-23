@@ -124,6 +124,22 @@ from radar_v4.disp_lock import (
     verify_disposition_record,
     write_disposition_record,
 )
+from radar_v4.manifest_lock import (
+    compare_manifest_lock,
+    manifest_lock,
+    manifest_lock_determinism,
+    manifest_status_bind,
+    verify_manifest_record,
+    write_manifest_record,
+)
+from radar_v4.sidecar_lock import (
+    compare_sidecar_lock,
+    sidecar_lock_any,
+    sidecar_lock_determinism,
+    sidecar_status_bind,
+    verify_sidecar_record,
+    write_sidecar_record,
+)
 from radar_v4.snapshot_lock import (
     compare_snapshot_lock,
     snapshot_lock_any,
@@ -1054,6 +1070,88 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     disp_status.add_argument("--path", required=True)
 
+    manifest_lock_cmd = sub.add_parser(
+        "manifest-lock",
+        help="lock a pack manifest; not market evidence",
+    )
+    manifest_lock_cmd.add_argument("--pack", required=True)
+
+    manifest_eq = sub.add_parser(
+        "manifest-eq",
+        help="run manifest-lock twice; equality is not a method",
+    )
+    manifest_eq.add_argument("--pack", required=True)
+
+    cmp_manifest = sub.add_parser(
+        "compare-manifest-lock",
+        help="compare manifest-lock of two packs or files",
+    )
+    cmp_manifest.add_argument("--left", required=True)
+    cmp_manifest.add_argument("--right", required=True)
+
+    write_manifest = sub.add_parser(
+        "write-manifest",
+        help="write a local pack-manifest lock record; not market evidence",
+    )
+    write_manifest.add_argument("--pack", required=True)
+    write_manifest.add_argument("--out", required=True)
+    write_manifest.add_argument("--replace", action="store_true")
+
+    verify_manifest = sub.add_parser(
+        "verify-manifest",
+        help="verify a local pack-manifest lock record",
+    )
+    verify_manifest.add_argument("--path", required=True)
+
+    manifest_status = sub.add_parser(
+        "manifest-status",
+        help="bind manifest-lock to status highest-unit; not a measurement",
+    )
+    manifest_status.add_argument("--pack", required=True)
+
+    sidecar_lock_cmd = sub.add_parser(
+        "sidecar-lock",
+        help="lock a checksum sidecar; not a repair",
+    )
+    sidecar_lock_cmd.add_argument("--path")
+    sidecar_lock_cmd.add_argument("--snapshot")
+
+    sidecar_eq = sub.add_parser(
+        "sidecar-eq",
+        help="run sidecar-lock twice; equality is not a method",
+    )
+    sidecar_eq.add_argument("--path")
+    sidecar_eq.add_argument("--snapshot")
+
+    cmp_sidecar = sub.add_parser(
+        "compare-sidecar-lock",
+        help="compare sidecar-lock of two .sha256 files",
+    )
+    cmp_sidecar.add_argument("--left", required=True)
+    cmp_sidecar.add_argument("--right", required=True)
+
+    write_sidecar = sub.add_parser(
+        "write-sidecar-lock",
+        help="write a local checksum-sidecar lock record; not a repair",
+    )
+    write_sidecar.add_argument("--path")
+    write_sidecar.add_argument("--snapshot")
+    write_sidecar.add_argument("--out", required=True)
+    write_sidecar.add_argument("--replace", action="store_true")
+
+    verify_sidecar = sub.add_parser(
+        "verify-sidecar",
+        help="verify a local checksum-sidecar lock record",
+    )
+    verify_sidecar.add_argument("--path", required=True)
+
+    sidecar_status = sub.add_parser(
+        "sidecar-status",
+        help="bind sidecar-lock to status highest-unit; not a measurement",
+    )
+    sidecar_status.add_argument("--path")
+    sidecar_status.add_argument("--snapshot")
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -1652,6 +1750,66 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
     if command == "disp-status":
         check = disposition_status_bind(Path(args.path))
         return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "manifest-lock":
+        check = manifest_lock(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "manifest-eq":
+        check = manifest_lock_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-manifest-lock":
+        check = compare_manifest_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-manifest":
+        try:
+            record = write_manifest_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-manifest":
+        check = verify_manifest_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "manifest-status":
+        check = manifest_status_bind(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "sidecar-lock":
+        target = _sidecar_target(args)
+        if target is None:
+            return 2
+        path, snapshot = target
+        check = sidecar_lock_any(path, snapshot=snapshot)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "sidecar-eq":
+        target = _sidecar_target(args)
+        if target is None:
+            return 2
+        path, snapshot = target
+        check = sidecar_lock_determinism(path, snapshot=snapshot)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-sidecar-lock":
+        check = compare_sidecar_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-sidecar-lock":
+        target = _sidecar_target(args)
+        if target is None:
+            return 2
+        path, snapshot = target
+        try:
+            record = write_sidecar_record(path, Path(args.out), args.replace, snapshot=snapshot)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-sidecar":
+        check = verify_sidecar_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "sidecar-status":
+        target = _sidecar_target(args)
+        if target is None:
+            return 2
+        path, snapshot = target
+        check = sidecar_status_bind(path, snapshot=snapshot)
+        return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
 
@@ -1676,6 +1834,17 @@ def _snapshot_target(args: argparse.Namespace) -> Path | None:
         sys.stderr.write("UNREADABLE_SNAPSHOT_FILE: pass exactly one of --pack or --snapshot\n")
         return None
     return Path(pack or snapshot)
+
+
+def _sidecar_target(args: argparse.Namespace) -> tuple[Path, bool] | None:
+    path = getattr(args, "path", None)
+    snapshot = getattr(args, "snapshot", None)
+    if bool(path) == bool(snapshot):
+        sys.stderr.write("UNREADABLE_SIDECAR: pass exactly one of --path or --snapshot\n")
+        return None
+    if path:
+        return Path(path), False
+    return Path(snapshot), True
 
 
 def _show_declaration(path: str) -> int:

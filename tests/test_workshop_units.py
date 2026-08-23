@@ -116,7 +116,7 @@ class WorkshopUnitTests(unittest.TestCase):
         check = check_canonical_json(PACK / "manifest.json")
         self.assertTrue(check.canonical)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 600)
+        self.assertEqual(status["highest_unit"], 650)
         self.assertFalse(status["measured"])
         self.assertFalse(status["method_defined"])
         self.assertFalse(status["vendor_authorized"])

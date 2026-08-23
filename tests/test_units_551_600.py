@@ -45,14 +45,14 @@ class Units551To600Tests(unittest.TestCase):
         for relative in ("radar_v4/snapshot_lock.py", "radar_v4/disp_lock.py"):
             py_compile(str(ROOT / relative), doraise=True)
 
-    def test_highest_unit_is_600(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 600)
+    def test_highest_unit_is_at_least_600(self) -> None:
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 600)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 600)
+        self.assertGreaterEqual(status["highest_unit"], 600)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 600)
+        self.assertGreaterEqual(stop["highest_unit"], 600)
         self.assertFalse(stop["vendor_authorized"])
 
     def test_synthetic_snapshot_and_disposition(self) -> None:
