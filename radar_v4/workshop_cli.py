@@ -210,6 +210,21 @@ from radar_v4.cadence_lock import (
     verify_cadence_record,
     write_cadence_record,
 )
+from radar_v4.current_claim import (
+    current_claim,
+    current_claim_determinism,
+    current_claim_status,
+    verify_current_claim_record,
+    write_current_claim_record,
+)
+from radar_v4.freshness_lock import (
+    compare_freshness_lock,
+    freshness_lock,
+    freshness_lock_determinism,
+    freshness_status_bind,
+    verify_freshness_record,
+    write_freshness_record,
+)
 from radar_v4.member_align import (
     member_align,
     member_align_determinism,
@@ -2119,6 +2134,81 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     cbind_status.add_argument("--cadence", required=True)
     cbind_status.add_argument("--pack", required=True)
 
+    freshness_lock_cmd = sub.add_parser(
+        "freshness-lock",
+        help="lock a freshness stamp; a stamp is not a current series",
+    )
+    freshness_lock_cmd.add_argument("--path", required=True)
+
+    freshness_eq = sub.add_parser(
+        "freshness-eq",
+        help="repeat freshness-lock; equality is not a method",
+    )
+    freshness_eq.add_argument("--path", required=True)
+
+    cmp_fresh = sub.add_parser(
+        "compare-freshness",
+        help="compare freshness identity of two documents",
+    )
+    cmp_fresh.add_argument("--left", required=True)
+    cmp_fresh.add_argument("--right", required=True)
+
+    write_fresh = sub.add_parser(
+        "write-freshness-lock",
+        help="write a local freshness-lock record; not market evidence",
+    )
+    write_fresh.add_argument("--path", required=True)
+    write_fresh.add_argument("--out", required=True)
+    write_fresh.add_argument("--replace", action="store_true")
+
+    verify_fresh = sub.add_parser(
+        "verify-freshness",
+        help="verify a local freshness-lock record",
+    )
+    verify_fresh.add_argument("--path", required=True)
+
+    fresh_status = sub.add_parser(
+        "freshness-status",
+        help="bind freshness-lock to status highest-unit; not a measurement",
+    )
+    fresh_status.add_argument("--path", required=True)
+
+    current_cmd = sub.add_parser(
+        "current-claim",
+        help="refuse a later stamp that claims the bars are current",
+    )
+    current_cmd.add_argument("--freshness", required=True)
+    current_cmd.add_argument("--pack", required=True)
+
+    current_eq = sub.add_parser(
+        "current-claim-eq",
+        help="repeat current-claim; equality is not a method",
+    )
+    current_eq.add_argument("--freshness", required=True)
+    current_eq.add_argument("--pack", required=True)
+
+    write_current = sub.add_parser(
+        "write-current-claim",
+        help="write a local current-claim record; not market evidence",
+    )
+    write_current.add_argument("--freshness", required=True)
+    write_current.add_argument("--pack", required=True)
+    write_current.add_argument("--out", required=True)
+    write_current.add_argument("--replace", action="store_true")
+
+    verify_current = sub.add_parser(
+        "verify-current-claim",
+        help="verify a local current-claim record",
+    )
+    verify_current.add_argument("--path", required=True)
+
+    current_status = sub.add_parser(
+        "current-claim-status",
+        help="bind current-claim to status highest-unit; not a measurement",
+    )
+    current_status.add_argument("--freshness", required=True)
+    current_status.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -3233,6 +3323,49 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "cadence-bind-status":
         check = cadence_bind_status(Path(args.cadence), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "freshness-lock":
+        check = freshness_lock(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "freshness-eq":
+        check = freshness_lock_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-freshness":
+        check = compare_freshness_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-freshness-lock":
+        try:
+            record = write_freshness_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-freshness":
+        check = verify_freshness_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "freshness-status":
+        check = freshness_status_bind(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "current-claim":
+        check = current_claim(Path(args.freshness), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "current-claim-eq":
+        check = current_claim_determinism(Path(args.freshness), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-current-claim":
+        try:
+            record = write_current_claim_record(
+                Path(args.freshness), Path(args.pack), Path(args.out), args.replace
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-current-claim":
+        check = verify_current_claim_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "current-claim-status":
+        check = current_claim_status(Path(args.freshness), Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

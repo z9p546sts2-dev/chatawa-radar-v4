@@ -201,7 +201,7 @@ def serialize_reason_catalog() -> str:
     )
 
 
-PHASE5_HIGHEST_UNIT = 1200
+PHASE5_HIGHEST_UNIT = 1250
 
 
 def workshop_status() -> str:
@@ -221,7 +221,7 @@ def workshop_status() -> str:
                 "data correctness is not method validity",
                 "method validity is not usefulness",
                 "SYNTHETIC and FIXTURE numbers are not HISTORICAL evidence",
-                "units 1151-1200 are inspectability, not a research result",
+                "units 1201-1250 are inspectability, not a research result",
             ],
             "paper_trading_authorized": False,
             "phase": 5,
