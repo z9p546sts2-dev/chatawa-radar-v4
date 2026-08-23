@@ -93,7 +93,19 @@ from radar_v4.bind_check import (
     write_byte_record,
 )
 from radar_v4.byte_check import byte_check, claim_word_scan, count_check, filename_date_check
+from radar_v4.name_lock import name_lock
 from radar_v4.path_lock import path_lock
+from radar_v4.record_eq import (
+    compare_path_lock,
+    freeze_determinism,
+    name_lock_determinism,
+    package_identity_determinism,
+    path_lock_determinism,
+    snapshot_count_bind,
+    verify_path_record,
+    write_name_record,
+    write_path_record,
+)
 from radar_v4.freeze import (
     certify_determinism,
     command_catalog_determinism,
@@ -621,6 +633,70 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     export_byte.add_argument("--pack", required=True)
     export_byte.add_argument("--out", required=True)
 
+    namelock = sub.add_parser(
+        "name-lock",
+        help="refuse reserved stems, leading hyphens, double .json, and empty packs",
+    )
+    namelock.add_argument("--pack", required=True)
+
+    path_eq = sub.add_parser(
+        "path-lock-eq",
+        help="run path-lock twice; equality is not a method",
+    )
+    path_eq.add_argument("--pack", required=True)
+
+    name_eq = sub.add_parser(
+        "name-lock-eq",
+        help="run name-lock twice; equality is not market evidence",
+    )
+    name_eq.add_argument("--pack", required=True)
+
+    freeze_eq = sub.add_parser(
+        "freeze-eq",
+        help="run freeze twice; equality is not a research result",
+    )
+    freeze_eq.add_argument("--pack", help="optional pack for freeze compose")
+
+    sub.add_parser(
+        "package-eq",
+        help="hash package identity twice; software identity only",
+    )
+
+    cmp_path = sub.add_parser(
+        "compare-path-lock",
+        help="compare path-lock of two packs",
+    )
+    cmp_path.add_argument("--left", required=True)
+    cmp_path.add_argument("--right", required=True)
+
+    snap_count = sub.add_parser(
+        "snapshot-count",
+        help="require snapshot kept count to match admitted count",
+    )
+    snap_count.add_argument("--pack", required=True)
+
+    write_path = sub.add_parser(
+        "write-path",
+        help="write a local path-lock record; not market evidence",
+    )
+    write_path.add_argument("--pack", required=True)
+    write_path.add_argument("--out", required=True)
+    write_path.add_argument("--replace", action="store_true")
+
+    verify_path = sub.add_parser(
+        "verify-path",
+        help="verify a local path-lock record",
+    )
+    verify_path.add_argument("--path", required=True)
+
+    write_name = sub.add_parser(
+        "write-name",
+        help="write a local name-lock record; not a method",
+    )
+    write_name.add_argument("--pack", required=True)
+    write_name.add_argument("--out", required=True)
+    write_name.add_argument("--replace", action="store_true")
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -998,6 +1074,44 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
     if command == "export-byte":
         check = export_byte_check(Path(args.pack), Path(args.out))
         return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "name-lock":
+        check = name_lock(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "path-lock-eq":
+        check = path_lock_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "name-lock-eq":
+        check = name_lock_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "freeze-eq":
+        check = freeze_determinism(Path(args.pack) if args.pack else None)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "package-eq":
+        check = package_identity_determinism()
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-path-lock":
+        check = compare_path_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "snapshot-count":
+        check = snapshot_count_bind(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-path":
+        try:
+            record = write_path_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-path":
+        check = verify_path_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-name":
+        try:
+            record = write_name_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
     return None
 
 

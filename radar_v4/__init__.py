@@ -186,7 +186,9 @@ from radar_v4.lineage import admission_vs_kept, write_lineage_record
 from radar_v4.byte_check import byte_check
 from radar_v4.freeze import workshop_freeze
 from radar_v4.bind_check import freeze_status_bind
+from radar_v4.name_lock import name_lock
 from radar_v4.path_lock import path_lock
+from radar_v4.record_eq import snapshot_count_bind
 
 __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
@@ -355,7 +357,9 @@ __all__ = [
     "byte_check",
     "certify_pack",
     "freeze_status_bind",
+    "name_lock",
     "path_lock",
+    "snapshot_count_bind",
     "command_catalog",
     "decimal_check_directory",
     "pack_hygiene",
