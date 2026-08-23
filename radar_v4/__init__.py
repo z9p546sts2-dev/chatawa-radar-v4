@@ -202,6 +202,8 @@ from radar_v4.layout_lock import layout_lock
 from radar_v4.digest_lock import digest_lock
 from radar_v4.content_bind import content_bind
 from radar_v4.content_lock import content_lock, compare_content_lock
+from radar_v4.content_set import content_set, compare_content_set
+from radar_v4.copy_set import copy_set, compare_copy_set
 from radar_v4.lock_bind import bind_lock_records
 from radar_v4.lock_set import lock_set
 from radar_v4.leftover_lock import leftover_lock
@@ -388,8 +390,12 @@ __all__ = [
     "layout_lock",
     "bind_lock_records",
     "compare_content_lock",
+    "compare_content_set",
+    "compare_copy_set",
     "content_bind",
     "content_lock",
+    "content_set",
+    "copy_set",
     "digest_lock",
     "lock_set",
     "leftover_lock",
