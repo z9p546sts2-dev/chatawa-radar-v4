@@ -67,8 +67,23 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 95–100** — workshop capability status (not a measurement), admission readiness, forbidden-claim fields, highest-unit lock at 100
 - **Units 101–150** — claim-level consistency, arithmetic recompute, locked-scope, pack safety, evidence chain, local audit copy, no-network scan, highest-unit lock at 150. Inspectability only; not a research result.
 - **Units 151–200** — OHLC/retrieval/ruler-field checks, percent and unexpected-file refusal, text safety, replay/export round-trip, catalog audit, locked-question bind, human disposition, stop record, highest-unit lock at 200. Inspectability only; not a research result.
+- **Units 201–250** — source hygiene, pack hygiene, decimal-string closes, admission/lineage describe, reserved-name and UTF-16 refusal, command catalog, local self-test, pack certify compose, highest-unit lock at 250. Inspectability only; not a research result.
+- **Units 251–300** — byte-level pack identity, filename-date and count checks, claim-word value refusal, certify/lineage/self-test determinism, README unit lock, workshop freeze compose/verify, highest-unit lock at 300. Inspectability only; not a research result.
+- **Units 301–350** — path lock, journal-code catalog bind, freeze-versus-status bind, byte-record write/verify, close-sign and retrieval-unique describe, export portable byte-check, highest-unit lock at 350. Inspectability only; not a research result.
+- **Units 351–400** — reserved-stem / leading-hyphen / double-json / empty-pack name lock, path/name/freeze/package determinism, snapshot-count bind, path-lock record write/verify, highest-unit lock at 400. Inspectability only; not a research result.
+- **Units 401–450** — unlabeled/unknown/unreadable JSON kind lock, name-lock verify/compare, workshop stamp compose/determinism/write/verify, name-status bind, export portable name/kind check, highest-unit lock at 450. Inspectability only; not a research result.
+- **Units 451–500** — journal kind/entry/source lock, journal-lock determinism/write/verify, kind-lock equality/write/verify, stamp-status bind, highest-unit lock at 500. Inspectability only; not a research result.
+- **Units 501–550** — session-report kind/checksum/measured lock, ruler kind/object/checksum lock, report-ruler bind, report-status bind, highest-unit lock at 550. Inspectability only; not a research result.
+- **Units 551–600** — snapshot shape/row/provenance lock, snapshot-lock determinism/write/verify, disposition lock, disposition-status bind, highest-unit lock at 600. Inspectability only; not a research result.
+- **Units 601–650** — pack-manifest kind/files/digest lock, pack-manifest verify, checksum-sidecar digest lock, sidecar-snapshot bind, highest-unit lock at 650. Inspectability only; not a research result.
+- **Units 651–700** — snapshot-bundle sidecar/ruler lock, portable FIXTURE/SYNTHETIC export lock, highest-unit lock at 700. Inspectability only; not a research result.
+- **Units 701–750** — local audit-copy lock, pack three-way chain lock, highest-unit lock at 750. Inspectability only; not a research result.
+- **Units 751–800** — pack inventory role lock, pack layout declaration/observations/manifest lock, highest-unit lock at 800. Inspectability only; not a research result.
+- **Units 801–850** — pack safety inspectability lock, leftover tmp/orphan sidecar lock, highest-unit lock at 850. Inspectability only; not a research result.
+- **Units 851–900** — source-digest custody on lock records, same-path clean-pack swap refused, highest-unit lock at 900. Inspectability only; not a research result.
+- **Units 901–950** — lock-record bind and lock-set: two lock files or a folder of lock files must name the same source, highest-unit lock at 950. Inspectability only; not a research result.
 
-Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
+Locked question: `docs/phase5/RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
 ## Still forbidden
 
@@ -105,4 +120,37 @@ PYTHONPATH=. python3 -m radar_v4 no-network
 PYTHONPATH=. python3 -m radar_v4 replay-eq --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 question-lock --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 stop-record
+PYTHONPATH=. python3 -m radar_v4 hygiene-scan
+PYTHONPATH=. python3 -m radar_v4 pack-hygiene --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 decimal-check --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 lineage --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 certify --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 self-test
+PYTHONPATH=. python3 -m radar_v4 commands
+PYTHONPATH=. python3 -m radar_v4 byte-check --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 certify-eq --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 freeze --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 readme-lock
+PYTHONPATH=. python3 -m radar_v4 path-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 freeze-bind --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 close-sign --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 name-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 snapshot-count --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 freeze-eq --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 kind-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 stamp --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 name-bind --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 journal-lock --journal <journal.json>
+PYTHONPATH=. python3 -m radar_v4 kind-lock-eq --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 stamp-bind --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 ruler-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 snapshot-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 manifest-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 sidecar-lock --snapshot <snapshot.json>
+PYTHONPATH=. python3 -m radar_v4 export-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 bundle-lock --snapshot <snapshot.json>
+PYTHONPATH=. python3 -m radar_v4 chain-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 audit-lock --path <audit-dir>
+PYTHONPATH=. python3 -m radar_v4 inventory-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 layout-lock --pack fixtures/synthetic_one_symbol_1d
 ```

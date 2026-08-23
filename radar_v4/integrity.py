@@ -10,6 +10,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
+from hashlib import sha256
 from json import JSONDecodeError, dumps, loads
 from pathlib import Path
 
@@ -88,6 +89,121 @@ class IntegrityCheck:
                 "valid": self.valid,
             }
         )
+
+
+def source_digest(path: Path) -> str:
+    """SHA-256 identity of a file or a sorted directory listing. Not a score."""
+    root = Path(path)
+    if root.is_file() and not root.is_symlink():
+        return sha256(root.read_bytes()).hexdigest()
+    if not root.is_dir():
+        return ""
+    listing: dict[str, str] = {}
+    for child in sorted(root.rglob("*")):
+        rel = child.relative_to(root).as_posix()
+        if child.is_symlink():
+            listing[rel] = "SYMLINK"
+        elif child.is_file():
+            listing[rel] = sha256(child.read_bytes()).hexdigest()
+    return sha256(_dump(listing).encode("ascii")).hexdigest()
+
+
+def lock_source_details(
+    path: Path, extra: dict[str, object] | None = None
+) -> dict[str, object]:
+    """Attach source path and digest. Path alone is not identity."""
+    details = dict(extra or {})
+    details["source_path"] = str(Path(path).resolve())
+    details["source_digest"] = source_digest(path)
+    return details
+
+
+def verify_recomputed_lock_record(
+    path: Path,
+    *,
+    expected_kind: str,
+    verify_kind: str,
+    invalid_code: str,
+    recompute,
+) -> IntegrityCheck:
+    """Refuse kind+valid-only records. Recompute from source_path and compare bytes."""
+    target = Path(path)
+    try:
+        raw = loads(target.read_text(encoding="utf-8"))
+    except OSError:
+        return IntegrityCheck(
+            verify_kind,
+            False,
+            "UNREADABLE_JSON",
+            ("unreadable lock record",),
+            {"path": str(target)},
+        )
+    except JSONDecodeError:
+        return IntegrityCheck(
+            verify_kind,
+            False,
+            "UNREADABLE_JSON",
+            ("lock record is not JSON",),
+            {"path": str(target)},
+        )
+    if not isinstance(raw, dict):
+        return IntegrityCheck(
+            verify_kind,
+            False,
+            "UNREADABLE_JSON",
+            ("lock record must be an object",),
+            {"path": str(target)},
+        )
+    details = raw.get("details")
+    source = details.get("source_path") if isinstance(details, dict) else None
+    if not isinstance(source, str) or not source:
+        return IntegrityCheck(
+            verify_kind,
+            False,
+            invalid_code,
+            ("lock record is missing source_path; kind+valid is not a verify",),
+            {"path": str(target)},
+        )
+    source_path = Path(source)
+    if not source_path.exists():
+        return IntegrityCheck(
+            verify_kind,
+            False,
+            "UNREADABLE_PACK",
+            ("lock source_path is not present",),
+            {"path": str(target), "source_path": source},
+        )
+    recomputed = recompute(source_path)
+    matched = (
+        raw.get("document_kind") == expected_kind
+        and raw.get("valid") is True
+        and recomputed.valid
+        and recomputed.serialize() == _dump(raw)
+    )
+    if not matched and (
+        raw.get("document_kind") != expected_kind or raw.get("valid") is not True
+    ):
+        error = invalid_code
+    elif not matched and not recomputed.valid:
+        error = invalid_code
+    elif not matched:
+        error = "RECORD_MISMATCH"
+    else:
+        error = None
+    return IntegrityCheck(
+        verify_kind,
+        matched,
+        error,
+        (
+            "Verified a local lock record by recomputing from source_path.",
+            "Not market evidence.",
+        ),
+        {
+            "path": str(target),
+            "recomputed_valid": recomputed.valid,
+            "source_path": source,
+        },
+    )
 
 
 def check_claim_level(report_path: str | Path) -> IntegrityCheck:

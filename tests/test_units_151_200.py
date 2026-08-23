@@ -62,14 +62,14 @@ class Units151To200Tests(unittest.TestCase):
         ):
             py_compile(str(ROOT / relative), doraise=True)
 
-    def test_highest_unit_is_200(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 200)
+    def test_highest_unit_is_at_least_200(self) -> None:
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 200)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 200)
+        self.assertGreaterEqual(status["highest_unit"], 200)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 200)
+        self.assertGreaterEqual(stop["highest_unit"], 200)
         self.assertFalse(stop["measured"])
         self.assertFalse(stop["vendor_authorized"])
 

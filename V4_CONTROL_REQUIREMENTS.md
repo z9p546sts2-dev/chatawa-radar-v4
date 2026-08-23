@@ -5,7 +5,7 @@
 **Implementation authorized:** Phase 5 local workshop only; vendor, Phase 6, and paper trading remain unauthorized  
 **Purpose:** Convert verified V1/V2 failures and strengths into enforceable controls for any future Radar V4 work.
 
-**Later current status (2026-08-22):** Phase 5 units 7–200 are complete within scope on the local FIXTURE/SYNTHETIC workshop. This control record still binds. It does not authorize vendor data, Phase 6, paper trading, or a market method.
+**Later current status (2026-08-23):** Phase 5 units 7–850 are complete within authorized local-software scope on this stacked draft branch. `main` currently carries units 7–200 only. This control record still binds. It does not authorize vendor data, Phase 6, paper trading, or a market method.
 
 ---
 
@@ -451,7 +451,7 @@ Failure-to-control matrix: ACCEPTED
 V4 control requirements: DOCUMENTED
 V4 research methodology: DEFINED / AUDITED
 SPECIFIC MARKET METHOD: NOT DEFINED
-PHASE 5 LOCAL WORKSHOP: UNITS 7–200 COMPLETE WITHIN SCOPE
+PHASE 5 LOCAL WORKSHOP: UNITS 7–950 COMPLETE WITHIN SCOPE
 VENDOR / HISTORICAL ACCESS: NOT AUTHORIZED
 Radar V4: LOCAL EVIDENCE WORKSHOP — NOT A TRADER
 Sebastian: NOT DISPLACED

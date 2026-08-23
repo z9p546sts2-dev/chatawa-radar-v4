@@ -163,6 +163,7 @@ from radar_v4.integrity import (
     recompute_change_records,
     require_document_kind,
     scan_forbidden_fields,
+    source_digest,
 )
 from radar_v4.pack_safety import PackSafety, inspect_pack_safety
 from radar_v4.workshop_bounds import scan_package_network_imports, workshop_bounds
@@ -179,6 +180,36 @@ from radar_v4.workshop_record import (
     package_source_identity,
     workshop_stop_record,
 )
+from radar_v4.certify import certify_pack, command_catalog, self_test
+from radar_v4.decimal_check import decimal_check_directory
+from radar_v4.hygiene import pack_hygiene, scan_workshop_tree
+from radar_v4.lineage import admission_vs_kept, write_lineage_record
+from radar_v4.byte_check import byte_check
+from radar_v4.freeze import workshop_freeze
+from radar_v4.bind_check import freeze_status_bind
+from radar_v4.journal_lock import journal_lock
+from radar_v4.kind_lock import kind_lock
+from radar_v4.name_lock import name_lock
+from radar_v4.path_lock import path_lock
+from radar_v4.record_eq import snapshot_count_bind
+from radar_v4.disp_lock import disposition_lock
+from radar_v4.audit_lock import audit_lock
+from radar_v4.bundle_lock import bundle_lock
+from radar_v4.chain_lock import chain_lock
+from radar_v4.export_lock import export_lock
+from radar_v4.inventory_lock import inventory_lock
+from radar_v4.layout_lock import layout_lock
+from radar_v4.digest_lock import digest_lock
+from radar_v4.lock_bind import bind_lock_records
+from radar_v4.lock_set import lock_set
+from radar_v4.leftover_lock import leftover_lock
+from radar_v4.safety_lock import safety_lock
+from radar_v4.manifest_lock import manifest_lock
+from radar_v4.report_lock import report_lock
+from radar_v4.ruler_lock import pack_ruler_lock
+from radar_v4.sidecar_lock import sidecar_lock
+from radar_v4.snapshot_lock import snapshot_lock
+from radar_v4.stamp import stamp_status_bind, workshop_stamp
 
 __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
@@ -343,4 +374,40 @@ __all__ = [
     "inspect_unexpected_files",
     "package_source_identity",
     "workshop_stop_record",
+    "admission_vs_kept",
+    "audit_lock",
+    "bundle_lock",
+    "byte_check",
+    "certify_pack",
+    "chain_lock",
+    "export_lock",
+    "freeze_status_bind",
+    "inventory_lock",
+    "layout_lock",
+    "bind_lock_records",
+    "digest_lock",
+    "lock_set",
+    "leftover_lock",
+    "safety_lock",
+    "source_digest",
+    "disposition_lock",
+    "journal_lock",
+    "kind_lock",
+    "manifest_lock",
+    "name_lock",
+    "pack_ruler_lock",
+    "path_lock",
+    "report_lock",
+    "sidecar_lock",
+    "snapshot_count_bind",
+    "snapshot_lock",
+    "stamp_status_bind",
+    "workshop_stamp",
+    "command_catalog",
+    "decimal_check_directory",
+    "pack_hygiene",
+    "scan_workshop_tree",
+    "self_test",
+    "workshop_freeze",
+    "write_lineage_record",
 ]

@@ -62,7 +62,10 @@ def inspect_question_lock(
     target = (
         Path(question_path)
         if question_path is not None
-        else Path(__file__).resolve().parents[1] / "RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md"
+        else Path(__file__).resolve().parents[1]
+        / "docs"
+        / "phase5"
+        / "RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md"
     )
     try:
         text = target.read_text(encoding="utf-8")
@@ -185,7 +188,7 @@ def workshop_stop_record() -> str:
             "network_scan": loads(scan_package_network_imports()),
             "notes": [
                 "stop record is a capability freeze, not a research result",
-                "units 151-200 are inspectability, not data correctness",
+                "units 901-950 are inspectability, not data correctness",
                 "authorization does not earn a claim class",
             ],
             "paper_trading_authorized": False,
