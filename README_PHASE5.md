@@ -69,6 +69,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 151–200** — OHLC/retrieval/ruler-field checks, percent and unexpected-file refusal, text safety, replay/export round-trip, catalog audit, locked-question bind, human disposition, stop record, highest-unit lock at 200. Inspectability only; not a research result.
 - **Units 201–250** — source hygiene, pack hygiene, decimal-string closes, admission/lineage describe, reserved-name and UTF-16 refusal, command catalog, local self-test, pack certify compose, highest-unit lock at 250. Inspectability only; not a research result.
 - **Units 251–300** — byte-level pack identity, filename-date and count checks, claim-word value refusal, certify/lineage/self-test determinism, README unit lock, workshop freeze compose/verify, highest-unit lock at 300. Inspectability only; not a research result.
+- **Units 301–350** — path lock, journal-code catalog bind, freeze-versus-status bind, byte-record write/verify, close-sign and retrieval-unique describe, export portable byte-check, highest-unit lock at 350. Inspectability only; not a research result.
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -118,4 +119,7 @@ PYTHONPATH=. python3 -m radar_v4 byte-check --pack fixtures/synthetic_one_symbol
 PYTHONPATH=. python3 -m radar_v4 certify-eq --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 freeze --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 readme-lock
+PYTHONPATH=. python3 -m radar_v4 path-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 freeze-bind --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 close-sign --pack fixtures/synthetic_one_symbol_1d
 ```

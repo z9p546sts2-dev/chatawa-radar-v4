@@ -83,7 +83,17 @@ from radar_v4.lineage import (
     volume_describe,
     write_lineage_record,
 )
+from radar_v4.bind_check import (
+    close_sign_describe,
+    export_byte_check,
+    freeze_status_bind,
+    journal_code_catalog,
+    retrieval_unique_describe,
+    verify_byte_record,
+    write_byte_record,
+)
 from radar_v4.byte_check import byte_check, claim_word_scan, count_check, filename_date_check
+from radar_v4.path_lock import path_lock
 from radar_v4.freeze import (
     certify_determinism,
     command_catalog_determinism,
@@ -560,6 +570,57 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     cmp_freeze.add_argument("--left", required=True)
     cmp_freeze.add_argument("--right", required=True)
 
+    pathlock = sub.add_parser(
+        "path-lock",
+        help="refuse backup leftovers, non-ASCII names, and spaces in filenames",
+    )
+    pathlock.add_argument("--pack", required=True)
+
+    journal_codes = sub.add_parser(
+        "journal-codes",
+        help="require journal codes to remain in the refusal catalog",
+    )
+    journal_codes.add_argument("--journal", required=True)
+
+    freeze_bind = sub.add_parser(
+        "freeze-bind",
+        help="bind freeze highest-unit to status; not a measurement",
+    )
+    freeze_bind.add_argument("--pack", help="optional pack for freeze compose")
+
+    write_byte = sub.add_parser(
+        "write-byte",
+        help="write a local byte-check record; not market evidence",
+    )
+    write_byte.add_argument("--pack", required=True)
+    write_byte.add_argument("--out", required=True)
+    write_byte.add_argument("--replace", action="store_true")
+
+    verify_byte = sub.add_parser(
+        "verify-byte",
+        help="verify a local byte-check record",
+    )
+    verify_byte.add_argument("--path", required=True)
+
+    close_sign = sub.add_parser(
+        "close-sign",
+        help="describe negative and zero closes; not a threshold",
+    )
+    close_sign.add_argument("--pack", required=True)
+
+    retrieval_unique = sub.add_parser(
+        "retrieval-unique",
+        help="describe duplicate retrieval timestamps; not a trading clock",
+    )
+    retrieval_unique.add_argument("--pack", required=True)
+
+    export_byte = sub.add_parser(
+        "export-byte",
+        help="export a snapshot and run portable byte checks",
+    )
+    export_byte.add_argument("--pack", required=True)
+    export_byte.add_argument("--out", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -906,6 +967,36 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
             sys.stderr.write(f"UNREADABLE_JSON: {exc}\n")
             return 2
         check = compare_freeze(left, right)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "path-lock":
+        check = path_lock(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "journal-codes":
+        try:
+            check = journal_code_catalog(Path(args.journal))
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "freeze-bind":
+        check = freeze_status_bind(Path(args.pack) if args.pack else None)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-byte":
+        try:
+            record = write_byte_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-byte":
+        check = verify_byte_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "close-sign":
+        return _print(close_sign_describe(Path(args.pack)).serialize(), 0)
+    if command == "retrieval-unique":
+        return _print(retrieval_unique_describe(Path(args.pack)).serialize(), 0)
+    if command == "export-byte":
+        check = export_byte_check(Path(args.pack), Path(args.out))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

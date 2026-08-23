@@ -50,14 +50,14 @@ class Units251To300Tests(unittest.TestCase):
         for relative in ("radar_v4/byte_check.py", "radar_v4/freeze.py"):
             py_compile(str(ROOT / relative), doraise=True)
 
-    def test_highest_unit_is_300(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 300)
+    def test_highest_unit_is_at_least_300(self) -> None:
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 300)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 300)
+        self.assertGreaterEqual(status["highest_unit"], 300)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 300)
+        self.assertGreaterEqual(stop["highest_unit"], 300)
         self.assertFalse(stop["vendor_authorized"])
         self.assertFalse(stop["paper_trading_authorized"])
 
