@@ -124,6 +124,22 @@ from radar_v4.disp_lock import (
     verify_disposition_record,
     write_disposition_record,
 )
+from radar_v4.bundle_lock import (
+    bundle_lock,
+    bundle_lock_determinism,
+    bundle_status_bind,
+    compare_bundle_lock,
+    verify_bundle_record,
+    write_bundle_record,
+)
+from radar_v4.export_lock import (
+    compare_export_lock,
+    export_lock,
+    export_lock_determinism,
+    export_status_bind,
+    verify_export_record,
+    write_export_record,
+)
 from radar_v4.manifest_lock import (
     compare_manifest_lock,
     manifest_lock,
@@ -1152,6 +1168,84 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     sidecar_status.add_argument("--path")
     sidecar_status.add_argument("--snapshot")
 
+    bundle_lock_cmd = sub.add_parser(
+        "bundle-lock",
+        help="lock a snapshot bundle with sidecar and ruler; not market evidence",
+    )
+    bundle_lock_cmd.add_argument("--snapshot", required=True)
+
+    bundle_eq = sub.add_parser(
+        "bundle-eq",
+        help="run bundle-lock twice; equality is not a method",
+    )
+    bundle_eq.add_argument("--snapshot", required=True)
+
+    cmp_bundle = sub.add_parser(
+        "compare-bundle-lock",
+        help="compare bundle-lock of two snapshots",
+    )
+    cmp_bundle.add_argument("--left", required=True)
+    cmp_bundle.add_argument("--right", required=True)
+
+    write_bundle_lock = sub.add_parser(
+        "write-bundle-lock",
+        help="write a local bundle-lock record; not market evidence",
+    )
+    write_bundle_lock.add_argument("--snapshot", required=True)
+    write_bundle_lock.add_argument("--out", required=True)
+    write_bundle_lock.add_argument("--replace", action="store_true")
+
+    verify_bundle = sub.add_parser(
+        "verify-bundle",
+        help="verify a local bundle-lock record",
+    )
+    verify_bundle.add_argument("--path", required=True)
+
+    bundle_status = sub.add_parser(
+        "bundle-status",
+        help="bind bundle-lock to status highest-unit; not a measurement",
+    )
+    bundle_status.add_argument("--snapshot", required=True)
+
+    export_lock_cmd = sub.add_parser(
+        "export-lock",
+        help="lock a portable FIXTURE/SYNTHETIC pack; not market evidence",
+    )
+    export_lock_cmd.add_argument("--pack", required=True)
+
+    export_eq = sub.add_parser(
+        "export-eq",
+        help="run export-lock twice; equality is not a method",
+    )
+    export_eq.add_argument("--pack", required=True)
+
+    cmp_export = sub.add_parser(
+        "compare-export-lock",
+        help="compare export-lock of two packs",
+    )
+    cmp_export.add_argument("--left", required=True)
+    cmp_export.add_argument("--right", required=True)
+
+    write_export = sub.add_parser(
+        "write-export-lock",
+        help="write a local export-lock record; not market evidence",
+    )
+    write_export.add_argument("--pack", required=True)
+    write_export.add_argument("--out", required=True)
+    write_export.add_argument("--replace", action="store_true")
+
+    verify_export = sub.add_parser(
+        "verify-export",
+        help="verify a local export-lock record",
+    )
+    verify_export.add_argument("--path", required=True)
+
+    export_status = sub.add_parser(
+        "export-status",
+        help="bind export-lock to status highest-unit; not a measurement",
+    )
+    export_status.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -1809,6 +1903,50 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
             return 2
         path, snapshot = target
         check = sidecar_status_bind(path, snapshot=snapshot)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "bundle-lock":
+        check = bundle_lock(Path(args.snapshot))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "bundle-eq":
+        check = bundle_lock_determinism(Path(args.snapshot))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-bundle-lock":
+        check = compare_bundle_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-bundle-lock":
+        try:
+            record = write_bundle_record(Path(args.snapshot), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-bundle":
+        check = verify_bundle_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "bundle-status":
+        check = bundle_status_bind(Path(args.snapshot))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "export-lock":
+        check = export_lock(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "export-eq":
+        check = export_lock_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-export-lock":
+        check = compare_export_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-export-lock":
+        try:
+            record = write_export_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-export":
+        check = verify_export_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "export-status":
+        check = export_status_bind(Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

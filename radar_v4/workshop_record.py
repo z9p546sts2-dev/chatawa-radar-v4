@@ -185,7 +185,7 @@ def workshop_stop_record() -> str:
             "network_scan": loads(scan_package_network_imports()),
             "notes": [
                 "stop record is a capability freeze, not a research result",
-                "units 601-650 are inspectability, not data correctness",
+                "units 651-700 are inspectability, not data correctness",
                 "authorization does not earn a claim class",
             ],
             "paper_trading_authorized": False,
