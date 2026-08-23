@@ -45,7 +45,7 @@ def workshop_bounds() -> str:
                 "signals, scores, thresholds, or edge",
             ],
             "notes": [
-                "units 101-150 are inspectability, not a research result",
+                "units 101-200 are inspectability, not a research result",
                 "authorization does not earn data correctness",
                 "SYNTHETIC and FIXTURE numbers are not HISTORICAL evidence",
             ],

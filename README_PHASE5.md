@@ -66,6 +66,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 88–94** — reason-code lookup/catalog document, inventory compare, inventory vs manifest
 - **Units 95–100** — workshop capability status (not a measurement), admission readiness, forbidden-claim fields, highest-unit lock at 100
 - **Units 101–150** — claim-level consistency, arithmetic recompute, locked-scope, pack safety, evidence chain, local audit copy, no-network scan, highest-unit lock at 150. Inspectability only; not a research result.
+- **Units 151–200** — OHLC/retrieval/ruler-field checks, percent and unexpected-file refusal, text safety, replay/export round-trip, catalog audit, locked-question bind, human disposition, stop record, highest-unit lock at 200. Inspectability only; not a research result.
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 

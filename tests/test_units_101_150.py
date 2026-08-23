@@ -65,15 +65,15 @@ class Units101To150Tests(unittest.TestCase):
         ):
             py_compile(str(ROOT / relative), doraise=True)
 
-    def test_highest_unit_is_150_and_status_is_not_a_measurement(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 150)
+    def test_highest_unit_is_at_least_150_and_status_is_not_a_measurement(self) -> None:
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 150)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 150)
+        self.assertGreaterEqual(status["highest_unit"], 150)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         self.assertTrue(check_workshop_status_semantics().valid)
         bounds = json.loads(workshop_bounds())
-        self.assertEqual(bounds["highest_unit"], 150)
+        self.assertGreaterEqual(bounds["highest_unit"], 150)
         self.assertFalse(bounds["measured"])
         self.assertFalse(bounds["vendor_authorized"])
         self.assertIn("Phase 6 method research", bounds["not_authorized"])

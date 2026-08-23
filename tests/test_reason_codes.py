@@ -53,6 +53,10 @@ class ReasonCodeTests(unittest.TestCase):
             "CHAIN_MISMATCH",
             "AUDIT_BUNDLE_MISMATCH",
             "NETWORK_IMPORT",
+            "RETRIEVAL_BEFORE_MARKET",
+            "PERCENT_FIELD",
+            "REPLAY_MISMATCH",
+            "FORBIDDEN_DISPOSITION",
         ):
             self.assertIn(code, REASON_CODES)
 

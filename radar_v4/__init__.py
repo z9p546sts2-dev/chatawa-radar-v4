@@ -166,6 +166,19 @@ from radar_v4.integrity import (
 )
 from radar_v4.pack_safety import PackSafety, inspect_pack_safety
 from radar_v4.workshop_bounds import scan_package_network_imports, workshop_bounds
+from radar_v4.catalog_audit import audit_document_kinds, audit_reason_catalog
+from radar_v4.record_check import (
+    inspect_ohlc,
+    inspect_retrieval_order,
+    inspect_ruler_fields,
+    inspect_unexpected_files,
+)
+from radar_v4.roundtrip_check import check_export_roundtrip, check_replay_equality
+from radar_v4.workshop_record import (
+    inspect_question_lock,
+    package_source_identity,
+    workshop_stop_record,
+)
 
 __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
@@ -319,4 +332,15 @@ __all__ = [
     "verify_audit_bundle",
     "workshop_bounds",
     "write_audit_bundle",
+    "audit_document_kinds",
+    "audit_reason_catalog",
+    "check_export_roundtrip",
+    "check_replay_equality",
+    "inspect_ohlc",
+    "inspect_question_lock",
+    "inspect_retrieval_order",
+    "inspect_ruler_fields",
+    "inspect_unexpected_files",
+    "package_source_identity",
+    "workshop_stop_record",
 ]

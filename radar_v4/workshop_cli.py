@@ -45,7 +45,31 @@ from radar_v4.pack_safety import inspect_pack_safety
 from radar_v4.session_report import serialize_admission_report
 from radar_v4.snapshot_files import SnapshotFileError, read_snapshot_file
 from radar_v4.snapshot_inventory import snapshot_inventory
+from radar_v4.catalog_audit import audit_document_kinds, audit_reason_catalog
+from radar_v4.record_check import (
+    describe_adjustment_policy,
+    describe_close_zeros,
+    inspect_file_modes,
+    inspect_leftovers,
+    inspect_ohlc,
+    inspect_pack_urls,
+    inspect_primary_metric,
+    inspect_retrieval_order,
+    inspect_ruler_fields,
+    inspect_status_taxonomy,
+    inspect_text_safety,
+    inspect_unexpected_files,
+    scan_percent_fields,
+)
+from radar_v4.roundtrip_check import check_export_roundtrip, check_replay_equality
 from radar_v4.workshop_bounds import scan_package_network_imports, workshop_bounds
+from radar_v4.workshop_record import (
+    inspect_question_lock,
+    package_source_identity,
+    read_disposition,
+    workshop_stop_record,
+    write_disposition,
+)
 from radar_v4.workshop_check import (
     bind_report_to_snapshot,
     check_canonical_json,
@@ -236,6 +260,100 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     readiness_check.add_argument("--pack", required=True)
 
+    ohlc = sub.add_parser("ohlc-check", help="report high/low/close contradictions")
+    ohlc.add_argument("--pack", required=True)
+
+    retrieval = sub.add_parser(
+        "retrieval-order",
+        help="flag retrieval timestamps that precede market timestamps",
+    )
+    retrieval.add_argument("--pack", required=True)
+
+    ruler_fields = sub.add_parser(
+        "ruler-fields",
+        help="require provider, timezone, and transformation to match the declaration",
+    )
+    ruler_fields.add_argument("--pack", required=True)
+
+    percent = sub.add_parser(
+        "percent-fields",
+        help="refuse percent/return field names",
+    )
+    percent.add_argument("--path", required=True)
+
+    unexpected = sub.add_parser(
+        "unexpected-files",
+        help="refuse csv/parquet/xlsx files inside a pack",
+    )
+    unexpected.add_argument("--pack", required=True)
+
+    leftovers = sub.add_parser("leftovers", help="refuse tmp files and orphan sidecars")
+    leftovers.add_argument("--pack", required=True)
+
+    text_safety = sub.add_parser(
+        "text-safety",
+        help="refuse CRLF, control bytes, and duplicate JSON keys",
+    )
+    text_safety.add_argument("--path", required=True)
+
+    modes = sub.add_parser("file-modes", help="refuse executable bits on pack files")
+    modes.add_argument("--pack", required=True)
+
+    urls = sub.add_parser("url-scan", help="refuse http(s) URLs inside pack JSON")
+    urls.add_argument("--pack", required=True)
+
+    zeros = sub.add_parser("close-zeros", help="count zero closes; not a threshold")
+    zeros.add_argument("--pack", required=True)
+
+    adjustment = sub.add_parser(
+        "adjustment",
+        help="echo the declared adjustment policy; does not invent actions",
+    )
+    adjustment.add_argument("--pack", required=True)
+
+    metric = sub.add_parser("primary-metric", help="require close-to-close difference")
+    metric.add_argument("--pack", required=True)
+
+    taxonomy = sub.add_parser(
+        "taxonomy",
+        help="allow only locked Phase 5 result statuses",
+    )
+    taxonomy.add_argument("--report", required=True)
+
+    replay_eq = sub.add_parser("replay-eq", help="replay a pack snapshot and compare changes")
+    replay_eq.add_argument("--pack", required=True)
+
+    export_rt = sub.add_parser(
+        "export-roundtrip",
+        help="export a snapshot to a new pack and compare identity",
+    )
+    export_rt.add_argument("--pack", required=True)
+    export_rt.add_argument("--out", required=True)
+
+    sub.add_parser("catalog-audit", help="compare CODE literals to the reason catalog")
+    sub.add_parser("kind-audit", help="compare document_kind literals to the kind catalog")
+    sub.add_parser("package-identity", help="hash local package files; not market evidence")
+
+    question = sub.add_parser(
+        "question-lock",
+        help="bind a pack declaration to the locked Phase 5 question",
+    )
+    question.add_argument("--pack", required=True)
+
+    write_disp = sub.add_parser(
+        "write-disposition",
+        help="write UNREVIEWED, ACKNOWLEDGED, or NEEDS_REVIEW; not a trade",
+    )
+    write_disp.add_argument("--out", required=True)
+    write_disp.add_argument("--disposition", required=True)
+    write_disp.add_argument("--note")
+    write_disp.add_argument("--replace", action="store_true")
+
+    show_disp = sub.add_parser("show-disposition", help="read a human disposition file")
+    show_disp.add_argument("--path", required=True)
+
+    sub.add_parser("stop-record", help="print a workshop capability freeze; does not measure")
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -389,6 +507,79 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
     if command == "readiness-check":
         check = check_readiness_semantics(args.pack)
         return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "ohlc-check":
+        check = inspect_ohlc(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "retrieval-order":
+        check = inspect_retrieval_order(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "ruler-fields":
+        check = inspect_ruler_fields(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "percent-fields":
+        check = scan_percent_fields(args.path)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "unexpected-files":
+        check = inspect_unexpected_files(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "leftovers":
+        check = inspect_leftovers(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "text-safety":
+        check = inspect_text_safety(args.path)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "file-modes":
+        check = inspect_file_modes(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "url-scan":
+        check = inspect_pack_urls(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "close-zeros":
+        return _print(describe_close_zeros(args.pack).serialize(), 0)
+    if command == "adjustment":
+        check = describe_adjustment_policy(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "primary-metric":
+        check = inspect_primary_metric(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "taxonomy":
+        try:
+            check = inspect_status_taxonomy(args.report)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "replay-eq":
+        check = check_replay_equality(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "export-roundtrip":
+        check = check_export_roundtrip(args.pack, args.out)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "catalog-audit":
+        text = audit_reason_catalog()
+        return _print(text, 0 if loads(text).get("valid") else 1)
+    if command == "kind-audit":
+        text = audit_document_kinds()
+        return _print(text, 0 if loads(text).get("valid") else 1)
+    if command == "package-identity":
+        return _print(package_source_identity(), 0)
+    if command == "question-lock":
+        check = inspect_question_lock(args.pack)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-disposition":
+        try:
+            written = write_disposition(
+                args.out, args.disposition, args.note, args.replace
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(str(written), 0)
+    if command == "show-disposition":
+        check = read_disposition(args.path)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "stop-record":
+        return _print(workshop_stop_record(), 0)
     return None
 
 

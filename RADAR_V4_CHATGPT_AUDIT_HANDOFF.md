@@ -1,4 +1,4 @@
-# ChatGPT Audit Handoff — Radar V4 through Unit 150
+# ChatGPT Audit Handoff — Radar V4 through Unit 200
 
 ```text
 DATE — 2026-08-22
@@ -55,6 +55,7 @@ Exact authorizations used on this path include:
 - continued-build phrases (`Lets keep building`, `You can continue to build and not stop after building the units -TC`)
 - `Go ahead and do up too 100 units-TC`
 - `Lets do 50 more units-TC`
+- `I'm back..lets continue`
 
 Ready / complete-within-scope of a unit is **not** authorization of the next *class* of work (vendor API, Phase 6 method, paper trading, Product B).
 
@@ -178,6 +179,12 @@ Authorized by `Lets do 50 more units-TC`. These units press the open-item class 
 
 They do **not** change the claim class. Completing unit 150 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
 
+### Phase 5 units 151–200 (inspectability continuation)
+
+Authorized by `I'm back..lets continue`. These units add record checks (OHLC, retrieval order, ruler fields), refuse percent fields / unexpected files / pack URLs, verify replay and export round-trips, audit catalogs, bind the locked question file, and publish a workshop stop record.
+
+They do **not** change the claim class. Completing unit 200 is not a research result.
+
 ---
 
 ## Software facts at HEAD
@@ -216,7 +223,7 @@ The workshop will not invent market calendars, exchange hours, or missing bars.
 
 ## Still unauthorized
 
-These remain unauthorized even though units 7–150 exist:
+These remain unauthorized even though units 7–200 exist:
 
 - purchased historical-stock API or any named vendor;
 - live capture;
@@ -274,7 +281,7 @@ If any command invents a session for a missing pack, downloads data, or prints a
 2. **SYNTHETIC familiarity.** Repeated `MEASURED` output on the fixture pack can start to feel like a result. It is not.
 3. **Decorative surface.** Many CLI commands now exist. Ask whether each one refuses something a human could otherwise misread.
 4. **Authorization breadth.** Continued-build phrases plus “up to 100 units” are wide. Confirm the implementer did not use that width to add indicators, vendors, or methods.
-5. **Unmerged `main`.** Status docs on the branch say units 7–150. `main` still says 7–11. That is a record split, not a production promotion.
+5. **`main` now carries the merged workshop.** After the stop-point merge, later unit work continues on a new branch. Completing more units still does not earn data correctness.
 
 ---
 
@@ -284,7 +291,7 @@ The local evidence workshop on PR #8 can load, refuse, measure LEVEL 0 close-to-
 
 **No edge. No HISTORICAL measurement. No vendor. No method. No paper trading.**
 
-Completion of units 7–150 does not authorize a data purchase or Phase 6.
+Completion of units 7–200 does not authorize a data purchase or Phase 6.
 
 ---
 
@@ -314,7 +321,7 @@ That is not authorized now.
 
 ```text
 RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF + OPEN-ITEM REMEDIATION
-SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–150
+SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–200
 INDEPENDENT AUDIT THROUGH UNIT 100 — PASS WITH MATERIAL OPEN ITEMS
 UNITS 101–150 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
 CORE SYNTHETIC PATH — STRONGLY SUPPORTED
