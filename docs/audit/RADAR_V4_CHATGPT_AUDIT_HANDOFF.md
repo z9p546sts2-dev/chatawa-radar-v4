@@ -275,7 +275,7 @@ Claim level available now: `LEVEL 0 — MEASURED` only.
 
 ## Locked Phase 5 question
 
-Source: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
+Source: `docs/phase5/RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
 > In one declared daily dataset for one symbol, what are the ordinary close-to-close differences when every observation uses the same interval, timezone, and transformation version?
 

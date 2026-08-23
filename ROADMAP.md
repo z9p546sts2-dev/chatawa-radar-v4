@@ -2,13 +2,13 @@
 
 ## Status
 
-**STACKED DRAFT BRANCH STATUS — PHASE 5 UNITS 7–950 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE; MAIN CURRENTLY THROUGH UNIT 200.**
+**PHASE 5 UNITS 7–950 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE.**
 
 Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software on this stacked draft branch. `main` currently carries units 7–200 only. Todd authorized continued building without per-unit stops. Vendor download and method research remain unauthorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, deployment, and any future operational role.
 
-The long-horizon companion is `RADAR_V4_HORIZON_ROADMAP.md`. Years do not authorize stages.
+The long-horizon companion is `docs/roadmap/RADAR_V4_HORIZON_ROADMAP.md`. Years do not authorize stages. Document map: `docs/README.md`.
 
 ## Intended purpose
 
@@ -159,7 +159,7 @@ tests/
   test_evidence_software.py
   test_evidence_data.py
 
-README_BUILD_UNIT_1.md
+docs/units/README_BUILD_UNIT_1.md
 ```
 
 Future execution constraints:
@@ -188,7 +188,7 @@ This phase must not begin automatically after Build Unit 1.
 
 Before any real dataset is admitted, required controls include provenance, source identity, interval/cadence semantics, timestamps, timezone, transformation identity, integrity checks, and quarantine of contradictory or unknown-provenance data.
 
-**Status:** AUTHORIZED-TC / STACKED DRAFT UNITS 7–950 COMPLETE WITHIN SCOPE FOR LOCAL SOFTWARE ONLY; MAIN CURRENTLY THROUGH UNIT 200
+**Status:** AUTHORIZED-TC / UNITS 7–950 COMPLETE WITHIN SCOPE FOR LOCAL SOFTWARE ONLY
 
 Vendor download, paper trading, and method research remain unauthorized. Completing units 7–950 does not authorize a data purchase.
 

@@ -62,7 +62,10 @@ def inspect_question_lock(
     target = (
         Path(question_path)
         if question_path is not None
-        else Path(__file__).resolve().parents[1] / "RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md"
+        else Path(__file__).resolve().parents[1]
+        / "docs"
+        / "phase5"
+        / "RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md"
     )
     try:
         text = target.read_text(encoding="utf-8")

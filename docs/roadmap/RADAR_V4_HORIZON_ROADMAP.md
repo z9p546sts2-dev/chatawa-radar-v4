@@ -9,7 +9,7 @@
 **Autonomous trading authorized:** No  
 **Build Unit 1 authorized by this record:** No
 
-This document is the long-horizon companion to `ROADMAP.md`.
+This document is the long-horizon companion to `ROADMAP.md` at the repository root.
 
 `ROADMAP.md` remains the controlling near-term foundation roadmap. This file does not replace it, speed it up, or authorize any phase.
 
