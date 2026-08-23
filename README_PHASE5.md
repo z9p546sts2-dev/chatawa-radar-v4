@@ -67,6 +67,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 95–100** — workshop capability status (not a measurement), admission readiness, forbidden-claim fields, highest-unit lock at 100
 - **Units 101–150** — claim-level consistency, arithmetic recompute, locked-scope, pack safety, evidence chain, local audit copy, no-network scan, highest-unit lock at 150. Inspectability only; not a research result.
 - **Units 151–200** — OHLC/retrieval/ruler-field checks, percent and unexpected-file refusal, text safety, replay/export round-trip, catalog audit, locked-question bind, human disposition, stop record, highest-unit lock at 200. Inspectability only; not a research result.
+- **Units 201–250** — source hygiene, pack hygiene, decimal-string closes, admission/lineage describe, reserved-name and UTF-16 refusal, command catalog, local self-test, pack certify compose, highest-unit lock at 250. Inspectability only; not a research result.
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -105,4 +106,11 @@ PYTHONPATH=. python3 -m radar_v4 no-network
 PYTHONPATH=. python3 -m radar_v4 replay-eq --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 question-lock --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 stop-record
+PYTHONPATH=. python3 -m radar_v4 hygiene-scan
+PYTHONPATH=. python3 -m radar_v4 pack-hygiene --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 decimal-check --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 lineage --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 certify --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 self-test
+PYTHONPATH=. python3 -m radar_v4 commands
 ```

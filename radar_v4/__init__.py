@@ -179,6 +179,10 @@ from radar_v4.workshop_record import (
     package_source_identity,
     workshop_stop_record,
 )
+from radar_v4.certify import certify_pack, command_catalog, self_test
+from radar_v4.decimal_check import decimal_check_directory
+from radar_v4.hygiene import pack_hygiene, scan_workshop_tree
+from radar_v4.lineage import admission_vs_kept, write_lineage_record
 
 __all__ = [
     "ALLOWED_PROVENANCE_CLASSES",
@@ -343,4 +347,12 @@ __all__ = [
     "inspect_unexpected_files",
     "package_source_identity",
     "workshop_stop_record",
+    "admission_vs_kept",
+    "certify_pack",
+    "command_catalog",
+    "decimal_check_directory",
+    "pack_hygiene",
+    "scan_workshop_tree",
+    "self_test",
+    "write_lineage_record",
 ]

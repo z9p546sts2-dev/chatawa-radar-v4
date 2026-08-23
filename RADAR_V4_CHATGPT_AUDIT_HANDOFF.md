@@ -1,4 +1,4 @@
-# ChatGPT Audit Handoff — Radar V4 through Unit 200
+# ChatGPT Audit Handoff — Radar V4 through Unit 250
 
 ```text
 DATE — 2026-08-22
@@ -185,6 +185,12 @@ Authorized by `I'm back..lets continue`. These units add record checks (OHLC, re
 
 They do **not** change the claim class. Completing unit 200 is not a research result.
 
+### Phase 5 units 201–250 (inspectability continuation)
+
+Authorized by `Lets keep building and Learning and Earning..`. These units add source hygiene, pack hygiene, decimal-string closes, admission/lineage describe, reserved-name and UTF-16 refusal, command catalog, local self-test, and pack certify compose.
+
+They do **not** change the claim class. Completing unit 250 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
+
 ---
 
 ## Software facts at HEAD
@@ -196,6 +202,7 @@ TESTS AT 053fc28 — 166 passed (implementer-reported)
 TESTS AFTER REMEDIATION — 167 passed at 4318a5c87e8385643fbf2dbd9f61dc854b5b67e6
 TESTS AFTER UNITS 101–150 — 178 passed at 3074cf5ee51d9baebeebefcb8b59a33fd0c71c82
 TESTS AFTER UNITS 151–200 — 185 passed at b78c071b87701cfba0686799670b99352bf35ac9
+TESTS AFTER UNITS 201–250 — implementer-executed on this branch before merge
 REASON CODES — catalog present (python -m radar_v4 codes)
 CLI — python -m radar_v4
 NETWORK — none in this package
@@ -224,7 +231,7 @@ The workshop will not invent market calendars, exchange hours, or missing bars.
 
 ## Still unauthorized
 
-These remain unauthorized even though units 7–200 exist:
+These remain unauthorized even though units 7–250 exist:
 
 - purchased historical-stock API or any named vendor;
 - live capture;
@@ -292,7 +299,7 @@ The local evidence workshop on PR #8 can load, refuse, measure LEVEL 0 close-to-
 
 **No edge. No HISTORICAL measurement. No vendor. No method. No paper trading.**
 
-Completion of units 7–200 does not authorize a data purchase or Phase 6.
+Completion of units 7–250 does not authorize a data purchase or Phase 6.
 
 ---
 
@@ -318,24 +325,33 @@ That is not authorized now.
 
 ---
 
+## Continuation — units 201–250
+
+This branch continues the same Phase 5 evidence-ops class: local hygiene, decimal-string closes, admission/lineage describe, reserved-name/UTF-16 refusal, command catalog, self-test, and pack certify compose.
+
+Passing `certify` on the SYNTHETIC fixture is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
+
+---
+
 ## Disposition for ChatGPT
 
 ```text
 RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF + OPEN-ITEM REMEDIATION
-SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–200
+SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–250
 INDEPENDENT AUDIT THROUGH UNIT 100 — PASS WITH MATERIAL OPEN ITEMS
-UNITS 101–200 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
+UNITS 101–250 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
 CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 166 TESTS AT 053fc28 — IMPLEMENTER-REPORTED
 167 TESTS AT 4318a5c — IMPLEMENTER-REPORTED AFTER REMEDIATION
 178 TESTS AT 3074cf5 — IMPLEMENTER-REPORTED AFTER UNITS 101–150
 185 TESTS AT b78c071 — IMPLEMENTER-REPORTED AFTER UNITS 151–200
+UNITS 201–250 — HYGIENE / LINEAGE / DECIMAL / CERTIFY; IMPLEMENTER-REPORTED ON THIS BRANCH
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN
 VENDOR / LIVE / PAPER — NOT AUTHORIZED
 V1/V2 INHERITANCE — FORBIDDEN
-NEXT CLASS OF WORK — NOT AUTHORIZED BY UNIT 200
+NEXT CLASS OF WORK — NOT AUTHORIZED BY UNIT 250
 ```
 
 Learning and Earning It.  

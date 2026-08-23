@@ -63,6 +63,26 @@ from radar_v4.record_check import (
 )
 from radar_v4.roundtrip_check import check_export_roundtrip, check_replay_equality
 from radar_v4.workshop_bounds import scan_package_network_imports, workshop_bounds
+from radar_v4.certify import (
+    certify_pack,
+    command_catalog,
+    compare_stops,
+    fixture_label_check,
+    name_vs_ruler,
+    reserved_name_scan,
+    self_test,
+    utf16_scan,
+    write_certify_record,
+)
+from radar_v4.decimal_check import decimal_check_directory
+from radar_v4.hygiene import pack_hygiene, scan_python_source, scan_workshop_tree
+from radar_v4.lineage import (
+    admission_vs_kept,
+    clock_skew_describe,
+    snapshot_order_check,
+    volume_describe,
+    write_lineage_record,
+)
 from radar_v4.workshop_record import (
     inspect_question_lock,
     package_source_identity,
@@ -354,6 +374,104 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
 
     sub.add_parser("stop-record", help="print a workshop capability freeze; does not measure")
 
+    hygiene = sub.add_parser(
+        "hygiene-scan",
+        help="refuse eval/exec/subprocess/socket/os.system names in workshop Python",
+    )
+    hygiene.add_argument("--path", help="optional single Python file; default is radar_v4")
+
+    pack_hyg = sub.add_parser(
+        "pack-hygiene",
+        help="hidden files, NFC names, duplicate digests, checksums, identity uniqueness",
+    )
+    pack_hyg.add_argument("--pack", required=True)
+
+    decimal = sub.add_parser(
+        "decimal-check",
+        help="require close values to be finite decimal strings",
+    )
+    decimal.add_argument("--pack", required=True)
+
+    lineage = sub.add_parser(
+        "lineage",
+        help="describe admission versus kept counts; not a quality score",
+    )
+    lineage.add_argument("--pack", required=True)
+
+    write_lineage = sub.add_parser(
+        "write-lineage",
+        help="write a local lineage description; not market evidence",
+    )
+    write_lineage.add_argument("--pack", required=True)
+    write_lineage.add_argument("--out", required=True)
+    write_lineage.add_argument("--replace", action="store_true")
+
+    volume = sub.add_parser(
+        "volume-describe",
+        help="describe unused volume fields; not a signal",
+    )
+    volume.add_argument("--pack", required=True)
+
+    reserved = sub.add_parser(
+        "reserved-names",
+        help="refuse live/trade/edge filenames in a pack",
+    )
+    reserved.add_argument("--pack", required=True)
+
+    name_ruler = sub.add_parser(
+        "name-vs-ruler",
+        help="require observation symbols to match the declaration universe",
+    )
+    name_ruler.add_argument("--pack", required=True)
+
+    encoding = sub.add_parser(
+        "text-encoding",
+        help="refuse UTF-16 BOM in pack files",
+    )
+    encoding.add_argument("--pack", required=True)
+
+    fixture = sub.add_parser(
+        "fixture-label",
+        help="require a SYNTHETIC fixture label",
+    )
+    fixture.add_argument("--pack", required=True)
+
+    stops = sub.add_parser(
+        "compare-stops",
+        help="compare two stop records; same freeze is not a method",
+    )
+    stops.add_argument("--left", required=True)
+    stops.add_argument("--right", required=True)
+
+    snap_order = sub.add_parser(
+        "snapshot-order",
+        help="require snapshot observation timestamps to be sorted",
+    )
+    snap_order.add_argument("--snapshot", required=True)
+
+    span = sub.add_parser(
+        "span-describe",
+        help="describe first-to-last timestamp span; not a trading clock",
+    )
+    span.add_argument("--pack", required=True)
+
+    certify = sub.add_parser(
+        "certify",
+        help="compose local pack checks; passing is not market evidence",
+    )
+    certify.add_argument("--pack", required=True)
+
+    write_cert = sub.add_parser(
+        "write-certify",
+        help="write a local certify record; not a method",
+    )
+    write_cert.add_argument("--pack", required=True)
+    write_cert.add_argument("--out", required=True)
+    write_cert.add_argument("--replace", action="store_true")
+
+    sub.add_parser("commands", help="list local CLI commands; a command is not a method")
+    sub.add_parser("self-test", help="check local workshop invariants; not market evidence")
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -580,6 +698,71 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "stop-record":
         return _print(workshop_stop_record(), 0)
+    if command == "hygiene-scan":
+        check = scan_python_source(Path(args.path)) if args.path else scan_workshop_tree()
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "pack-hygiene":
+        check = pack_hygiene(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "decimal-check":
+        check = decimal_check_directory(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "lineage":
+        return _print(admission_vs_kept(Path(args.pack)).serialize(), 0)
+    if command == "write-lineage":
+        try:
+            record = write_lineage_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0)
+    if command == "volume-describe":
+        return _print(volume_describe(Path(args.pack)).serialize(), 0)
+    if command == "reserved-names":
+        check = reserved_name_scan(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "name-vs-ruler":
+        check = name_vs_ruler(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "text-encoding":
+        check = utf16_scan(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "fixture-label":
+        check = fixture_label_check(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-stops":
+        try:
+            left = Path(args.left).read_text(encoding="utf-8")
+            right = Path(args.right).read_text(encoding="utf-8")
+        except OSError as exc:
+            sys.stderr.write(f"UNREADABLE_JSON: {exc}\n")
+            return 2
+        check = compare_stops(left, right)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "snapshot-order":
+        try:
+            check = snapshot_order_check(args.snapshot)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "span-describe":
+        return _print(clock_skew_describe(Path(args.pack)).serialize(), 0)
+    if command == "certify":
+        check = certify_pack(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-certify":
+        try:
+            record = write_certify_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "commands":
+        return _print(command_catalog().serialize(), 0)
+    if command == "self-test":
+        check = self_test()
+        return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
 
