@@ -79,6 +79,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 651–700** — snapshot-bundle sidecar/ruler lock, portable FIXTURE/SYNTHETIC export lock, highest-unit lock at 700. Inspectability only; not a research result.
 - **Units 701–750** — local audit-copy lock, pack three-way chain lock, highest-unit lock at 750. Inspectability only; not a research result.
 - **Units 751–800** — pack inventory role lock, pack layout declaration/observations/manifest lock, highest-unit lock at 800. Inspectability only; not a research result.
+- **Units 801–850** — pack safety inspectability lock, leftover tmp/orphan sidecar lock, highest-unit lock at 850. Inspectability only; not a research result.
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 

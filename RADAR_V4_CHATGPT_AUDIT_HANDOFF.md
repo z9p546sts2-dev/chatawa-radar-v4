@@ -257,6 +257,12 @@ Authorized by `Tools verify. Todd authorizes. Stay on course.`. These units add 
 
 They do **not** change the claim class. Completing unit 800 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
 
+### Phase 5 units 801–850 (inspectability continuation)
+
+Authorized by `Tools verify. Todd authorizes. Stay on course.`. These units add pack safety inspectability lock, leftover tmp/orphan sidecar lock, and status binds.
+
+They do **not** change the claim class. Completing unit 850 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
+
 ---
 
 ## Software facts at HEAD
@@ -280,6 +286,7 @@ TESTS AFTER UNITS 601–650 — 240 passed at d658c64
 TESTS AFTER UNITS 651–700 — 246 passed at 3fff5fb
 TESTS AFTER UNITS 701–750 — 252 passed at 4e30ef0
 TESTS AFTER UNITS 751–800 — 258 passed at dd43d7f
+TESTS AFTER UNITS 801–850 — pending on this branch
 REASON CODES — catalog present (python -m radar_v4 codes)
 CLI — python -m radar_v4
 NETWORK — none in this package
@@ -308,7 +315,7 @@ The workshop will not invent market calendars, exchange hours, or missing bars.
 
 ## Still unauthorized
 
-These remain unauthorized even though units 7–800 exist:
+These remain unauthorized even though units 7–850 exist:
 
 - purchased historical-stock API or any named vendor;
 - live capture;
@@ -376,7 +383,7 @@ The local evidence workshop on PR #8 can load, refuse, measure LEVEL 0 close-to-
 
 **No edge. No HISTORICAL measurement. No vendor. No method. No paper trading.**
 
-Completion of units 7–800 does not authorize a data purchase or Phase 6.
+Completion of units 7–850 does not authorize a data purchase or Phase 6.
 
 ---
 
@@ -426,7 +433,9 @@ Units 701–750 add local audit-copy kind/files/verify lock, pack three-way chai
 
 Units 751–800 add pack inventory role lock, pack layout declaration/observations/manifest lock, and status binds.
 
-Passing `inventory-lock` or `layout-lock` on the SYNTHETIC fixture is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
+Units 801–850 add pack safety inspectability lock, leftover tmp/orphan sidecar lock, and status binds.
+
+Passing `safety-lock` or `leftover-lock` on the SYNTHETIC fixture is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
 
 ---
 
@@ -434,9 +443,9 @@ Passing `inventory-lock` or `layout-lock` on the SYNTHETIC fixture is inspectabi
 
 ```text
 RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF + OPEN-ITEM REMEDIATION
-SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–800
+SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–850
 INDEPENDENT AUDIT THROUGH UNIT 100 — PASS WITH MATERIAL OPEN ITEMS
-UNITS 101–800 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
+UNITS 101–850 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
 CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 166 TESTS AT 053fc28 — IMPLEMENTER-REPORTED
 167 TESTS AT 4318a5c — IMPLEMENTER-REPORTED AFTER REMEDIATION

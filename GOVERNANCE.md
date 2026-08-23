@@ -2,9 +2,9 @@
 
 ## Status
 
-**PHASE 5 AUTHORIZED — UNITS 7–800 COMPLETE WITHIN SCOPE**
+**PHASE 5 AUTHORIZED — UNITS 7–850 COMPLETE WITHIN SCOPE**
 
-Radar V4 has Phase 5 dataset admission through unit 800: local FIXTURE/SYNTHETIC session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, and a workshop stop record. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence. Units 101–800 are inspectability, not a research result.
+Radar V4 has Phase 5 dataset admission through unit 850: local FIXTURE/SYNTHETIC session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, and a workshop stop record. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence. Units 101–850 are inspectability, not a research result.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -121,7 +121,7 @@ Authorized now:
 2. Read-only repository inspection.
 3. Preservation and review of completed V1/V2 forensic evidence.
 4. Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software.
-5. Phase 5 units 7–800 dataset admission through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, and a workshop stop record.
+5. Phase 5 units 7–850 dataset admission through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, and a workshop stop record.
 6. Future evidence requirements and non-executing research planning.
 
 Not authorized now:
@@ -306,7 +306,7 @@ SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
-PHASE 5 — AUTHORIZED-TC / UNITS 7–800 COMPLETE
+PHASE 5 — AUTHORIZED-TC / UNITS 7–850 COMPLETE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED

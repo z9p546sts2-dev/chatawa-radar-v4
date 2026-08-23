@@ -164,6 +164,22 @@ from radar_v4.layout_lock import (
     verify_layout_record,
     write_layout_record,
 )
+from radar_v4.leftover_lock import (
+    compare_leftover_lock,
+    leftover_lock,
+    leftover_lock_determinism,
+    leftover_status_bind,
+    verify_leftover_record,
+    write_leftover_record,
+)
+from radar_v4.safety_lock import (
+    compare_safety_lock,
+    safety_lock,
+    safety_lock_determinism,
+    safety_status_bind,
+    verify_safety_record,
+    write_safety_record,
+)
 from radar_v4.export_lock import (
     compare_export_lock,
     export_lock,
@@ -1434,6 +1450,84 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     layout_status.add_argument("--pack", required=True)
 
+    safety_lock_cmd = sub.add_parser(
+        "safety-lock",
+        help="lock pack safety inspectability; not a measurement",
+    )
+    safety_lock_cmd.add_argument("--pack", required=True)
+
+    safety_eq = sub.add_parser(
+        "safety-eq",
+        help="repeat safety-lock; equality is not a method",
+    )
+    safety_eq.add_argument("--pack", required=True)
+
+    cmp_safety = sub.add_parser(
+        "compare-safety-lock",
+        help="compare safety-lock of two packs",
+    )
+    cmp_safety.add_argument("--left", required=True)
+    cmp_safety.add_argument("--right", required=True)
+
+    write_safety = sub.add_parser(
+        "write-safety-lock",
+        help="write a local safety-lock record; not market evidence",
+    )
+    write_safety.add_argument("--pack", required=True)
+    write_safety.add_argument("--out", required=True)
+    write_safety.add_argument("--replace", action="store_true")
+
+    verify_safety = sub.add_parser(
+        "verify-safety",
+        help="verify a local safety-lock record",
+    )
+    verify_safety.add_argument("--path", required=True)
+
+    safety_status = sub.add_parser(
+        "safety-status",
+        help="bind safety-lock to status highest-unit; not a measurement",
+    )
+    safety_status.add_argument("--pack", required=True)
+
+    leftover_lock_cmd = sub.add_parser(
+        "leftover-lock",
+        help="lock leftover inspectability; not a method",
+    )
+    leftover_lock_cmd.add_argument("--pack", required=True)
+
+    leftover_eq = sub.add_parser(
+        "leftover-eq",
+        help="repeat leftover-lock; equality is not a method",
+    )
+    leftover_eq.add_argument("--pack", required=True)
+
+    cmp_leftover = sub.add_parser(
+        "compare-leftover-lock",
+        help="compare leftover-lock of two packs",
+    )
+    cmp_leftover.add_argument("--left", required=True)
+    cmp_leftover.add_argument("--right", required=True)
+
+    write_leftover = sub.add_parser(
+        "write-leftover-lock",
+        help="write a local leftover-lock record; not market evidence",
+    )
+    write_leftover.add_argument("--pack", required=True)
+    write_leftover.add_argument("--out", required=True)
+    write_leftover.add_argument("--replace", action="store_true")
+
+    verify_leftover = sub.add_parser(
+        "verify-leftover",
+        help="verify a local leftover-lock record",
+    )
+    verify_leftover.add_argument("--path", required=True)
+
+    leftover_status = sub.add_parser(
+        "leftover-status",
+        help="bind leftover-lock to status highest-unit; not a measurement",
+    )
+    leftover_status.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -2223,6 +2317,50 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "layout-status":
         check = layout_status_bind(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "safety-lock":
+        check = safety_lock(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "safety-eq":
+        check = safety_lock_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-safety-lock":
+        check = compare_safety_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-safety-lock":
+        try:
+            record = write_safety_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-safety":
+        check = verify_safety_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "safety-status":
+        check = safety_status_bind(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "leftover-lock":
+        check = leftover_lock(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "leftover-eq":
+        check = leftover_lock_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-leftover-lock":
+        check = compare_leftover_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-leftover-lock":
+        try:
+            record = write_leftover_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-leftover":
+        check = verify_leftover_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "leftover-status":
+        check = leftover_status_bind(Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

@@ -47,13 +47,13 @@ class Units751To800Tests(unittest.TestCase):
             py_compile(str(ROOT / relative), doraise=True)
 
     def test_highest_unit_is_800(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 800)
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 800)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 800)
+        self.assertGreaterEqual(status["highest_unit"], 800)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 800)
+        self.assertGreaterEqual(stop["highest_unit"], 800)
         self.assertFalse(stop["vendor_authorized"])
 
     def test_synthetic_inventory_and_layout(self) -> None:
