@@ -35,6 +35,34 @@ This record is for independent audit. It is not a method claim, not a performanc
 
 ---
 
+## Implementer-executed snapshot — units 1051–1100
+
+This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
+
+Commands run from `cursor/phase-5-units-1051-1100-9fd5` at `9bacaee`:
+
+```text
+PYTHONPATH=. python3 -m unittest discover -s tests -v
+```
+
+Observed:
+
+| Check | Result |
+|---|---|
+| Unittest suite | 295 passed, 0 failed |
+| Reason-code catalog | valid; 248 codes |
+| Document-kind catalog | valid; 312 kinds |
+| `status` | `highest_unit=1100`, `measured=false`, no `claim_level` |
+| Two pack copies | `compare_member_lock` valid |
+| Changed observation file | `MEMBER_MISMATCH` names `obs_2026-08-08.json`; `compare_content_lock` is `CONTENT_MISMATCH` |
+| Added file | `MEMBER_EXTRA` |
+| Removed file | `MEMBER_ABSENT` |
+| Same digest, different members | `content_bind` valid; `member_bind` `MEMBER_BIND_MISMATCH` |
+
+Completing unit 1100 does **not** authorize a vendor API, Phase 6, paper trading, or Product B.
+
+---
+
 ## Implementer-executed snapshot — units 1001–1050
 
 This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.

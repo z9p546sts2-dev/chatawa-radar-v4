@@ -28,7 +28,7 @@ BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED
 ```
 
-The full unit ledger is `docs/UNITS.md`. Completing units 7–1000 is inspectability, not a research result.
+The full unit ledger is `docs/UNITS.md`. Completing units 7–1100 is inspectability, not a research result.
 
 Map of the rest of the documents: `docs/README.md`.
 
