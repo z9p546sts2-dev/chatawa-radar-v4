@@ -5,9 +5,9 @@ CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 CURRENT BRANCH — cursor/phase-5-units-951-1000-9fd5
 CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/26
-CURRENT SOFTWARE HEAD — eb374f4
+CURRENT SOFTWARE HEAD — 5b70b78
 IMPLEMENTATION HEAD — c21fde1 (units 951–1000)
-TEST-COUNT HEAD — eb374f4
+TEST-COUNT HEAD — 5b70b78
 BASE / main — 04b7f52 (Phase 5 units 7–950 merged via #25)
 STACKED OPEN PRS — none; #10–#24 closed after #25
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
@@ -39,7 +39,7 @@ This record is for independent audit. It is not a method claim, not a performanc
 
 This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
 
-Commands run from `cursor/phase-5-units-951-1000-9fd5` at `c21fde1` (recorded at `eb374f4`):
+Commands run from `cursor/phase-5-units-951-1000-9fd5` at `c21fde1` (recorded at `5b70b78`):
 
 ```text
 PYTHONPATH=. python3 -m unittest discover -s tests -v
