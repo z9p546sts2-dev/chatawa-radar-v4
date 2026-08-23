@@ -4,16 +4,16 @@
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 CURRENT BRANCH — cursor/phase-5-units-851-900-9fd5
-CURRENT PR — stacked draft on PR #22; not merged
-CURRENT SOFTWARE HEAD — pending implementation commit
-IMPLEMENTATION HEAD — pending (units 851–900)
-TEST-COUNT HEAD — pending
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/23
+CURRENT SOFTWARE HEAD — 5c157dca69e4ae1837ee3785c7c2771833c0948f
+IMPLEMENTATION HEAD — 5c157dc (units 851–900)
+TEST-COUNT HEAD — 5c157dc (271 passed)
 BASE / main — 56db82f (Phase 5 units 7–200 merged)
-STACKED OPEN PRS — #10 (201–250) through #22 (801–850) plus this 851–900 draft; not merged
+STACKED OPEN PRS — #10 (201–250) through #23 (851–900); not merged
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PENDING TEST COUNT; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PASSES; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 
@@ -32,6 +32,37 @@ FIRST-AUDIT BASE / main — 1ff2333 (then Phase 5 units 7–11 only)
 This record is for independent audit. It is not a method claim, not a performance report, and not authorization of the next class of work.
 
 **Tools verify. Todd authorizes.**
+
+---
+
+## Implementer-executed snapshot — units 851–900
+
+This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
+
+Commands run from `cursor/phase-5-units-851-900-9fd5` at `5c157dc`:
+
+```text
+PYTHONPATH=. python3 -m unittest discover -s tests -v
+PYTHONPATH=. python3 -m radar_v4 status
+PYTHONPATH=. python3 -m radar_v4 digest-lock --path fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 digest-status --path fixtures/synthetic_one_symbol_1d
+```
+
+Observed:
+
+| Check | Result |
+|---|---|
+| Unittest suite | 271 passed, 0 failed (at `5c157dc`) |
+| Reason-code catalog | valid; 216 codes |
+| Document-kind catalog | valid; 274 kinds |
+| Network-import scan | valid; no vendor/network client imports |
+| `status` | `highest_unit=900`, `measured=false`, no `claim_level`, vendor/paper/method/historical all false |
+| `digest-lock` | valid on the SYNTHETIC fixture; details include `source_digest` |
+| Same-path clean-pack swap | stale safety/digest lock verify fails with `RECORD_MISMATCH` |
+
+Those SYNTHETIC numbers are software-test material. They are **not** market evidence.
+
+Units 851–900 add source-digest custody so path alone is not identity. Completing unit 900 does **not** authorize a vendor API, Phase 6, paper trading, or Product B.
 
 ---
 
@@ -402,7 +433,7 @@ TESTS AFTER UNITS 651–700 — 246 passed at 3fff5fb
 TESTS AFTER UNITS 701–750 — 252 passed at 4e30ef0
 TESTS AFTER UNITS 751–800 — 258 passed at dd43d7f
 TESTS AFTER UNITS 801–850 — 264 passed at 0895354
-TESTS AFTER UNITS 851–900 — pending implementer count
+TESTS AFTER UNITS 851–900 — 271 passed at 5c157dc
 REASON CODES — catalog present (python -m radar_v4 codes)
 CLI — python -m radar_v4
 NETWORK — none in this package
@@ -478,7 +509,7 @@ PYTHONPATH=. python3 -m radar_v4 digest-status --path fixtures/synthetic_one_sym
 
 Expected on the current 851–900 branch:
 
-- full unittest suite: implementer count pending on this pre-test revision;
+- full unittest suite: **271 passed** at `5c157dc` (implementer-executed);
 - `status` reports `highest_unit: 900`, `measured: false`, and does not emit `claim_level`;
 - `status` denies method, vendor, historical evidence, and paper trading;
 - `session` on the fixture pack is `MEASURED` with SYNTHETIC changes `0.50`, `-0.50`;
@@ -590,7 +621,7 @@ CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 252 TESTS AFTER UNITS 701–750 — IMPLEMENTER-REPORTED
 258 TESTS AFTER UNITS 751–800 — IMPLEMENTER-REPORTED
 264 TESTS AFTER UNITS 801–850 — IMPLEMENTER-REPORTED ON PR #22
-TESTS AFTER UNITS 851–900 — PENDING IMPLEMENTER COUNT
+271 TESTS AFTER UNITS 851–900 — IMPLEMENTER-REPORTED ON THIS BRANCH
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN
