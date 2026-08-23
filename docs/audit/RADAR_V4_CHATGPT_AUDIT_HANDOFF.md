@@ -1,19 +1,19 @@
-# ChatGPT Audit Handoff — Radar V4 through Unit 1050
+# ChatGPT Audit Handoff — Radar V4 through Unit 1100
 
 ```text
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
-CURRENT BRANCH — cursor/phase-5-units-1001-1050-9fd5
-CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/27
-CURRENT SOFTWARE HEAD — c074334
-IMPLEMENTATION HEAD — c074334 (units 1001–1050)
+CURRENT BRANCH — cursor/phase-5-units-1051-1100-9fd5
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/28
+CURRENT SOFTWARE HEAD — 9bacaee
+IMPLEMENTATION HEAD — 9bacaee (units 1051–1100)
 TEST-COUNT HEAD — pending this commit
-BASE / main — 3555dad (Phase 5 units 7–1000 merged via #26)
-STACKED OPEN PRS — none; #10–#24 closed after #25; #26 merged
+BASE / main — c1e6e6e (Phase 5 units 7–1050 merged via #27)
+STACKED OPEN PRS — none; #10–#24 closed after #25; #26 and #27 merged
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH VERIFIED AT 289 TESTS; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH VERIFIED AT 295 TESTS; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 
@@ -32,6 +32,34 @@ FIRST-AUDIT BASE / main — 1ff2333 (then Phase 5 units 7–11 only)
 This record is for independent audit. It is not a method claim, not a performance report, and not authorization of the next class of work.
 
 **Tools verify. Todd authorizes.**
+
+---
+
+## Implementer-executed snapshot — units 1051–1100
+
+This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
+
+Commands run from `cursor/phase-5-units-1051-1100-9fd5` at `9bacaee`:
+
+```text
+PYTHONPATH=. python3 -m unittest discover -s tests -v
+```
+
+Observed:
+
+| Check | Result |
+|---|---|
+| Unittest suite | 295 passed, 0 failed |
+| Reason-code catalog | valid; 248 codes |
+| Document-kind catalog | valid; 312 kinds |
+| `status` | `highest_unit=1100`, `measured=false`, no `claim_level` |
+| Two pack copies | `compare_member_lock` valid |
+| Changed observation file | `MEMBER_MISMATCH` names `obs_2026-08-08.json`; `compare_content_lock` is `CONTENT_MISMATCH` |
+| Added file | `MEMBER_EXTRA` |
+| Removed file | `MEMBER_ABSENT` |
+| Same digest, different members | `content_bind` valid; `member_bind` `MEMBER_BIND_MISMATCH` |
+
+Completing unit 1100 does **not** authorize a vendor API, Phase 6, paper trading, or Product B.
 
 ---
 

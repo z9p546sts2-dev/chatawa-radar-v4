@@ -204,6 +204,8 @@ from radar_v4.content_bind import content_bind
 from radar_v4.content_lock import content_lock, compare_content_lock
 from radar_v4.content_set import content_set, compare_content_set
 from radar_v4.copy_set import copy_set, compare_copy_set
+from radar_v4.member_bind import member_bind
+from radar_v4.member_lock import member_lock, compare_member_lock
 from radar_v4.lock_bind import bind_lock_records
 from radar_v4.lock_set import lock_set
 from radar_v4.leftover_lock import leftover_lock
@@ -392,6 +394,9 @@ __all__ = [
     "compare_content_lock",
     "compare_content_set",
     "compare_copy_set",
+    "compare_member_lock",
+    "member_bind",
+    "member_lock",
     "content_bind",
     "content_lock",
     "content_set",

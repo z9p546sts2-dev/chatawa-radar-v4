@@ -2,9 +2,9 @@
 
 ## Status
 
-**PHASE 5 UNITS 7–1050 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE.**
+**PHASE 5 UNITS 7–1100 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE.**
 
-Radar V4 has Phase 5 dataset admission through unit 1050 on this branch. The work is: local FIXTURE/SYNTHETIC session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, source-digest custody, lock-record bind and lock-set, path-independent content identity, content-set of lock records, copy-set of pack directories, and a workshop stop record. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence. Units 101–1050 are inspectability, not a research result. Document map: `docs/README.md`.
+Radar V4 has Phase 5 dataset admission through unit 1100 on this branch. The work is: local FIXTURE/SYNTHETIC session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, source-digest custody, lock-record bind and lock-set, path-independent content identity, content-set of lock records, copy-set of pack directories, named member identity, and a workshop stop record. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence. Units 101–1100 are inspectability, not a research result. Document map: `docs/README.md`.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -306,7 +306,7 @@ SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
-PHASE 5 — AUTHORIZED-TC / UNITS 7–1050 COMPLETE WITHIN SCOPE
+PHASE 5 — AUTHORIZED-TC / UNITS 7–1100 COMPLETE WITHIN SCOPE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
