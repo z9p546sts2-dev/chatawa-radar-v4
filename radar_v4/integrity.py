@@ -10,6 +10,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
+from hashlib import sha256
 from json import JSONDecodeError, dumps, loads
 from pathlib import Path
 
@@ -90,12 +91,30 @@ class IntegrityCheck:
         )
 
 
+def source_digest(path: Path) -> str:
+    """SHA-256 identity of a file or a sorted directory listing. Not a score."""
+    root = Path(path)
+    if root.is_file() and not root.is_symlink():
+        return sha256(root.read_bytes()).hexdigest()
+    if not root.is_dir():
+        return ""
+    listing: dict[str, str] = {}
+    for child in sorted(root.rglob("*")):
+        rel = child.relative_to(root).as_posix()
+        if child.is_symlink():
+            listing[rel] = "SYMLINK"
+        elif child.is_file():
+            listing[rel] = sha256(child.read_bytes()).hexdigest()
+    return sha256(_dump(listing).encode("ascii")).hexdigest()
+
+
 def lock_source_details(
     path: Path, extra: dict[str, object] | None = None
 ) -> dict[str, object]:
-    """Attach the locked source path. A lock without this is not an identity record."""
+    """Attach source path and digest. Path alone is not identity."""
     details = dict(extra or {})
     details["source_path"] = str(Path(path).resolve())
+    details["source_digest"] = source_digest(path)
     return details
 
 

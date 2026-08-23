@@ -164,6 +164,14 @@ from radar_v4.layout_lock import (
     verify_layout_record,
     write_layout_record,
 )
+from radar_v4.digest_lock import (
+    compare_digest_lock,
+    digest_lock,
+    digest_lock_determinism,
+    digest_status_bind,
+    verify_digest_record,
+    write_digest_record,
+)
 from radar_v4.leftover_lock import (
     compare_leftover_lock,
     leftover_lock,
@@ -1528,6 +1536,45 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     leftover_status.add_argument("--pack", required=True)
 
+    digest_lock_cmd = sub.add_parser(
+        "digest-lock",
+        help="lock source-digest identity; path alone is not identity",
+    )
+    digest_lock_cmd.add_argument("--path", required=True)
+
+    digest_eq = sub.add_parser(
+        "digest-eq",
+        help="repeat digest-lock; equality is not a method",
+    )
+    digest_eq.add_argument("--path", required=True)
+
+    cmp_digest = sub.add_parser(
+        "compare-digest-lock",
+        help="compare digest-lock of two paths",
+    )
+    cmp_digest.add_argument("--left", required=True)
+    cmp_digest.add_argument("--right", required=True)
+
+    write_digest = sub.add_parser(
+        "write-digest-lock",
+        help="write a local digest-lock record; not market evidence",
+    )
+    write_digest.add_argument("--path", required=True)
+    write_digest.add_argument("--out", required=True)
+    write_digest.add_argument("--replace", action="store_true")
+
+    verify_digest = sub.add_parser(
+        "verify-digest",
+        help="verify a local digest-lock record",
+    )
+    verify_digest.add_argument("--path", required=True)
+
+    digest_status = sub.add_parser(
+        "digest-status",
+        help="bind digest-lock to status highest-unit; not a measurement",
+    )
+    digest_status.add_argument("--path", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -2361,6 +2408,28 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "leftover-status":
         check = leftover_status_bind(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "digest-lock":
+        check = digest_lock(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "digest-eq":
+        check = digest_lock_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-digest-lock":
+        check = compare_digest_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-digest-lock":
+        try:
+            record = write_digest_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-digest":
+        check = verify_digest_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "digest-status":
+        check = digest_status_bind(Path(args.path))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

@@ -163,6 +163,7 @@ from radar_v4.integrity import (
     recompute_change_records,
     require_document_kind,
     scan_forbidden_fields,
+    source_digest,
 )
 from radar_v4.pack_safety import PackSafety, inspect_pack_safety
 from radar_v4.workshop_bounds import scan_package_network_imports, workshop_bounds
@@ -198,6 +199,7 @@ from radar_v4.chain_lock import chain_lock
 from radar_v4.export_lock import export_lock
 from radar_v4.inventory_lock import inventory_lock
 from radar_v4.layout_lock import layout_lock
+from radar_v4.digest_lock import digest_lock
 from radar_v4.leftover_lock import leftover_lock
 from radar_v4.safety_lock import safety_lock
 from radar_v4.manifest_lock import manifest_lock
@@ -380,8 +382,10 @@ __all__ = [
     "freeze_status_bind",
     "inventory_lock",
     "layout_lock",
+    "digest_lock",
     "leftover_lock",
     "safety_lock",
+    "source_digest",
     "disposition_lock",
     "journal_lock",
     "kind_lock",
