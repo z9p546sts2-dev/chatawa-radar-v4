@@ -2,7 +2,7 @@
 
 ## Status
 
-**PHASE 5 UNITS 7–1100 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE.**
+**PHASE 5 UNITS 7–1150 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE.**
 
 Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software on this stacked draft branch. `main` currently carries units 7–200 only. Todd authorized continued building without per-unit stops. Vendor download and method research remain unauthorized.
 
@@ -188,9 +188,9 @@ This phase must not begin automatically after Build Unit 1.
 
 Before any real dataset is admitted, required controls include provenance, source identity, interval/cadence semantics, timestamps, timezone, transformation identity, integrity checks, and quarantine of contradictory or unknown-provenance data.
 
-**Status:** AUTHORIZED-TC / UNITS 7–1100 COMPLETE WITHIN SCOPE FOR LOCAL SOFTWARE ONLY
+**Status:** AUTHORIZED-TC / UNITS 7–1150 COMPLETE WITHIN SCOPE FOR LOCAL SOFTWARE ONLY
 
-Vendor download, paper trading, and method research remain unauthorized. Completing units 7–1100 does not authorize a data purchase.
+Vendor download, paper trading, and method research remain unauthorized. Completing units 7–1150 does not authorize a data purchase.
 
 # Phase 6 — Candidate feature / method research
 

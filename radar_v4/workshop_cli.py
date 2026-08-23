@@ -195,6 +195,13 @@ from radar_v4.copy_set import (
     verify_copy_set_record,
     write_copy_set_record,
 )
+from radar_v4.member_align import (
+    member_align,
+    member_align_determinism,
+    member_align_status,
+    verify_member_align_record,
+    write_member_align_record,
+)
 from radar_v4.member_bind import (
     member_bind,
     member_bind_determinism,
@@ -209,6 +216,14 @@ from radar_v4.member_lock import (
     member_status_bind,
     verify_member_record,
     write_member_record,
+)
+from radar_v4.member_set import (
+    compare_member_set,
+    member_set,
+    member_set_determinism,
+    member_set_status,
+    verify_member_set_record,
+    write_member_set_record,
 )
 from radar_v4.digest_lock import (
     compare_digest_lock,
@@ -1939,6 +1954,81 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     mbind_status.add_argument("--left", required=True)
     mbind_status.add_argument("--right", required=True)
 
+    member_set_cmd = sub.add_parser(
+        "member-set",
+        help="require lock records in a folder to share the member map",
+    )
+    member_set_cmd.add_argument("--path", required=True)
+
+    member_set_eq = sub.add_parser(
+        "member-set-eq",
+        help="repeat member-set; equality is not a method",
+    )
+    member_set_eq.add_argument("--path", required=True)
+
+    cmp_mset = sub.add_parser(
+        "compare-member-set",
+        help="compare member-set maps of two folders; path is ignored",
+    )
+    cmp_mset.add_argument("--left", required=True)
+    cmp_mset.add_argument("--right", required=True)
+
+    write_mset = sub.add_parser(
+        "write-member-set",
+        help="write a local member-set record; not market evidence",
+    )
+    write_mset.add_argument("--path", required=True)
+    write_mset.add_argument("--out", required=True)
+    write_mset.add_argument("--replace", action="store_true")
+
+    verify_mset = sub.add_parser(
+        "verify-member-set",
+        help="verify a local member-set record",
+    )
+    verify_mset.add_argument("--path", required=True)
+
+    mset_status = sub.add_parser(
+        "member-set-status",
+        help="bind member-set to status highest-unit; not a measurement",
+    )
+    mset_status.add_argument("--path", required=True)
+
+    member_align_cmd = sub.add_parser(
+        "member-align",
+        help="align a stored member map to a live path; verify stays on source_path",
+    )
+    member_align_cmd.add_argument("--record", required=True)
+    member_align_cmd.add_argument("--live", required=True)
+
+    member_align_eq = sub.add_parser(
+        "member-align-eq",
+        help="repeat member-align; equality is not a method",
+    )
+    member_align_eq.add_argument("--record", required=True)
+    member_align_eq.add_argument("--live", required=True)
+
+    write_align = sub.add_parser(
+        "write-member-align",
+        help="write a local member-align record; not market evidence",
+    )
+    write_align.add_argument("--record", required=True)
+    write_align.add_argument("--live", required=True)
+    write_align.add_argument("--out", required=True)
+    write_align.add_argument("--replace", action="store_true")
+
+    verify_align = sub.add_parser(
+        "verify-member-align",
+        help="verify a local member-align record",
+    )
+    verify_align.add_argument("--path", required=True)
+
+    align_status = sub.add_parser(
+        "member-align-status",
+        help="bind member-align to status highest-unit; not a measurement",
+    )
+    align_status.add_argument("--record", required=True)
+    align_status.add_argument("--live", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -2967,6 +3057,49 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "member-bind-status":
         check = member_bind_status(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-set":
+        check = member_set(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-set-eq":
+        check = member_set_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-member-set":
+        check = compare_member_set(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-member-set":
+        try:
+            record = write_member_set_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-member-set":
+        check = verify_member_set_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-set-status":
+        check = member_set_status(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-align":
+        check = member_align(Path(args.record), Path(args.live))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-align-eq":
+        check = member_align_determinism(Path(args.record), Path(args.live))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-member-align":
+        try:
+            record = write_member_align_record(
+                Path(args.record), Path(args.live), Path(args.out), args.replace
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-member-align":
+        check = verify_member_align_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "member-align-status":
+        check = member_align_status(Path(args.record), Path(args.live))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
