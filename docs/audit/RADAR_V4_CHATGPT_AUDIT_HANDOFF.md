@@ -1,19 +1,19 @@
-# ChatGPT Audit Handoff — Radar V4 through Unit 1200
+# ChatGPT Audit Handoff — Radar V4 through Unit 1250
 
 ```text
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
-CURRENT BRANCH — cursor/phase-5-units-1151-1200-9fd5
-CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/30
-CURRENT SOFTWARE HEAD — aa9ccae
-IMPLEMENTATION HEAD — aa9ccae (units 1151–1200)
+CURRENT BRANCH — cursor/phase-5-units-1201-1250-9fd5
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/31
+CURRENT SOFTWARE HEAD — 97e2d89
+IMPLEMENTATION HEAD — 97e2d89 (units 1201–1250)
 TEST-COUNT HEAD — pending this commit
-BASE / #29 tip — ed7adff (Phase 5 units 7–1150 on draft #29)
-STACKED OPEN PRS — #29 and #30; #10–#24 closed; #26–#28 merged
+BASE / main — a230927 (Phase 5 units 7–1200; #29 and #30 merged)
+STACKED OPEN PRS — #31 only
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH VERIFIED AT 307 TESTS; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH VERIFIED AT 312 TESTS; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 
@@ -32,6 +32,32 @@ FIRST-AUDIT BASE / main — 1ff2333 (then Phase 5 units 7–11 only)
 This record is for independent audit. It is not a method claim, not a performance report, and not authorization of the next class of work.
 
 **Tools verify. Todd authorizes.**
+
+---
+
+## Implementer-executed snapshot — units 1201–1250
+
+This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
+
+Commands run from `cursor/phase-5-units-1201-1250-9fd5` at `97e2d89`:
+
+```text
+PYTHONPATH=. python3 -m unittest discover -s tests -v
+```
+
+Observed:
+
+| Check | Result |
+|---|---|
+| Unittest suite | 312 passed, 0 failed |
+| Reason-code catalog | valid; 271 codes |
+| Document-kind catalog | valid; 341 kinds |
+| `status` | `highest_unit=1250`, `measured=false`, no `claim_level` |
+| Honest later stamp (`claim_current: false`) | `freshness_lock` valid; `current_claim` valid |
+| Later stamp claiming current | `FRESH_STAMP_STALE_BARS` |
+| Stamp equal to last bar claiming current | `current_claim` valid |
+
+Completing unit 1250 does **not** authorize a vendor API, Phase 6, paper trading, or Product B. It does **not** treat a clock as a current series.
 
 ---
 
@@ -764,15 +790,17 @@ Units 901–950 add lock-record bind and lock-set: two lock files, or a folder o
 
 Passing `bind-locks` or `lock-set` on SYNTHETIC lock files is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
 
+Units 1151–1200 record the V1/V2 cadence lesson as `CADENCE_OVERRUN`. Units 1201–1250 refuse a later stamp that claims the daily series is current (`FRESH_STAMP_STALE_BARS`). An honest later stamp is not a current series.
+
 ---
 
 ## Disposition for ChatGPT
 
 ```text
 RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF + OPEN-ITEM REMEDIATION
-SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–950
+SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–1250
 INDEPENDENT AUDIT THROUGH UNIT 100 — PASS WITH MATERIAL OPEN ITEMS
-UNITS 101–950 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
+UNITS 101–1250 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
 CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 166 TESTS AT 053fc28 — IMPLEMENTER-REPORTED
 167 TESTS AT 4318a5c — IMPLEMENTER-REPORTED AFTER REMEDIATION
