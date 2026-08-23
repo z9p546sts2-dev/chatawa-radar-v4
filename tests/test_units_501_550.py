@@ -59,14 +59,14 @@ class Units501To550Tests(unittest.TestCase):
         for relative in ("radar_v4/report_lock.py", "radar_v4/ruler_lock.py"):
             py_compile(str(ROOT / relative), doraise=True)
 
-    def test_highest_unit_is_550(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 550)
+    def test_highest_unit_is_at_least_550(self) -> None:
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 550)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 550)
+        self.assertGreaterEqual(status["highest_unit"], 550)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 550)
+        self.assertGreaterEqual(stop["highest_unit"], 550)
         self.assertFalse(stop["vendor_authorized"])
 
     def test_synthetic_report_and_ruler(self) -> None:

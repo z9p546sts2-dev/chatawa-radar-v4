@@ -116,6 +116,22 @@ from radar_v4.ruler_lock import (
     verify_ruler_record,
     write_ruler_record,
 )
+from radar_v4.disp_lock import (
+    compare_disposition_lock,
+    disposition_lock,
+    disposition_lock_determinism,
+    disposition_status_bind,
+    verify_disposition_record,
+    write_disposition_record,
+)
+from radar_v4.snapshot_lock import (
+    compare_snapshot_lock,
+    snapshot_lock_any,
+    snapshot_lock_determinism,
+    snapshot_status_bind,
+    verify_snapshot_record,
+    write_snapshot_record,
+)
 from radar_v4.kind_lock import kind_describe, kind_lock
 from radar_v4.name_lock import name_lock
 from radar_v4.path_lock import path_lock
@@ -956,6 +972,88 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     report_status.add_argument("--report", required=True)
 
+    snaplock = sub.add_parser(
+        "snapshot-lock",
+        help="lock snapshot shape, rows, and FIXTURE/SYNTHETIC provenance",
+    )
+    snaplock.add_argument("--pack")
+    snaplock.add_argument("--snapshot")
+
+    snap_eq = sub.add_parser(
+        "snapshot-eq",
+        help="run snapshot-lock twice; equality is not a method",
+    )
+    snap_eq.add_argument("--pack")
+    snap_eq.add_argument("--snapshot")
+
+    cmp_snap = sub.add_parser(
+        "compare-snapshot-lock",
+        help="compare snapshot-lock of two packs or snapshot files",
+    )
+    cmp_snap.add_argument("--left", required=True)
+    cmp_snap.add_argument("--right", required=True)
+
+    write_snap = sub.add_parser(
+        "write-snap",
+        help="write a local snapshot-lock record; not market evidence",
+    )
+    write_snap.add_argument("--pack")
+    write_snap.add_argument("--snapshot")
+    write_snap.add_argument("--out", required=True)
+    write_snap.add_argument("--replace", action="store_true")
+
+    verify_snap = sub.add_parser(
+        "verify-snap",
+        help="verify a local snapshot-lock record",
+    )
+    verify_snap.add_argument("--path", required=True)
+
+    snap_status = sub.add_parser(
+        "snapshot-status",
+        help="bind snapshot-lock to status highest-unit; not a measurement",
+    )
+    snap_status.add_argument("--pack")
+    snap_status.add_argument("--snapshot")
+
+    displock = sub.add_parser(
+        "disp-lock",
+        help="lock a human disposition; not a trade approval",
+    )
+    displock.add_argument("--path", required=True)
+
+    disp_eq = sub.add_parser(
+        "disp-eq",
+        help="run disp-lock twice; equality is not a ranking",
+    )
+    disp_eq.add_argument("--path", required=True)
+
+    cmp_disp = sub.add_parser(
+        "compare-disp-lock",
+        help="compare disposition-lock of two files",
+    )
+    cmp_disp.add_argument("--left", required=True)
+    cmp_disp.add_argument("--right", required=True)
+
+    write_disp_lock = sub.add_parser(
+        "write-disp-lock",
+        help="write a local disposition-lock record; not a trade approval",
+    )
+    write_disp_lock.add_argument("--path", required=True)
+    write_disp_lock.add_argument("--out", required=True)
+    write_disp_lock.add_argument("--replace", action="store_true")
+
+    verify_disp = sub.add_parser(
+        "verify-disp",
+        help="verify a local disposition-lock record",
+    )
+    verify_disp.add_argument("--path", required=True)
+
+    disp_status = sub.add_parser(
+        "disp-status",
+        help="bind disposition-lock to status highest-unit; not a measurement",
+    )
+    disp_status.add_argument("--path", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -1498,6 +1596,62 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
     if command == "report-status":
         check = report_status_bind(Path(args.report))
         return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "snapshot-lock":
+        target = _snapshot_target(args)
+        if target is None:
+            return 2
+        check = snapshot_lock_any(target)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "snapshot-eq":
+        target = _snapshot_target(args)
+        if target is None:
+            return 2
+        check = snapshot_lock_determinism(target)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-snapshot-lock":
+        check = compare_snapshot_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-snap":
+        target = _snapshot_target(args)
+        if target is None:
+            return 2
+        try:
+            record = write_snapshot_record(target, Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-snap":
+        check = verify_snapshot_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "snapshot-status":
+        target = _snapshot_target(args)
+        if target is None:
+            return 2
+        check = snapshot_status_bind(target)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "disp-lock":
+        check = disposition_lock(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "disp-eq":
+        check = disposition_lock_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-disp-lock":
+        check = compare_disposition_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-disp-lock":
+        try:
+            record = write_disposition_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-disp":
+        check = verify_disposition_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "disp-status":
+        check = disposition_status_bind(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
 
@@ -1513,6 +1667,15 @@ def _ruler_target(args: argparse.Namespace) -> Path | None:
         sys.stderr.write("UNREADABLE_RULER_SIDECAR: pass exactly one of --pack or --ruler\n")
         return None
     return Path(pack or ruler)
+
+
+def _snapshot_target(args: argparse.Namespace) -> Path | None:
+    pack = getattr(args, "pack", None)
+    snapshot = getattr(args, "snapshot", None)
+    if bool(pack) == bool(snapshot):
+        sys.stderr.write("UNREADABLE_SNAPSHOT_FILE: pass exactly one of --pack or --snapshot\n")
+        return None
+    return Path(pack or snapshot)
 
 
 def _show_declaration(path: str) -> int:
