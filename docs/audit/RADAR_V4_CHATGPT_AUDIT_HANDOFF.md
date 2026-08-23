@@ -4,16 +4,16 @@
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 CURRENT BRANCH — cursor/phase-5-units-1201-1250-9fd5
-CURRENT PR — pending
-CURRENT SOFTWARE HEAD — pending
-IMPLEMENTATION HEAD — pending (units 1201–1250)
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/31
+CURRENT SOFTWARE HEAD — 97e2d89
+IMPLEMENTATION HEAD — 97e2d89 (units 1201–1250)
 TEST-COUNT HEAD — pending this commit
 BASE / main — a230927 (Phase 5 units 7–1200; #29 and #30 merged)
-STACKED OPEN PRS — none after #29/#30 merge; this slice is next
+STACKED OPEN PRS — #31 only
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — PENDING TEST COUNT; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH VERIFIED AT 312 TESTS; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 
@@ -39,7 +39,7 @@ This record is for independent audit. It is not a method claim, not a performanc
 
 This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
 
-Commands run from `cursor/phase-5-units-1201-1250-9fd5` (test count pending):
+Commands run from `cursor/phase-5-units-1201-1250-9fd5` at `97e2d89`:
 
 ```text
 PYTHONPATH=. python3 -m unittest discover -s tests -v
@@ -49,9 +49,9 @@ Observed:
 
 | Check | Result |
 |---|---|
-| Unittest suite | pending |
-| Reason-code catalog | pending |
-| Document-kind catalog | pending |
+| Unittest suite | 312 passed, 0 failed |
+| Reason-code catalog | valid; 271 codes |
+| Document-kind catalog | valid; 341 kinds |
 | `status` | `highest_unit=1250`, `measured=false`, no `claim_level` |
 | Honest later stamp (`claim_current: false`) | `freshness_lock` valid; `current_claim` valid |
 | Later stamp claiming current | `FRESH_STAMP_STALE_BARS` |
