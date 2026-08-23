@@ -73,6 +73,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 351–400** — reserved-stem / leading-hyphen / double-json / empty-pack name lock, path/name/freeze/package determinism, snapshot-count bind, path-lock record write/verify, highest-unit lock at 400. Inspectability only; not a research result.
 - **Units 401–450** — unlabeled/unknown/unreadable JSON kind lock, name-lock verify/compare, workshop stamp compose/determinism/write/verify, name-status bind, export portable name/kind check, highest-unit lock at 450. Inspectability only; not a research result.
 - **Units 451–500** — journal kind/entry/source lock, journal-lock determinism/write/verify, kind-lock equality/write/verify, stamp-status bind, highest-unit lock at 500. Inspectability only; not a research result.
+- **Units 501–550** — session-report kind/checksum/measured lock, ruler kind/object/checksum lock, report-ruler bind, report-status bind, highest-unit lock at 550. Inspectability only; not a research result.
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -134,4 +135,5 @@ PYTHONPATH=. python3 -m radar_v4 name-bind --pack fixtures/synthetic_one_symbol_
 PYTHONPATH=. python3 -m radar_v4 journal-lock --journal <journal.json>
 PYTHONPATH=. python3 -m radar_v4 kind-lock-eq --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 stamp-bind --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 ruler-lock --pack fixtures/synthetic_one_symbol_1d
 ```

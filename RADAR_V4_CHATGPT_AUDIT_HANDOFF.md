@@ -221,6 +221,12 @@ Authorized by `Tools verify. Todd authorizes. Stay on course.`. These units add 
 
 They do **not** change the claim class. Completing unit 500 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
 
+### Phase 5 units 501–550 (inspectability continuation)
+
+Authorized by `Tools verify. Todd authorizes. Stay on course.`. These units add session-report kind/checksum/measured lock, ruler kind/object/checksum lock, report-ruler bind, and report-status bind.
+
+They do **not** change the claim class. Completing unit 550 is not a research result, not data correctness, and not authorization of a vendor or Phase 6.
+
 ---
 
 ## Software facts at HEAD
@@ -238,6 +244,7 @@ TESTS AFTER UNITS 301–350 — 204 passed at 2c18597
 TESTS AFTER UNITS 351–400 — 210 passed at ffa8df6
 TESTS AFTER UNITS 401–450 — 216 passed at 8cf9086
 TESTS AFTER UNITS 451–500 — 222 passed at f13d7e9
+TESTS AFTER UNITS 501–550 — implementer-executed on this branch before merge
 REASON CODES — catalog present (python -m radar_v4 codes)
 CLI — python -m radar_v4
 NETWORK — none in this package
@@ -266,7 +273,7 @@ The workshop will not invent market calendars, exchange hours, or missing bars.
 
 ## Still unauthorized
 
-These remain unauthorized even though units 7–500 exist:
+These remain unauthorized even though units 7–550 exist:
 
 - purchased historical-stock API or any named vendor;
 - live capture;
@@ -334,7 +341,7 @@ The local evidence workshop on PR #8 can load, refuse, measure LEVEL 0 close-to-
 
 **No edge. No HISTORICAL measurement. No vendor. No method. No paper trading.**
 
-Completion of units 7–500 does not authorize a data purchase or Phase 6.
+Completion of units 7–550 does not authorize a data purchase or Phase 6.
 
 ---
 
@@ -372,7 +379,9 @@ Units 401–450 add unlabeled/unknown/unreadable JSON kind lock, name-lock verif
 
 Units 451–500 add journal kind/entry/source lock, journal-lock determinism/write/verify, kind-lock equality/write/verify, and stamp-status bind.
 
-Passing `journal-lock`, `kind-lock-eq`, or `stamp-bind` on a local journal or the SYNTHETIC fixture is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
+Units 501–550 add session-report kind/checksum/measured lock, ruler kind/object/checksum lock, report-ruler bind, and report-status bind.
+
+Passing `report-lock`, `ruler-lock`, or `report-ruler` on a local report or the SYNTHETIC fixture is inspectability. It is not market evidence, not a method, and not authorization to buy data or open Phase 6.
 
 ---
 
@@ -380,9 +389,9 @@ Passing `journal-lock`, `kind-lock-eq`, or `stamp-bind` on a local journal or th
 
 ```text
 RECORD TYPE — IMPLEMENTATION AUDIT HANDOFF + OPEN-ITEM REMEDIATION
-SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–500
+SCOPE — UNITS 1–6 + PHASE 5 UNITS 7–550
 INDEPENDENT AUDIT THROUGH UNIT 100 — PASS WITH MATERIAL OPEN ITEMS
-UNITS 101–500 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
+UNITS 101–550 — INSPECTABILITY CONTINUATION; NOT A RESEARCH RESULT
 CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 166 TESTS AT 053fc28 — IMPLEMENTER-REPORTED
 167 TESTS AT 4318a5c — IMPLEMENTER-REPORTED AFTER REMEDIATION
@@ -393,13 +402,14 @@ CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 204 TESTS AFTER UNITS 301–350 — IMPLEMENTER-REPORTED
 210 TESTS AFTER UNITS 351–400 — IMPLEMENTER-REPORTED
 216 TESTS AFTER UNITS 401–450 — IMPLEMENTER-REPORTED
-222 TESTS AFTER UNITS 451–500 — IMPLEMENTER-REPORTED ON THIS BRANCH
+222 TESTS AFTER UNITS 451–500 — IMPLEMENTER-REPORTED
+UNITS 501–550 — REPORT LOCK / RULER LOCK; IMPLEMENTER-REPORTED ON THIS BRANCH
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN
 VENDOR / LIVE / PAPER — NOT AUTHORIZED
 V1/V2 INHERITANCE — FORBIDDEN
-NEXT CLASS OF WORK — NOT AUTHORIZED BY UNIT 500
+NEXT CLASS OF WORK — NOT AUTHORIZED BY UNIT 550
 ```
 
 Learning and Earning It.  

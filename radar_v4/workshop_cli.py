@@ -100,6 +100,22 @@ from radar_v4.journal_lock import (
     verify_journal_record,
     write_journal_record,
 )
+from radar_v4.report_lock import (
+    compare_report_lock,
+    report_lock,
+    report_lock_determinism,
+    report_status_bind,
+    verify_report_record,
+    write_report_record,
+)
+from radar_v4.ruler_lock import (
+    compare_ruler_lock,
+    report_ruler_bind,
+    ruler_lock_any,
+    ruler_lock_determinism,
+    verify_ruler_record,
+    write_ruler_record,
+)
 from radar_v4.kind_lock import kind_describe, kind_lock
 from radar_v4.name_lock import name_lock
 from radar_v4.path_lock import path_lock
@@ -858,6 +874,88 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     stamp_bind.add_argument("--pack", required=True)
 
+    reportlock = sub.add_parser(
+        "report-lock",
+        help="lock session-report kind, checksum, and measured field",
+    )
+    reportlock.add_argument("--report", required=True)
+
+    report_eq = sub.add_parser(
+        "report-eq",
+        help="run report-lock twice; equality is not a method",
+    )
+    report_eq.add_argument("--report", required=True)
+
+    cmp_report_lock = sub.add_parser(
+        "compare-report-lock",
+        help="compare report-lock of two reports",
+    )
+    cmp_report_lock.add_argument("--left", required=True)
+    cmp_report_lock.add_argument("--right", required=True)
+
+    write_report = sub.add_parser(
+        "write-report",
+        help="write a local report-lock record; not a measurement",
+    )
+    write_report.add_argument("--report", required=True)
+    write_report.add_argument("--out", required=True)
+    write_report.add_argument("--replace", action="store_true")
+
+    verify_report = sub.add_parser(
+        "verify-report",
+        help="verify a local report-lock record",
+    )
+    verify_report.add_argument("--path", required=True)
+
+    rulerlock = sub.add_parser(
+        "ruler-lock",
+        help="lock a ruler sidecar or pack-derived ruler; not a calendar",
+    )
+    rulerlock.add_argument("--pack")
+    rulerlock.add_argument("--ruler")
+
+    ruler_eq = sub.add_parser(
+        "ruler-eq",
+        help="run ruler-lock twice; equality is not a method",
+    )
+    ruler_eq.add_argument("--pack")
+    ruler_eq.add_argument("--ruler")
+
+    cmp_ruler_lock = sub.add_parser(
+        "compare-ruler-lock",
+        help="compare ruler-lock of two packs or ruler files",
+    )
+    cmp_ruler_lock.add_argument("--left", required=True)
+    cmp_ruler_lock.add_argument("--right", required=True)
+
+    write_ruler = sub.add_parser(
+        "write-ruler",
+        help="write a local ruler-lock record; not a calendar",
+    )
+    write_ruler.add_argument("--pack")
+    write_ruler.add_argument("--ruler")
+    write_ruler.add_argument("--out", required=True)
+    write_ruler.add_argument("--replace", action="store_true")
+
+    verify_ruler = sub.add_parser(
+        "verify-ruler",
+        help="verify a local ruler-lock record",
+    )
+    verify_ruler.add_argument("--path", required=True)
+
+    report_ruler = sub.add_parser(
+        "report-ruler",
+        help="bind a report ruler checksum to a pack declaration",
+    )
+    report_ruler.add_argument("--report", required=True)
+    report_ruler.add_argument("--pack", required=True)
+
+    report_status = sub.add_parser(
+        "report-status",
+        help="bind report-lock to status highest-unit; not a measurement",
+    )
+    report_status.add_argument("--report", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -1347,12 +1445,74 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
     if command == "stamp-bind":
         check = stamp_status_bind(Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "report-lock":
+        check = report_lock(Path(args.report))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "report-eq":
+        check = report_lock_determinism(Path(args.report))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-report-lock":
+        check = compare_report_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-report":
+        try:
+            record = write_report_record(Path(args.report), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-report":
+        check = verify_report_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "ruler-lock":
+        target = _ruler_target(args)
+        if target is None:
+            return 2
+        check = ruler_lock_any(target)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "ruler-eq":
+        target = _ruler_target(args)
+        if target is None:
+            return 2
+        check = ruler_lock_determinism(target)
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-ruler-lock":
+        check = compare_ruler_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-ruler":
+        target = _ruler_target(args)
+        if target is None:
+            return 2
+        try:
+            record = write_ruler_record(target, Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-ruler":
+        check = verify_ruler_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "report-ruler":
+        check = report_ruler_bind(Path(args.report), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "report-status":
+        check = report_status_bind(Path(args.report))
+        return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
 
 def _print(text: str, code: int) -> int:
     sys.stdout.write(text + "\n")
     return code
+
+
+def _ruler_target(args: argparse.Namespace) -> Path | None:
+    pack = getattr(args, "pack", None)
+    ruler = getattr(args, "ruler", None)
+    if bool(pack) == bool(ruler):
+        sys.stderr.write("UNREADABLE_RULER_SIDECAR: pass exactly one of --pack or --ruler\n")
+        return None
+    return Path(pack or ruler)
 
 
 def _show_declaration(path: str) -> int:
