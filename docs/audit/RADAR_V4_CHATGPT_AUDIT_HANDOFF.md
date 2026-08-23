@@ -4,16 +4,16 @@
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 CURRENT BRANCH — cursor/phase-5-units-1251-1300-9fd5
-CURRENT PR — pending
-CURRENT SOFTWARE HEAD — pending
-IMPLEMENTATION HEAD — pending (units 1251–1300)
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/32
+CURRENT SOFTWARE HEAD — 2ebf070
+IMPLEMENTATION HEAD — 2ebf070 (units 1251–1300)
 TEST-COUNT HEAD — pending this commit
 BASE — cursor/phase-5-units-1201-1250-9fd5 at cfdbb72 (draft #31; units 7–1250)
-STACKED OPEN PRS — #31 plus this slice
+STACKED OPEN PRS — #31 and #32
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — PENDING TEST COUNT; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH VERIFIED AT 317 TESTS; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 
@@ -39,7 +39,7 @@ This record is for independent audit. It is not a method claim, not a performanc
 
 This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
 
-Commands run from `cursor/phase-5-units-1251-1300-9fd5` (test count pending):
+Commands run from `cursor/phase-5-units-1251-1300-9fd5` at `2ebf070`:
 
 ```text
 PYTHONPATH=. python3 -m unittest discover -s tests -v
@@ -49,9 +49,9 @@ Observed:
 
 | Check | Result |
 |---|---|
-| Unittest suite | pending |
-| Reason-code catalog | pending |
-| Document-kind catalog | pending |
+| Unittest suite | 317 passed, 0 failed |
+| Reason-code catalog | valid; 279 codes |
+| Document-kind catalog | valid; 351 kinds |
 | `status` | `highest_unit=1300`, `measured=false`, no `claim_level` |
 | Window `as_of == include_through == last bar` | `horizon_lock` valid; `horizon_bind` valid |
 | `include_through` after `as_of` | `LOOKAHEAD_WINDOW` |
@@ -847,6 +847,8 @@ CORE SYNTHETIC PATH — STRONGLY SUPPORTED
 264 TESTS AFTER UNITS 801–850 — IMPLEMENTER-REPORTED ON PR #22
 271 TESTS AFTER UNITS 851–900 — IMPLEMENTER-REPORTED ON PR #23
 277 TESTS AFTER UNITS 901–950 — IMPLEMENTER-REPORTED ON THIS BRANCH
+312 TESTS AFTER UNITS 1201–1250 — IMPLEMENTER-REPORTED ON PR #31
+317 TESTS AFTER UNITS 1251–1300 — IMPLEMENTER-REPORTED ON PR #32
 DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN
