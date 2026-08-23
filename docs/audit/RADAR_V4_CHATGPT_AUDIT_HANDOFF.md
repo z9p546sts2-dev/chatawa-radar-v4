@@ -4,16 +4,16 @@
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 CURRENT BRANCH — cursor/phase-5-units-1151-1200-9fd5
-CURRENT PR — pending draft stacked on #29
-CURRENT SOFTWARE HEAD — pending implementation commit
-IMPLEMENTATION HEAD — pending (units 1151–1200)
-TEST-COUNT HEAD — pending
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/30
+CURRENT SOFTWARE HEAD — aa9ccae
+IMPLEMENTATION HEAD — aa9ccae (units 1151–1200)
+TEST-COUNT HEAD — pending this commit
 BASE / #29 tip — ed7adff (Phase 5 units 7–1150 on draft #29)
-STACKED OPEN PRS — #29 then this slice; #10–#24 closed; #26–#28 merged
+STACKED OPEN PRS — #29 and #30; #10–#24 closed; #26–#28 merged
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PENDING TEST COUNT; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH VERIFIED AT 307 TESTS; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 
@@ -32,6 +32,32 @@ FIRST-AUDIT BASE / main — 1ff2333 (then Phase 5 units 7–11 only)
 This record is for independent audit. It is not a method claim, not a performance report, and not authorization of the next class of work.
 
 **Tools verify. Todd authorizes.**
+
+---
+
+## Implementer-executed snapshot — units 1151–1200
+
+This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
+
+Commands run from `cursor/phase-5-units-1151-1200-9fd5` at `aa9ccae`:
+
+```text
+PYTHONPATH=. python3 -m unittest discover -s tests -v
+```
+
+Observed:
+
+| Check | Result |
+|---|---|
+| Unittest suite | 307 passed, 0 failed |
+| Reason-code catalog | valid; 264 codes |
+| Document-kind catalog | valid; 331 kinds |
+| `status` | `highest_unit=1200`, `measured=false`, no `claim_level` |
+| Daily eval on daily bars | `cadence_lock` valid; `cadence_bind` to SYNTHETIC pack valid |
+| Intraday eval on daily bars | `CADENCE_OVERRUN` |
+| Hourly cadence on daily pack | lock valid; bind `CADENCE_MISMATCH` |
+
+Completing unit 1200 does **not** authorize a vendor API, Phase 6, paper trading, or Product B. It does **not** revive V1/V2 scores.
 
 ---
 
