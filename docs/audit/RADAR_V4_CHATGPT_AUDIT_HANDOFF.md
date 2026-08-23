@@ -1,19 +1,19 @@
-# ChatGPT Audit Handoff — Radar V4 through Unit 950
+# ChatGPT Audit Handoff — Radar V4 through Unit 1000
 
 ```text
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
-CURRENT BRANCH — cursor/phase-5-units-901-950-9fd5
-CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/24
-CURRENT SOFTWARE HEAD — e6f282c9b10a6871cc6422907ea6e0ce5530136b
-IMPLEMENTATION HEAD — e6f282c (units 901–950)
-TEST-COUNT HEAD — e6f282c (277 passed)
-BASE / main — 56db82f (Phase 5 units 7–200 merged)
-STACKED OPEN PRS — #10 (201–250) through #24 (901–950); not merged
+CURRENT BRANCH — cursor/phase-5-units-951-1000-9fd5
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/26
+CURRENT SOFTWARE HEAD — 5b70b78
+IMPLEMENTATION HEAD — c21fde1 (units 951–1000)
+TEST-COUNT HEAD — 5b70b78
+BASE / main — 04b7f52 (Phase 5 units 7–950 merged via #25)
+STACKED OPEN PRS — none; #10–#24 closed after #25
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PASSES; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH VERIFIED AT 283 TESTS; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 
@@ -32,6 +32,32 @@ FIRST-AUDIT BASE / main — 1ff2333 (then Phase 5 units 7–11 only)
 This record is for independent audit. It is not a method claim, not a performance report, and not authorization of the next class of work.
 
 **Tools verify. Todd authorizes.**
+
+---
+
+## Implementer-executed snapshot — units 951–1000
+
+This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
+
+Commands run from `cursor/phase-5-units-951-1000-9fd5` at `c21fde1` (recorded at `5b70b78`):
+
+```text
+PYTHONPATH=. python3 -m unittest discover -s tests -v
+```
+
+Observed:
+
+| Check | Result |
+|---|---|
+| Unittest suite | 283 passed, 0 failed |
+| Reason-code catalog | valid; 230 codes |
+| Document-kind catalog | valid; 293 kinds |
+| `status` | `highest_unit=1000`, `measured=false`, no `claim_level` |
+| Two copies of the same pack | `compare_content_lock` valid; `compare_digest_lock` invalid (path in serialize) |
+| Safety locks from those copies | `content_bind` valid; `bind_lock_records` `LOCK_BIND_MISMATCH` |
+| Different content | `CONTENT_MISMATCH` / `CONTENT_BIND_MISMATCH` |
+
+Completing unit 1000 does **not** authorize a vendor API, Phase 6, paper trading, or Product B.
 
 ---
 
