@@ -4,16 +4,16 @@
 CURRENT SNAPSHOT DATE — 2026-08-23
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 CURRENT BRANCH — cursor/phase-5-units-1101-1150-9fd5
-CURRENT PR — pending draft to main
-CURRENT SOFTWARE HEAD — pending implementation commit
-IMPLEMENTATION HEAD — pending (units 1101–1150)
-TEST-COUNT HEAD — pending
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/29
+CURRENT SOFTWARE HEAD — 5de5974
+IMPLEMENTATION HEAD — 5de5974 (units 1101–1150)
+TEST-COUNT HEAD — pending this commit
 BASE / main — 93058c0 (Phase 5 units 7–1100 merged via #28)
 STACKED OPEN PRS — none; #10–#24 closed after #25; #26–#28 merged
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
-IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH PENDING TEST COUNT; CLAIM CLASS UNCHANGED
+IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH VERIFIED AT 301 TESTS; CLAIM CLASS UNCHANGED
 FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
 ```
 
@@ -32,6 +32,33 @@ FIRST-AUDIT BASE / main — 1ff2333 (then Phase 5 units 7–11 only)
 This record is for independent audit. It is not a method claim, not a performance report, and not authorization of the next class of work.
 
 **Tools verify. Todd authorizes.**
+
+---
+
+## Implementer-executed snapshot — units 1101–1150
+
+This is a Cursor verification record for ChatGPT. It is **not** ChatGPT’s independent audit, not a method claim, and not authorization of a later class of work.
+
+Commands run from `cursor/phase-5-units-1101-1150-9fd5` at `5de5974`:
+
+```text
+PYTHONPATH=. python3 -m unittest discover -s tests -v
+```
+
+Observed:
+
+| Check | Result |
+|---|---|
+| Unittest suite | 301 passed, 0 failed |
+| Reason-code catalog | valid; 256 codes |
+| Document-kind catalog | valid; 321 kinds |
+| `status` | `highest_unit=1150`, `measured=false`, no `claim_level` |
+| Member locks from copied packs | `member_set` valid |
+| Same digest, different members | `content_set` valid; `member_set` `MEMBER_BIND_MISMATCH` |
+| Align lock of pack A to copy B | valid; `verify_member_record` of A still valid |
+| Changed copy B | `MEMBER_ALIGN_MISMATCH`; original verify still valid |
+
+Completing unit 1150 does **not** authorize a vendor API, Phase 6, paper trading, or Product B.
 
 ---
 
