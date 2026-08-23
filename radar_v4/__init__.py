@@ -196,6 +196,8 @@ from radar_v4.audit_lock import audit_lock
 from radar_v4.bundle_lock import bundle_lock
 from radar_v4.chain_lock import chain_lock
 from radar_v4.export_lock import export_lock
+from radar_v4.inventory_lock import inventory_lock
+from radar_v4.layout_lock import layout_lock
 from radar_v4.manifest_lock import manifest_lock
 from radar_v4.report_lock import report_lock
 from radar_v4.ruler_lock import pack_ruler_lock
@@ -374,6 +376,8 @@ __all__ = [
     "chain_lock",
     "export_lock",
     "freeze_status_bind",
+    "inventory_lock",
+    "layout_lock",
     "disposition_lock",
     "journal_lock",
     "kind_lock",

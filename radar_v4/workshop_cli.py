@@ -148,6 +148,22 @@ from radar_v4.chain_lock import (
     verify_chain_record,
     write_chain_record,
 )
+from radar_v4.inventory_lock import (
+    compare_inventory_lock,
+    inventory_lock,
+    inventory_lock_determinism,
+    inventory_status_bind,
+    verify_inventory_record,
+    write_inventory_record,
+)
+from radar_v4.layout_lock import (
+    compare_layout_lock,
+    layout_lock,
+    layout_lock_determinism,
+    layout_status_bind,
+    verify_layout_record,
+    write_layout_record,
+)
 from radar_v4.export_lock import (
     compare_export_lock,
     export_lock,
@@ -1340,6 +1356,84 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     )
     chain_status.add_argument("--pack", required=True)
 
+    inventory_lock_cmd = sub.add_parser(
+        "inventory-lock",
+        help="lock pack inventory roles; not a measurement",
+    )
+    inventory_lock_cmd.add_argument("--pack", required=True)
+
+    inventory_eq = sub.add_parser(
+        "inventory-eq",
+        help="run inventory-lock twice; equality is not a method",
+    )
+    inventory_eq.add_argument("--pack", required=True)
+
+    cmp_inventory = sub.add_parser(
+        "compare-inventory-lock",
+        help="compare inventory-lock of two packs",
+    )
+    cmp_inventory.add_argument("--left", required=True)
+    cmp_inventory.add_argument("--right", required=True)
+
+    write_inventory = sub.add_parser(
+        "write-inventory-lock",
+        help="write a local inventory-lock record; not market evidence",
+    )
+    write_inventory.add_argument("--pack", required=True)
+    write_inventory.add_argument("--out", required=True)
+    write_inventory.add_argument("--replace", action="store_true")
+
+    verify_inventory = sub.add_parser(
+        "verify-inventory",
+        help="verify a local inventory-lock record",
+    )
+    verify_inventory.add_argument("--path", required=True)
+
+    inventory_status = sub.add_parser(
+        "inventory-status",
+        help="bind inventory-lock to status highest-unit; not a measurement",
+    )
+    inventory_status.add_argument("--pack", required=True)
+
+    layout_lock_cmd = sub.add_parser(
+        "layout-lock",
+        help="lock pack declaration/observations/manifest layout; not a method",
+    )
+    layout_lock_cmd.add_argument("--pack", required=True)
+
+    layout_eq = sub.add_parser(
+        "layout-eq",
+        help="run layout-lock twice; equality is not a method",
+    )
+    layout_eq.add_argument("--pack", required=True)
+
+    cmp_layout = sub.add_parser(
+        "compare-layout-lock",
+        help="compare layout-lock of two packs",
+    )
+    cmp_layout.add_argument("--left", required=True)
+    cmp_layout.add_argument("--right", required=True)
+
+    write_layout = sub.add_parser(
+        "write-layout-lock",
+        help="write a local layout-lock record; not market evidence",
+    )
+    write_layout.add_argument("--pack", required=True)
+    write_layout.add_argument("--out", required=True)
+    write_layout.add_argument("--replace", action="store_true")
+
+    verify_layout = sub.add_parser(
+        "verify-layout",
+        help="verify a local layout-lock record",
+    )
+    verify_layout.add_argument("--path", required=True)
+
+    layout_status = sub.add_parser(
+        "layout-status",
+        help="bind layout-lock to status highest-unit; not a measurement",
+    )
+    layout_status.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -2085,6 +2179,50 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "chain-status":
         check = chain_status_bind(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "inventory-lock":
+        check = inventory_lock(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "inventory-eq":
+        check = inventory_lock_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-inventory-lock":
+        check = compare_inventory_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-inventory-lock":
+        try:
+            record = write_inventory_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-inventory":
+        check = verify_inventory_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "inventory-status":
+        check = inventory_status_bind(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "layout-lock":
+        check = layout_lock(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "layout-eq":
+        check = layout_lock_determinism(Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-layout-lock":
+        check = compare_layout_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-layout-lock":
+        try:
+            record = write_layout_record(Path(args.pack), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-layout":
+        check = verify_layout_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "layout-status":
+        check = layout_status_bind(Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

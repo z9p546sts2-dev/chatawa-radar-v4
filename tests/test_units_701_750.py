@@ -47,14 +47,14 @@ class Units701To750Tests(unittest.TestCase):
         for relative in ("radar_v4/audit_lock.py", "radar_v4/chain_lock.py"):
             py_compile(str(ROOT / relative), doraise=True)
 
-    def test_highest_unit_is_750(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 750)
+    def test_highest_unit_is_at_least_750(self) -> None:
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 750)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 750)
+        self.assertGreaterEqual(status["highest_unit"], 750)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 750)
+        self.assertGreaterEqual(stop["highest_unit"], 750)
         self.assertFalse(stop["vendor_authorized"])
 
     def test_synthetic_audit_and_chain(self) -> None:

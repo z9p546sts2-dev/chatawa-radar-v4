@@ -78,6 +78,7 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 - **Units 601–650** — pack-manifest kind/files/digest lock, pack-manifest verify, checksum-sidecar digest lock, sidecar-snapshot bind, highest-unit lock at 650. Inspectability only; not a research result.
 - **Units 651–700** — snapshot-bundle sidecar/ruler lock, portable FIXTURE/SYNTHETIC export lock, highest-unit lock at 700. Inspectability only; not a research result.
 - **Units 701–750** — local audit-copy lock, pack three-way chain lock, highest-unit lock at 750. Inspectability only; not a research result.
+- **Units 751–800** — pack inventory role lock, pack layout declaration/observations/manifest lock, highest-unit lock at 800. Inspectability only; not a research result.
 
 Locked question: `RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
@@ -147,4 +148,6 @@ PYTHONPATH=. python3 -m radar_v4 export-lock --pack fixtures/synthetic_one_symbo
 PYTHONPATH=. python3 -m radar_v4 bundle-lock --snapshot <snapshot.json>
 PYTHONPATH=. python3 -m radar_v4 chain-lock --pack fixtures/synthetic_one_symbol_1d
 PYTHONPATH=. python3 -m radar_v4 audit-lock --path <audit-dir>
+PYTHONPATH=. python3 -m radar_v4 inventory-lock --pack fixtures/synthetic_one_symbol_1d
+PYTHONPATH=. python3 -m radar_v4 layout-lock --pack fixtures/synthetic_one_symbol_1d
 ```
