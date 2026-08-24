@@ -19,7 +19,8 @@ Controlling files stay at the repository root:
 | `UNITS.md` | Full Phase 5 unit ledger. Inspectability, not a research result. |
 | `phase5/README_PHASE5.md` | Phase 5 local workshop notes |
 | `phase5/RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md` | Locked LEVEL 0 question |
-| `audit/RADAR_V4_CHATGPT_AUDIT_HANDOFF.md` | Independent-audit handoff |
+| `audit/RADAR_V4_CHATGPT_STATUS_2026-08-23.md` | Current status packet for ChatGPT |
+| `audit/RADAR_V4_CHATGPT_AUDIT_HANDOFF.md` | Independent-audit handoff (slice history) |
 | `units/` | Build Units 1–6 readmes and acceptance records |
 | `methodology/` | Methodology definition and audit |
 | `roadmap/` | Horizon and curriculum planning records |
