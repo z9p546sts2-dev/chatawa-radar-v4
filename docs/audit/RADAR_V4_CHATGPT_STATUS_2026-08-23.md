@@ -5,8 +5,10 @@ TO — ChatGPT (independent auditor)
 FROM — Cursor (bounded implementer)
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
-SOFTWARE HEAD — cb4936a (main)
-DATE — 2026-08-23
+SOFTWARE HEAD — cb4936a (main; units 7–1300)
+PACKET BRANCH — cursor/chatgpt-status-report-9fd5
+PACKET PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/33 (draft; open)
+DATE — 2026-08-24
 RECORD TYPE — IMPLEMENTER STATUS FOR INDEPENDENT AUDIT
 NOT — a method claim, performance report, or authorization of the next class of work
 ```
@@ -21,7 +23,7 @@ Todd asked for a current-status report you can use. This is implementer-reported
 
 Radar V4 is a human-controlled local evidence workshop. It is not a trader, execution engine, broker, signal factory, or a revival of Radar V1/V2.
 
-`main` now carries Build Units 1–6 and Phase 5 units **7–1300**. Open pull requests: none. Last merges: #31 (freshness / current-claim) and #32 (lookahead horizon).
+`main` now carries Build Units 1–6 and Phase 5 units **7–1300**. Last merges onto `main`: #31 (freshness / current-claim) and #32 (lookahead horizon). After those merges, `main` itself had no open PRs. This status packet is draft **PR #33**, which is open and is not merged.
 
 Product order Todd locked:
 
@@ -77,9 +79,18 @@ Stdlib only. Command: `PYTHONPATH=. python3 -m unittest discover -s tests -v`.
 
 ## 4. Independent-audit gap
 
-Your only completed independent audit is PR #8 / units 7–100: **PASS WITH MATERIAL OPEN ITEMS**. The two recorded open items (branch-custody headlines; `verify` must recompute) were implementer-repaired after that audit.
+Independent ChatGPT audits already preserved in this repository:
 
-Units **101–1300** are inspectability continuation. They have **not** had a ChatGPT independent audit. Treat later implementer snapshots as claims to verify, not as findings.
+| Audit | Reference | Disposition |
+|---|---|---|
+| PR #8 / units 7–100 | first independent audit | **PASS WITH MATERIAL OPEN ITEMS**. Recorded remediations: branch-custody headlines; `verify` must recompute. |
+| PR #22 | software head `2991557` | **PASS WITH MATERIAL OPEN ITEMS**. PR #22 itself records that it was responding to that audit. Open items then: stacked-draft vs `main` headlines; remaining lock-record verifies must recompute from `source_path`. |
+
+PR #8 was the **first** independent audit. It was not the only one.
+
+This packet (draft PR #33) is a later independent review of current-`main` posture at `cb4936a`. ChatGPT disposition on the first packet head: **PASS WITH TWO BOUNDED DOCUMENTATION REPAIRS — DO NOT MERGE YET.** Those two repairs are this section and the open-PR sentence in §1.
+
+Units after the #22 audit, through unit 1300 on `main`, remain inspectability continuation. Treat later implementer snapshots as claims to verify, not as findings. The `317` / `279` / `351` counts are still implementer-reported. There is no GitHub Actions run on `cb4936a` that would promote those numbers to independent findings.
 
 If you audit next, start from `main` at `cb4936a`. Do not treat unit count as research progress. A useful audit would check whether:
 
@@ -140,8 +151,8 @@ DATA CORRECTNESS — NOT EARNED
 METHOD VALIDITY — NOT DEFINED
 USEFULNESS / EDGE — NOT SHOWN
 VENDOR / LIVE / PAPER / PHASE 6 / PRODUCT B — NOT AUTHORIZED
-INDEPENDENT AUDIT THROUGH UNIT 100 ONLY
-UNITS 101–1300 — INSPECTABILITY; AWAITING CHATGPT REVIEW
+INDEPENDENT AUDITS — PR #8 (UNITS 7–100); PR #22 AT 2991557; PR #33 POSTURE PACKET
+SUITE COUNTS 317 / 279 / 351 — IMPLEMENTER-REPORTED; NOT CI-PROMOTED
 NEXT CLASS OF WORK — TODD-NAMED HISTORICAL SOURCE, OR STOP
 ```
 

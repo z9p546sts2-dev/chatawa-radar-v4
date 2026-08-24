@@ -1,22 +1,22 @@
 # ChatGPT Audit Handoff — Radar V4 through Unit 1300
 
-Current auditor status packet (2026-08-23, `main` `cb4936a`): `docs/audit/RADAR_V4_CHATGPT_STATUS_2026-08-23.md`. Use that first. The snapshots below are history.
+Current auditor status packet: `docs/audit/RADAR_V4_CHATGPT_STATUS_2026-08-23.md`. Use that first. The snapshots below are history.
 
 ```text
-CURRENT SNAPSHOT DATE — 2026-08-23
+CURRENT SNAPSHOT DATE — 2026-08-24
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
-CURRENT BRANCH — main
-CURRENT PR — none open; #31 and #32 merged
-CURRENT SOFTWARE HEAD — cb4936a
-IMPLEMENTATION HEAD — cb4936a (units 7–1300 on main)
-TEST-COUNT HEAD — 31246c0 (317 tests after units 1251–1300)
-BASE / main — cb4936a
-STACKED OPEN PRS — none
+CURRENT BRANCH — cursor/chatgpt-status-report-9fd5
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/33 (draft; open)
+CURRENT SOFTWARE HEAD — cb4936a (main; units 7–1300)
+IMPLEMENTATION HEAD — this packet branch (documentation only)
+TEST-COUNT HEAD — 31246c0 (317 tests after units 1251–1300; implementer-reported)
+BASE / main — cb4936a; #31 and #32 merged
+OPEN PRS — draft #33 only
 AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
 IMPLEMENTER-EXECUTED DISPOSITION — SOFTWARE PATH VERIFIED AT 317 TESTS; CLAIM CLASS UNCHANGED
-FIRST INDEPENDENT AUDIT (PR #8 / units 7–100) — PASS WITH MATERIAL OPEN ITEMS
+INDEPENDENT AUDITS — PR #8 (units 7–100) PASS WITH MATERIAL OPEN ITEMS; PR #22 at 2991557 PASS WITH MATERIAL OPEN ITEMS; PR #33 posture packet PASS WITH TWO BOUNDED DOCUMENTATION REPAIRS
 ```
 
 The block below is the original first-audit identity. Keep it as history. Do not treat it as current HEAD.
