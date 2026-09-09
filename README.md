@@ -1,6 +1,6 @@
 # Chatawa Radar V4
 
-## Status: PHASE 5 AUTHORIZED — UNITS 7–1300 COMPLETE WITHIN LOCAL-SOFTWARE SCOPE
+## Status: PHASE 5 AUTHORIZED — UNITS 7–1350 COMPLETE WITHIN LOCAL-SOFTWARE SCOPE
 
 Radar V4 has a bounded evidence foundation plus a local Phase 5 path: admit a declared dataset, describe ordinary close-to-close differences, persist/verify/export snapshots, journal refusals, bind a measurement ruler, and verify pack-file integrity.
 
@@ -21,14 +21,14 @@ V4 ENGINEERING REQUIREMENTS — DOCUMENTED
 V4 RESEARCH METHODOLOGY — DEFINED / AUDITED
 SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNITS 1–6 — COMPLETE WITHIN SCOPE
-PHASE 5 — AUTHORIZED-TC / UNITS 7–1300 COMPLETE WITHIN LOCAL-SOFTWARE SCOPE
+PHASE 5 — AUTHORIZED-TC / UNITS 7–1350 COMPLETE WITHIN LOCAL-SOFTWARE SCOPE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 PHASE 6 METHOD RESEARCH — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED
 ```
 
-The full unit ledger is `docs/UNITS.md`. Completing units 7–1300 is inspectability, not a research result.
+The full unit ledger is `docs/UNITS.md`. Completing units 7–1350 is inspectability, not a research result.
 
 Map of the rest of the documents: `docs/README.md`.
 
@@ -85,7 +85,7 @@ These units still do not ingest vendor data or define a market method.
 These remain evidence, not present authorization:
 
 - `docs/roadmap/RADAR_V4_HORIZON_ROADMAP.md` — long-horizon Product A before Product B. Years do not authorize stages.
-- `docs/legacy/RADAR_V4_REACTIVATION_REVIEW_TC.md` — pre-Build-Unit-1 check. Later superseded as current status by completed Units 1–6 and Phase 5 units 7–950.
+- `docs/legacy/RADAR_V4_REACTIVATION_REVIEW_TC.md` — pre-Build-Unit-1 check. Later superseded as current status by completed Units 1–6 and Phase 5 units 7–1350.
 
 ## Legacy relationship
 
@@ -121,7 +121,7 @@ Until Todd explicitly authorizes a later bounded unit:
 - no assumption that V1 or V2 behavior remains valid;
 - no treating SYNTHETIC or FIXTURE numbers as HISTORICAL evidence.
 
-`main` has Phase 5 local-software inspectability through unit 1000. It is not a trading-system authorization. The in-repo fixture pack is SYNTHETIC and is not market evidence. Units 101–1000 do not change the claim class.
+`main` has Phase 5 local-software inspectability through unit 1350. It is not a trading-system authorization. The in-repo fixture pack is SYNTHETIC and is not market evidence. Units 101–1350 do not change the claim class.
 
 **Tools verify. Todd authorizes.**
 

@@ -240,6 +240,21 @@ from radar_v4.horizon_lock import (
     verify_horizon_record,
     write_horizon_record,
 )
+from radar_v4.source_bind import (
+    source_bind,
+    source_bind_determinism,
+    source_bind_status,
+    verify_source_bind_record,
+    write_source_bind_record,
+)
+from radar_v4.source_lock import (
+    compare_source_lock,
+    source_lock,
+    source_lock_determinism,
+    source_status_bind,
+    verify_source_record,
+    write_source_record,
+)
 from radar_v4.member_align import (
     member_align,
     member_align_determinism,
@@ -2299,6 +2314,81 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     hbind_status.add_argument("--horizon", required=True)
     hbind_status.add_argument("--pack", required=True)
 
+    source_lock_cmd = sub.add_parser(
+        "source-lock",
+        help="lock a named local source; JSON cannot authorize HISTORICAL",
+    )
+    source_lock_cmd.add_argument("--path", required=True)
+
+    source_eq = sub.add_parser(
+        "source-eq",
+        help="repeat source-lock; equality is not a method",
+    )
+    source_eq.add_argument("--path", required=True)
+
+    cmp_source = sub.add_parser(
+        "compare-source",
+        help="compare source identity of two documents",
+    )
+    cmp_source.add_argument("--left", required=True)
+    cmp_source.add_argument("--right", required=True)
+
+    write_source = sub.add_parser(
+        "write-source-lock",
+        help="write a local source-lock record; not market evidence",
+    )
+    write_source.add_argument("--path", required=True)
+    write_source.add_argument("--out", required=True)
+    write_source.add_argument("--replace", action="store_true")
+
+    verify_source = sub.add_parser(
+        "verify-source",
+        help="verify a local source-lock record",
+    )
+    verify_source.add_argument("--path", required=True)
+
+    source_status = sub.add_parser(
+        "source-status",
+        help="bind source-lock to status highest-unit; not a measurement",
+    )
+    source_status.add_argument("--path", required=True)
+
+    sbind = sub.add_parser(
+        "source-bind",
+        help="bind a source document to a FIXTURE/SYNTHETIC pack",
+    )
+    sbind.add_argument("--source", required=True)
+    sbind.add_argument("--pack", required=True)
+
+    sbind_eq = sub.add_parser(
+        "source-bind-eq",
+        help="repeat source-bind; equality is not a method",
+    )
+    sbind_eq.add_argument("--source", required=True)
+    sbind_eq.add_argument("--pack", required=True)
+
+    write_sbind = sub.add_parser(
+        "write-source-bind",
+        help="write a local source-bind record; not market evidence",
+    )
+    write_sbind.add_argument("--source", required=True)
+    write_sbind.add_argument("--pack", required=True)
+    write_sbind.add_argument("--out", required=True)
+    write_sbind.add_argument("--replace", action="store_true")
+
+    verify_sbind = sub.add_parser(
+        "verify-source-bind",
+        help="verify a local source-bind record",
+    )
+    verify_sbind.add_argument("--path", required=True)
+
+    sbind_status = sub.add_parser(
+        "source-bind-status",
+        help="bind source-bind to status highest-unit; not a measurement",
+    )
+    sbind_status.add_argument("--source", required=True)
+    sbind_status.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -3499,6 +3589,49 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "horizon-bind-status":
         check = horizon_bind_status(Path(args.horizon), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "source-lock":
+        check = source_lock(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "source-eq":
+        check = source_lock_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-source":
+        check = compare_source_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-source-lock":
+        try:
+            record = write_source_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-source":
+        check = verify_source_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "source-status":
+        check = source_status_bind(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "source-bind":
+        check = source_bind(Path(args.source), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "source-bind-eq":
+        check = source_bind_determinism(Path(args.source), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-source-bind":
+        try:
+            record = write_source_bind_record(
+                Path(args.source), Path(args.pack), Path(args.out), args.replace
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-source-bind":
+        check = verify_source_bind_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "source-bind-status":
+        check = source_bind_status(Path(args.source), Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 

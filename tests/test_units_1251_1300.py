@@ -62,14 +62,14 @@ class Units1251To1300Tests(unittest.TestCase):
         py_compile(str(ROOT / "radar_v4/horizon_lock.py"), doraise=True)
         py_compile(str(ROOT / "radar_v4/horizon_bind.py"), doraise=True)
 
-    def test_highest_unit_is_1300(self) -> None:
-        self.assertEqual(PHASE5_HIGHEST_UNIT, 1300)
+    def test_highest_unit_is_at_least_1300(self) -> None:
+        self.assertGreaterEqual(PHASE5_HIGHEST_UNIT, 1300)
         status = json.loads(workshop_status())
-        self.assertEqual(status["highest_unit"], 1300)
+        self.assertGreaterEqual(status["highest_unit"], 1300)
         self.assertFalse(status["measured"])
         self.assertNotIn("claim_level", status)
         stop = json.loads(workshop_stop_record())
-        self.assertEqual(stop["highest_unit"], 1300)
+        self.assertGreaterEqual(stop["highest_unit"], 1300)
         self.assertFalse(stop["vendor_authorized"])
 
     def test_honest_window_binds_and_lookahead_is_refused(self) -> None:
