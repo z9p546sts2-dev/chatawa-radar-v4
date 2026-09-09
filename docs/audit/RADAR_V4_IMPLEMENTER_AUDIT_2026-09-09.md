@@ -4,6 +4,7 @@
 **Role:** Cursor (bounded implementer), executing a program-level audit at Todd’s request  
 **Authority created by this record:** NONE  
 **Software / docs HEAD at start of audit:** `5bbb726` (`main`; night-close audit already banked)  
+**Packet PR:** https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/35  
 **Workshop code lineage:** units 7–1300 on `main` (workshop lock `PHASE5_HIGHEST_UNIT = 1300`)  
 **Independent auditor this packet is for:** ChatGPT  
 **Not:** a method claim, performance report, vendor recommendation, or authorization of Horizon 2

@@ -6,6 +6,7 @@ Current auditor status packet: `docs/audit/RADAR_V4_CHATGPT_STATUS_2026-09-09.md
 CURRENT SNAPSHOT DATE — 2026-09-09
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 CURRENT BRANCH — cursor/program-audit-auditor-packet-24ff
+CURRENT PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/35 (draft; open)
 CURRENT SOFTWARE HEAD — 5bbb726 (main at audit start; units 7–1300)
 IMPLEMENTATION HEAD — this packet branch (documentation only; controlling-doc high-water repairs)
 TEST-COUNT HEAD — implementer-executed 317 tests on 2026-09-09
