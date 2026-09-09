@@ -265,10 +265,9 @@ Preserved ChatGPT independent audits:
 | PR #22 at `2991557` | later inspectability slice | PASS WITH MATERIAL OPEN ITEMS |
 | PR #33 posture packet | claim-class / docs at unit 1300 | PASS WITH TWO BOUNDED DOCUMENTATION REPAIRS |
 | Night-close 2026-08-24 | `main` after 7–1300 | PASS WITH DECLARED VERIFICATION LIMITATION (suite not independently re-run) |
+| PR #35 on `4ee8245` | 2026-09-09 program audit packet | **PASS WITH DECLARED VERIFICATION LIMITATION.** Six points confirmed; item 1 with the 317-test limitation. Banked as `docs/audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_2026-09-09.md`. |
 
-This 2026-09-09 record **does** re-run the 317 tests, but it is still implementer-executed. There is still **no GitHub Actions workflow** in the repository. ChatGPT should treat 317 / 279 / 351 as claims to confirm, not as CI-promoted facts.
-
-Independent line-by-line software audit of units 101–1300 as a class remains incomplete. That gap does not reopen Horizon 2, and filling it with more unit-count is not required for a clean stop.
+The 317 tests remain implementer-executed. ChatGPT did not independently re-run the suite. There is still **no GitHub Actions workflow**. Independent line-by-line software audit of units 101–1300 as a class remains incomplete. That gap does not reopen Horizon 2.
 
 ---
 

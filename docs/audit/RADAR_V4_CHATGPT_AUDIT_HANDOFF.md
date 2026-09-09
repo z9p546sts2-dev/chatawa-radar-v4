@@ -16,7 +16,8 @@ AUTHORITY — Todd C. (toddmcraft@gmail.com) only
 IMPLEMENTER — Cursor (bounded engineer)
 INDEPENDENT AUDITOR — ChatGPT
 IMPLEMENTER-EXECUTED DISPOSITION — PROGRAM AUDIT PASS WITH DOCUMENTATION REPAIRS; CLAIM CLASS UNCHANGED
-INDEPENDENT AUDITS — PR #8 (units 7–100); PR #22 at 2991557; PR #33 posture packet; night-close 2026-08-24
+INDEPENDENT DISPOSITION ON PR #35 — PASS WITH DECLARED VERIFICATION LIMITATION (317 NOT INDEPENDENTLY RE-RUN)
+INDEPENDENT AUDITS — PR #8 (units 7–100); PR #22 at 2991557; PR #33 posture packet; night-close 2026-08-24; PR #35 2026-09-09
 ```
 
 The block below is the original first-audit identity. Keep it as history. Do not treat it as current HEAD.
