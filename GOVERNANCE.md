@@ -2,9 +2,9 @@
 
 ## Status
 
-**PHASE 5 UNITS 7–1300 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE.**
+**PHASE 5 UNITS 7–1350 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE.**
 
-Radar V4 has Phase 5 dataset admission through unit 1300 on this branch. The work is: local FIXTURE/SYNTHETIC session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, source-digest custody, lock-record bind and lock-set, path-independent content identity, content-set of lock records, copy-set of pack directories, named member identity, member-set and live-path member-align, cadence overrun lock, freshness stamp versus last bar (`FRESH_STAMP_STALE_BARS`), lookahead horizon (`LOOKAHEAD_WINDOW` / `LOOKAHEAD_BAR`), and a workshop stop record. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence. Units 101–1300 are inspectability, not a research result. Document map: `docs/README.md`.
+Radar V4 has Phase 5 dataset admission through unit 1350 on this branch. The work is: local FIXTURE/SYNTHETIC session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, source-digest custody, lock-record bind and lock-set, path-independent content identity, content-set of lock records, copy-set of pack directories, named member identity, member-set and live-path member-align, cadence overrun lock, freshness stamp versus last bar (`FRESH_STAMP_STALE_BARS`), lookahead horizon (`LOOKAHEAD_WINDOW` / `LOOKAHEAD_BAR`), named local source lock (`SOURCE_UNNAMED` / `ADMISSION_CLAIM` / `HISTORICAL_ADMISSION_NOT_AUTHORIZED`), and a workshop stop record. Vendor download and method research are not authorized. The in-repo fixture pack is not market evidence. Units 101–1350 are inspectability, not a research result. Document map: `docs/README.md`.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, pilot approval, deployment, shutdown, and any future operational role.
 
@@ -121,7 +121,7 @@ Authorized now:
 2. Read-only repository inspection.
 3. Preservation and review of completed V1/V2 forensic evidence.
 4. Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software.
-5. Phase 5 units 7–850 dataset admission through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, and a workshop stop record.
+5. Phase 5 units 7–1350 dataset admission through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, named local source lock, and a workshop stop record.
 6. Future evidence requirements and non-executing research planning.
 
 Not authorized now:
@@ -136,7 +136,7 @@ Not authorized now:
 8. Portfolio authority.
 9. Copying, importing, adapting, or cherry-picking legacy Radar code.
 
-A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–850 does not authorize that class.
+A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–1350 does not authorize that class.
 
 ## Evidence rules
 
@@ -306,7 +306,7 @@ SPECIFIC MARKET METHOD — NOT DEFINED
 BUILD UNIT 1 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
-PHASE 5 — AUTHORIZED-TC / UNITS 7–1300 COMPLETE WITHIN SCOPE
+PHASE 5 — AUTHORIZED-TC / UNITS 7–1350 COMPLETE WITHIN SCOPE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
 LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
