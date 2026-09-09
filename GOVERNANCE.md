@@ -121,7 +121,7 @@ Authorized now:
 2. Read-only repository inspection.
 3. Preservation and review of completed V1/V2 forensic evidence.
 4. Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software.
-5. Phase 5 units 7–850 dataset admission through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, and a workshop stop record.
+5. Phase 5 units 7–1300 dataset admission through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, source-digest custody, lock-bind/lock-set, content identity, member identity, cadence overrun lock, freshness stamp versus last bar, lookahead horizon, and a workshop stop record.
 6. Future evidence requirements and non-executing research planning.
 
 Not authorized now:
@@ -136,7 +136,7 @@ Not authorized now:
 8. Portfolio authority.
 9. Copying, importing, adapting, or cherry-picking legacy Radar code.
 
-A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–850 does not authorize that class.
+A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–1300 does not authorize that class.
 
 ## Evidence rules
 

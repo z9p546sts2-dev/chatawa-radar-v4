@@ -4,7 +4,7 @@
 
 **PHASE 5 UNITS 7–1300 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE.**
 
-Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software on this stacked draft branch. `main` currently carries units 7–200 only. Todd authorized continued building without per-unit stops. Vendor download and method research remain unauthorized.
+Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software on `main` through unit 1300. Vendor download and method research remain unauthorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, deployment, and any future operational role.
 
@@ -260,7 +260,7 @@ Authorized now:
 - completed forensic-evidence review and preservation;
 - methodology review and maintenance;
 - Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software;
-- Phase 5 units 7–850 dataset declaration through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, and a workshop stop record.
+- Phase 5 units 7–1300 dataset declaration through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, source-digest custody, lock-bind/lock-set, content identity, member identity, cadence overrun lock, freshness stamp versus last bar, lookahead horizon, and a workshop stop record.
 
 Not authorized now:
 
@@ -277,7 +277,7 @@ Not authorized now:
 
 ## Immediate next action
 
-Vendor download, paper trading, and Phase 6 still require a separate named authorization. Do not buy an API or open a paper account because Units 7–850 exist. The in-repo fixture pack is SYNTHETIC and is not market evidence.
+Vendor download, paper trading, and Phase 6 still require a separate named authorization. Do not buy an API or open a paper account because Units 7–1300 exist. The in-repo fixture pack is SYNTHETIC and is not market evidence. The next claim-class change is a Todd-named HISTORICAL source, or a deliberate stop.
 
 ## Current roadmap status
 
@@ -289,7 +289,7 @@ PHASE 3 — BUILD UNIT 1 PROPOSAL / AUTH READINESS     COMPLETE / PASS
 PHASE 4 — BUILD UNIT 1 EXECUTION                     COMPLETE WITHIN SCOPE / ACCEPTED-TC
 PHASE 4A — BUILD UNIT 2 INTAKE / QUARANTINE          COMPLETE WITHIN SCOPE / ACCEPTED-TC
 PHASE 4B — BUILD UNITS 3–6 JSON / REGISTRY / COLLISION / FIXTURE PACK  COMPLETE WITHIN SCOPE
-PHASE 5 — DATA / RESEARCH FOUNDATION                 AUTHORIZED-TC / STACKED DRAFT 7–850; MAIN THROUGH 200
+PHASE 5 — DATA / RESEARCH FOUNDATION                 AUTHORIZED-TC / UNITS 7–1300 COMPLETE ON MAIN; LOCAL SOFTWARE ONLY
 PHASE 6 — FEATURE / METHOD RESEARCH                  NOT AUTHORIZED
 PHASE 7 — BOUNDED OFFLINE PILOT                      NOT AUTHORIZED
 PHASE 8 — HUMAN REVIEW INTERFACE                     NOT AUTHORIZED

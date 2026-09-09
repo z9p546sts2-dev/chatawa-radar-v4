@@ -5,7 +5,7 @@
 **Implementation authorized:** Phase 5 local workshop only; vendor, Phase 6, and paper trading remain unauthorized  
 **Purpose:** Convert verified V1/V2 failures and strengths into enforceable controls for any future Radar V4 work.
 
-**Later current status (2026-08-23):** Phase 5 units 7–850 are complete within authorized local-software scope on this stacked draft branch. `main` currently carries units 7–200 only. This control record still binds. It does not authorize vendor data, Phase 6, paper trading, or a market method.
+**Later current status (2026-09-09):** Phase 5 units 7–1300 are complete within authorized local-software scope on `main`. This control record still binds. It does not authorize vendor data, Phase 6, paper trading, or a market method.
 
 ---
 

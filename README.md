@@ -85,7 +85,7 @@ These units still do not ingest vendor data or define a market method.
 These remain evidence, not present authorization:
 
 - `docs/roadmap/RADAR_V4_HORIZON_ROADMAP.md` — long-horizon Product A before Product B. Years do not authorize stages.
-- `docs/legacy/RADAR_V4_REACTIVATION_REVIEW_TC.md` — pre-Build-Unit-1 check. Later superseded as current status by completed Units 1–6 and Phase 5 units 7–950.
+- `docs/legacy/RADAR_V4_REACTIVATION_REVIEW_TC.md` — pre-Build-Unit-1 check. Later superseded as current status by completed Units 1–6 and Phase 5 units 7–1300.
 
 ## Legacy relationship
 
@@ -121,7 +121,7 @@ Until Todd explicitly authorizes a later bounded unit:
 - no assumption that V1 or V2 behavior remains valid;
 - no treating SYNTHETIC or FIXTURE numbers as HISTORICAL evidence.
 
-`main` has Phase 5 local-software inspectability through unit 1000. It is not a trading-system authorization. The in-repo fixture pack is SYNTHETIC and is not market evidence. Units 101–1000 do not change the claim class.
+`main` has Phase 5 local-software inspectability through unit 1300. It is not a trading-system authorization. The in-repo fixture pack is SYNTHETIC and is not market evidence. Units 101–1300 do not change the claim class.
 
 **Tools verify. Todd authorizes.**
 
