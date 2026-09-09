@@ -255,6 +255,21 @@ from radar_v4.source_lock import (
     verify_source_record,
     write_source_record,
 )
+from radar_v4.need_bind import (
+    need_bind,
+    need_bind_determinism,
+    need_bind_status,
+    verify_need_bind_record,
+    write_need_bind_record,
+)
+from radar_v4.need_lock import (
+    compare_need_lock,
+    need_lock,
+    need_lock_determinism,
+    need_status_bind,
+    verify_need_record,
+    write_need_record,
+)
 from radar_v4.member_align import (
     member_align,
     member_align_determinism,
@@ -2389,6 +2404,81 @@ def register_workshop_commands(sub: argparse._SubParsersAction) -> None:
     sbind_status.add_argument("--source", required=True)
     sbind_status.add_argument("--pack", required=True)
 
+    need_lock_cmd = sub.add_parser(
+        "need-lock",
+        help="lock that a bounded local file is sufficient; JSON cannot buy data",
+    )
+    need_lock_cmd.add_argument("--path", required=True)
+
+    need_eq = sub.add_parser(
+        "need-eq",
+        help="repeat need-lock; equality is not a method",
+    )
+    need_eq.add_argument("--path", required=True)
+
+    cmp_need = sub.add_parser(
+        "compare-need",
+        help="compare need identity of two documents",
+    )
+    cmp_need.add_argument("--left", required=True)
+    cmp_need.add_argument("--right", required=True)
+
+    write_need = sub.add_parser(
+        "write-need-lock",
+        help="write a local need-lock record; not market evidence",
+    )
+    write_need.add_argument("--path", required=True)
+    write_need.add_argument("--out", required=True)
+    write_need.add_argument("--replace", action="store_true")
+
+    verify_need = sub.add_parser(
+        "verify-need",
+        help="verify a local need-lock record",
+    )
+    verify_need.add_argument("--path", required=True)
+
+    need_status = sub.add_parser(
+        "need-status",
+        help="bind need-lock to status highest-unit; not a measurement",
+    )
+    need_status.add_argument("--path", required=True)
+
+    nbind = sub.add_parser(
+        "need-bind",
+        help="bind a need document to a FIXTURE/SYNTHETIC pack",
+    )
+    nbind.add_argument("--need", required=True)
+    nbind.add_argument("--pack", required=True)
+
+    nbind_eq = sub.add_parser(
+        "need-bind-eq",
+        help="repeat need-bind; equality is not a method",
+    )
+    nbind_eq.add_argument("--need", required=True)
+    nbind_eq.add_argument("--pack", required=True)
+
+    write_nbind = sub.add_parser(
+        "write-need-bind",
+        help="write a local need-bind record; not market evidence",
+    )
+    write_nbind.add_argument("--need", required=True)
+    write_nbind.add_argument("--pack", required=True)
+    write_nbind.add_argument("--out", required=True)
+    write_nbind.add_argument("--replace", action="store_true")
+
+    verify_nbind = sub.add_parser(
+        "verify-need-bind",
+        help="verify a local need-bind record",
+    )
+    verify_nbind.add_argument("--path", required=True)
+
+    nbind_status = sub.add_parser(
+        "need-bind-status",
+        help="bind need-bind to status highest-unit; not a measurement",
+    )
+    nbind_status.add_argument("--need", required=True)
+    nbind_status.add_argument("--pack", required=True)
+
 
 def dispatch_workshop(args: argparse.Namespace) -> int | None:
     command = args.command
@@ -3632,6 +3722,49 @@ def dispatch_workshop(args: argparse.Namespace) -> int | None:
         return _print(check.serialize(), 0 if check.valid else 1)
     if command == "source-bind-status":
         check = source_bind_status(Path(args.source), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "need-lock":
+        check = need_lock(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "need-eq":
+        check = need_lock_determinism(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "compare-need":
+        check = compare_need_lock(Path(args.left), Path(args.right))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-need-lock":
+        try:
+            record = write_need_record(Path(args.path), Path(args.out), args.replace)
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-need":
+        check = verify_need_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "need-status":
+        check = need_status_bind(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "need-bind":
+        check = need_bind(Path(args.need), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "need-bind-eq":
+        check = need_bind_determinism(Path(args.need), Path(args.pack))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "write-need-bind":
+        try:
+            record = write_need_bind_record(
+                Path(args.need), Path(args.pack), Path(args.out), args.replace
+            )
+        except SnapshotFileError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        return _print(record.serialize(), 0 if record.valid else 1)
+    if command == "verify-need-bind":
+        check = verify_need_bind_record(Path(args.path))
+        return _print(check.serialize(), 0 if check.valid else 1)
+    if command == "need-bind-status":
+        check = need_bind_status(Path(args.need), Path(args.pack))
         return _print(check.serialize(), 0 if check.valid else 1)
     return None
 
