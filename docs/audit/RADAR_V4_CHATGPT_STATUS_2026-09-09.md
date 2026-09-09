@@ -173,9 +173,22 @@ ITEMS 2–6 — CONFIRM
 NO IMPLEMENTATION / NO VENDOR / NO HORIZON 2 / NO MERGE AUTHORIZED
 ```
 
-Banked record: `docs/audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_2026-09-09.md`.
+Follow-up (same day, verified against the code, not just the summary):
 
-The stopping point remains clean. Todd still authorizes any later class of work.
+```text
+ITEM 1 — 317 INDEPENDENTLY RE-RUN (pytest tests/; 317 passed in 26.33s)
+         DATA CORRECTNESS STILL NOT EARNED
+ITEM 2 — PACK LOADER CONFIRMED AT CODE (declaration + observation gates)
+ITEMS 3–5 — FILE LAYOUT CONSISTENT; MODULES NOT YET INDEPENDENTLY OPENED
+ITEM 6 — TODD-NAMED HISTORICAL SOURCE, OR STOP — REAFFIRMED
+```
+
+Banked records:
+
+- `docs/audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_2026-09-09.md`
+- `docs/audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_2026-09-09_UPDATE.md`
+
+Remaining independent work: open the four lock modules and three unit-batch tests named in the update. The stopping point remains clean. Todd still authorizes any later class of work.
 
 Learning and Earning It.  
 Stay on course.  

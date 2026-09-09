@@ -265,9 +265,9 @@ Preserved ChatGPT independent audits:
 | PR #22 at `2991557` | later inspectability slice | PASS WITH MATERIAL OPEN ITEMS |
 | PR #33 posture packet | claim-class / docs at unit 1300 | PASS WITH TWO BOUNDED DOCUMENTATION REPAIRS |
 | Night-close 2026-08-24 | `main` after 7–1300 | PASS WITH DECLARED VERIFICATION LIMITATION (suite not independently re-run) |
-| PR #35 on `4ee8245` | 2026-09-09 program audit packet | **PASS WITH DECLARED VERIFICATION LIMITATION.** Six points confirmed; item 1 with the 317-test limitation. Banked as `docs/audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_2026-09-09.md`. |
+| PR #35 on `4ee8245` | 2026-09-09 program audit packet | First pass: **PASS WITH DECLARED VERIFICATION LIMITATION.** Update: **317 independently re-run** (`pytest tests/`, 317 passed in 26.33s); pack loader confirmed at code; items 3–5 not yet independently module-opened. Banked as `docs/audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_2026-09-09.md` and `_UPDATE.md`. |
 
-The 317 tests remain implementer-executed. ChatGPT did not independently re-run the suite. There is still **no GitHub Actions workflow**. Independent line-by-line software audit of units 101–1300 as a class remains incomplete. That gap does not reopen Horizon 2.
+There is still **no GitHub Actions workflow**. Independent module-open of cadence / freshness / horizon (items 3–5) remains the remaining independent gap. That gap does not reopen Horizon 2.
 
 ---
 
@@ -301,15 +301,10 @@ Until then: **stop**, or optional documentation/custody polish that does not cha
 
 ## 10. Auditor packet
 
-Give ChatGPT `docs/audit/RADAR_V4_CHATGPT_STATUS_2026-09-09.md` first.
+Give ChatGPT `docs/audit/RADAR_V4_CHATGPT_STATUS_2026-09-09.md` first. Independent review of PR #35 is now banked in `docs/audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_2026-09-09.md`.
 
-Ask ChatGPT to confirm or refute:
-
-1. the earned / not-earned table;
-2. that HISTORICAL/LIVE still cannot load through the pack loader;
-3. that cadence, freshness, and lookahead remain distinct;
-4. that unit 1300 still does not change the claim class;
-5. that the controlling-doc repairs in this packet are documentation-only and do not authorize Horizon 2.
+First independent disposition: **PASS WITH DECLARED VERIFICATION LIMITATION.**  
+Update: item 1 **independently re-run** (317 pytest); item 2 confirmed at code; items 3–5 still need the four lock modules and three unit-batch tests opened independently. Item 6 reaffirmed. No Horizon 2. No merge authorized by that review.
 
 **Learning and Earning It.**  
 **Stay on course. No drift.**

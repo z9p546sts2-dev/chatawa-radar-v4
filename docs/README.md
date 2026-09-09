@@ -22,6 +22,7 @@ Controlling files stay at the repository root:
 | `audit/RADAR_V4_CHATGPT_STATUS_2026-09-09.md` | Status packet for ChatGPT (2026-09-09) |
 | `audit/RADAR_V4_IMPLEMENTER_AUDIT_2026-09-09.md` | Implementer program audit (2026-09-09) |
 | `audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_2026-09-09.md` | Independent ChatGPT audit of PR #35 |
+| `audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_2026-09-09_UPDATE.md` | Code-level follow-up: 317 independently re-run; pack loader confirmed |
 | `audit/RADAR_V4_CHATGPT_STATUS_2026-08-23.md` | Prior status packet for ChatGPT (history) |
 | `audit/RADAR_V4_SESSION_CLOSE_2026-08-23.md` | Implementer self-audit and session close |
 | `audit/RADAR_V4_CHATGPT_NIGHT_CLOSE_2026-08-24.md` | Independent night-close audit through unit 1300 |
