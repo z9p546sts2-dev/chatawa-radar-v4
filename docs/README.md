@@ -19,9 +19,11 @@ Controlling files stay at the repository root:
 | `UNITS.md` | Full Phase 5 unit ledger. Inspectability, not a research result. |
 | `phase5/README_PHASE5.md` | Phase 5 local workshop notes |
 | `phase5/RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md` | Locked LEVEL 0 question |
-| `audit/RADAR_V4_CHATGPT_STATUS_2026-08-23.md` | Current status packet for ChatGPT |
+| `audit/RADAR_V4_CHATGPT_STATUS_2026-08-23.md` | Status packet for ChatGPT through unit 1300 |
 | `audit/RADAR_V4_SESSION_CLOSE_2026-08-23.md` | Implementer self-audit and session close |
 | `audit/RADAR_V4_CHATGPT_AUDIT_HANDOFF.md` | Independent-audit handoff (slice history) |
+| `audit/RADAR_V4_CHATGPT_PR37_PACKET_2026-09-09.md` | PR #37 artifact delivery for ChatGPT. Not an independent audit. |
+| `audit/chatawa-radar-v4-pr37-1fbda42.tar.gz` | Exact `git archive` of software head `1fbda42`. Run tests from this tree, not `main`. |
 | `units/` | Build Units 1–6 readmes and acceptance records |
 | `methodology/` | Methodology definition and audit |
 | `roadmap/` | Horizon and curriculum planning records |
