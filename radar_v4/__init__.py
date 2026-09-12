@@ -212,6 +212,8 @@ from radar_v4.horizon_bind import horizon_bind
 from radar_v4.horizon_lock import horizon_lock, compare_horizon_lock
 from radar_v4.source_bind import source_bind
 from radar_v4.source_lock import source_lock, compare_source_lock
+from radar_v4.need_bind import need_bind
+from radar_v4.need_lock import need_lock, compare_need_lock
 from radar_v4.member_align import member_align
 from radar_v4.member_bind import member_bind
 from radar_v4.member_lock import member_lock, compare_member_lock
@@ -416,6 +418,9 @@ __all__ = [
     "compare_source_lock",
     "source_bind",
     "source_lock",
+    "compare_need_lock",
+    "need_bind",
+    "need_lock",
     "compare_member_lock",
     "compare_member_set",
     "member_align",
