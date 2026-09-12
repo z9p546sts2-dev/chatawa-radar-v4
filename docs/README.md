@@ -24,7 +24,7 @@ Controlling files stay at the repository root:
 | `audit/RADAR_V4_CHATGPT_AUDIT_HANDOFF.md` | Independent-audit handoff (slice history) |
 | `audit/RADAR_V4_CHATGPT_PR37_PACKET_2026-09-09.md` | PR #37 artifact delivery for ChatGPT. Not an independent audit. |
 | `audit/RADAR_V4_CHATGPT_ASK_PR37_2026-09-09.md` | Paste-ready ChatGPT ask for PR #37. Attach the tarball in that ChatGPT message. |
-| `audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_PR37_2026-09-12.md` | PR #37: auditor unverified (FAIL: NO TREE). Withdrawn PASS was implementer-preframed. Not a footnote. |
+| `audit/RADAR_V4_CHATGPT_INDEPENDENT_AUDIT_PR37_2026-09-12.md` | PR #37 independent audit: PASS. Auditor hashed/unpacked/ran 327. Earlier preframed PASS withdrawn; FAIL: NO TREE was the no-tree state. |
 | `audit/chatawa-radar-v4-pr37-1fbda42.tar.gz` | Exact `git archive` of software head `1fbda42`. Run tests from this tree, not `main`. |
 | `units/` | Build Units 1–6 readmes and acceptance records |
 | `methodology/` | Methodology definition and audit |
