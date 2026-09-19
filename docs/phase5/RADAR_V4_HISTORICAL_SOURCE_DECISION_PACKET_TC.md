@@ -31,18 +31,20 @@ This packet is documentation. It does not implement a client, buy a feed, downlo
 
 A read-only briefing so Todd can decide whether — and only later, if separately authorized — a first HISTORICAL US-stock source may be considered.
 
-It answers four questions:
+It answers five questions:
 
 1. What exact controls Radar already requires before a HISTORICAL dataset can be admitted.
 2. What Todd must specify before selecting a source.
-3. Which 3–5 candidate HISTORICAL US-stock sources exist for later review, documented without ranking.
-4. The smallest next decisions Todd must make before any source is authorized.
+3. What later gates still stand between license/source review and any historical bytes, measurement, or revision.
+4. Which 3–5 candidate HISTORICAL US-stock sources exist for later review, documented without ranking.
+5. The smallest next decisions Todd must make before any source is authorized.
 
 ## What this packet is not
 
 - not a vendor selection;
 - not a purchase recommendation;
 - not a download instruction;
+- not an extract authorization; license or source review still does not move historical bytes;
 - not a change to `PACK_ALLOWED_PROVENANCE`;
 - not a network client;
 - not Units 1401+;
@@ -273,7 +275,7 @@ Radar does **not** currently enforce, as admission software:
 - a shared vendor client;
 - DATA CORRECTNESS against a market tape.
 
-Those gaps are why Todd must specify the items in §2 before any source is even a candidate for authorization. They are not permission to invent defaults.
+Those gaps are why Todd must specify the items in §2 before any source is even a candidate for authorization. They are not permission to invent defaults. They also do not authorize universe or survivorship machinery. §3 records later extract, freeze, and revision gates; it does not close these software gaps.
 
 ---
 
@@ -390,11 +392,83 @@ If Todd wants a different ordinary baseline, lock that question first. Do not ch
 
 ---
 
-# 3. Candidate HISTORICAL US-stock sources for later review
+# 3. Later gates between review and any historical bytes
+
+These gates are packet requirements. They are not implemented here. They do not authorize a source, a purchase, an extract, a vendor client, Units 1401+, or Phase 6.
+
+They exist so a later license or source review cannot be mistaken for permission to move historical bytes, measure, or silently rewrite a file.
+
+Existing Radar language already forbids silent repair (Control 8 / engineering requirement 7: a repair or transformation must produce a new versioned artifact). This section names the HISTORICAL-class applications. It does not add universe or survivorship infrastructure. Those remain the gaps already recorded in §1.7.
+
+## 3.1 Extract-class change is a separate authorization
+
+```text
+HISTORICAL EXTRACT CLASS CHANGE REQUIRES A SEPARATE TODD AUTHORIZATION.
+Source review and license review do not authorize an extract.
+```
+
+`AUTHORIZE LICENSE REVIEW ONLY` is not an extract. Reading terms is not moving bytes. Naming a candidate is not a download. A JSON flag still cannot close this gate.
+
+No historical bytes may move — into the repository, a local pack, a snapshot, or any other Radar artifact — until Todd records a separate extract authorization.
+
+## 3.2 Bounded-extract authorization must state hard bounds
+
+If Todd later authorizes a bounded extract, that authorization record must state:
+
+- maximum symbols;
+- inclusive start date and inclusive end date;
+- maximum rows/sessions or an equivalent hard bound;
+- optionally maximum file size when the delivery form makes size the honest bound.
+
+An extract that exceeds those bounds is outside the authorization, even if the source and license were previously reviewed. Bounds are not a quality score. They keep the first extract inside one locked question.
+
+This packet does not authorize that extract.
+
+## 3.3 Historical-revision rule
+
+If a first extract is ever acquired under a later separate authorization:
+
+- that first acquired extract is preserved immutably by snapshot and checksum;
+- a vendor correction or revision becomes a new version;
+- no historical file may be silently overwritten in place.
+
+A later file that “looks corrected” is not the same dataset. Overwrite is not repair.
+
+## 3.4 Freeze before measurement
+
+Before any measurement of a HISTORICAL extract, freeze and record:
+
+- research question;
+- instrument identity;
+- date range;
+- interval / evaluation cadence;
+- timezone convention;
+- adjustment policy;
+- ordinary baseline;
+- dataset snapshot / checksum;
+- as-of boundary.
+
+Do not measure first and freeze afterward. A measurement without this freeze is not a LEVEL 0 result on that extract.
+
+This requirement does not authorize a measurement. The locked workshop question remains SYNTHETIC-only until a later extract class is separately authorized and then frozen.
+
+## 3.5 Correction linkage
+
+Any later correction or revision record must identify:
+
+- the affected dataset snapshot (identity and checksum);
+- the measurement and/or disposition that snapshot supported;
+- whether the new version supersedes or invalidates that measurement/disposition.
+
+A revision that does not name what it replaces is an unlinked file, not a correction. Unlinked revisions may not silently inherit a prior MEASURED status.
+
+---
+
+# 4. Candidate HISTORICAL US-stock sources for later review
 
 Not ranked. Not selected. Listed so Todd can see different delivery and provenance shapes.
 
-Inclusion is not a quality score. Public availability is not authorization. Cost notes are public list prices or license classes as of this writing and must be re-read before any later purchase decision. No extract was taken.
+Inclusion is not a quality score. Public availability is not authorization. Cost notes are public list prices or license classes as of this writing and must be re-read before any later purchase decision. No extract was taken. A later license review of any candidate still does not authorize an extract (§3.1).
 
 ## Candidate A — CRSP Daily Stock File (via WRDS or CRSP delivery)
 
@@ -472,12 +546,12 @@ These were considered and **not** added as the 3–5 review set. Omission is not
 
 - Exchange raw tape / TAQ — not a daily one-symbol close series for this question; cost and complexity are a different class.
 - SEC EDGAR — filings, not daily OHLCV.
-- Polygon, Nasdaq Data Link / Sharadar, EODHD, FirstRate, Kibot, IEX Cloud — other commercial APIs/files; adding them would widen the packet without changing the eight Todd decisions.
+- Polygon, Nasdaq Data Link / Sharadar, EODHD, FirstRate, Kibot, IEX Cloud — other commercial APIs/files; adding them would widen the packet without changing the eight Todd decisions or the §3 later gates.
 - Kaggle or anonymous CSVs — provenance-unknown; Control 8 would quarantine them.
 
 ---
 
-# 4. Explicit non-decisions of this packet
+# 5. Explicit non-decisions of this packet
 
 1. No winner. No preference order. The A–E labels are identifiers, not ranks.
 2. No source is authorized because it is available, cheap, documented, or familiar.
@@ -485,6 +559,7 @@ These were considered and **not** added as the 3–5 review set. Omission is not
 4. No vendor client, token, or download is created.
 5. No Units 1401+. No Phase 6. No method. No paper. No Product B.
 6. PR #37 PASS does not earn DATA CORRECTNESS and does not open Horizon 2.
+7. Recording later gates in §3 is not authorization of an extract, a measurement, or a revision.
 
 ---
 
@@ -516,8 +591,8 @@ Smallest decisions, in this order. Stop after any `PAUSE` or `REJECT`. Do not sk
 8. **Confirm the ordinary baseline.**  
    Close-to-close difference on the same ruler. Not percent. Not a threshold. Not an edge.
 
-9. **Only after 1–8: say whether any candidate in §3 may be reviewed for license text.**  
-   Review means read current terms. It does not mean buy, download, or admit. If Todd wants a candidate that is not in §3, name it; do not treat this list as closed because it is short.
+9. **Only after 1–8: say whether any candidate in §4 may be reviewed for license text.**  
+   Review means read current terms. It does not mean buy, download, admit, or extract. If Todd wants a candidate that is not in §4, name it; do not treat this list as closed because it is short.
 
 10. **Authorization remains a separate sentence.**  
     After 1–9, the next possible record is still one of:
@@ -527,7 +602,9 @@ Smallest decisions, in this order. Stop after any `PAUSE` or `REJECT`. Do not sk
     AUTHORIZE LICENSE REVIEW ONLY — <named candidate> — TC
     ```
 
-    There is no authorization in this packet to ingest, purchase, or open the pack loader.
+    There is no authorization in this packet to ingest, purchase, extract, or open the pack loader.
+
+    Source review and license review do not authorize an extract. A later extract-class change, if Todd ever writes one, is a new sentence and must include the §3.2 hard bounds. That sentence is not written here.
 
 Until Todd records those decisions, Radar stays on the local FIXTURE/SYNTHETIC workshop. The bounded file remains sufficient. A JSON flag cannot close this list.
 
@@ -544,6 +621,8 @@ UNITS 1401+                     NOT CREATED
 PHASE 6                         NOT OPENED
 VENDOR CLIENT                   NONE
 HISTORICAL SOURCE AUTHORIZED    NO
+HISTORICAL EXTRACT AUTHORIZED   NO
+LATER GATES                     RECORDED / NOT IMPLEMENTED
 WINNER SELECTED                 NO
 NEXT ACTOR                      TODD ONLY
 ```
