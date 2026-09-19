@@ -257,9 +257,9 @@ Command: `PYTHONPATH=. python3 -m unittest tests.test_dress_rehearsal -v`
 | E. One-value checksum mutation | 2 | PASS |
 | F. Calendar-completeness gap probe | 3 | PASS (`CALENDAR_GAP_STILL_OPEN`) |
 | G. Revised red-team probes | 13 | PASS (includes documented gaps) |
-| **Dress-rehearsal total** | **37** | **37 passed, 0 failed** |
+| **Dress-rehearsal total** | **38** | **38 passed, 0 failed** |
 
-Full workshop suite after the close correction: `PYTHONPATH=. python3 -m unittest discover -s tests -v` → **354 passed, 0 failed**.
+Full workshop suite after the close correction: `PYTHONPATH=. python3 -m unittest discover -s tests -v` → **355 passed, 0 failed**.
 
 Exact measured stand-ins:
 
@@ -310,8 +310,8 @@ This is not historical readiness, source validation, market-data correctness, pr
 
 ```text
 PLAN                            AUTHORIZED-TC AND IMPLEMENTED
-DRESS REHEARSAL TESTS           37/37 PASSED
-FULL UNIT SUITE                 354/354 PASSED
+DRESS REHEARSAL TESTS           38/38 PASSED
+FULL UNIT SUITE                 355/355 PASSED
 CALENDAR_GAP_STILL_OPEN         YES
 DATE_WINDOW_GAP_STILL_OPEN      YES
 SESSION_DATE_COLLISION_GAP_STILL_OPEN  YES
