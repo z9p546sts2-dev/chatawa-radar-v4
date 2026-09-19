@@ -282,7 +282,7 @@ This review does not authorize Twelve Data.
 
 # F. Still required before an extract could be authorized
 
-1. Todd license review of these terms (this file is not that review).
+1. Todd license review of these terms — now recorded in `docs/phase5/RADAR_V4_TWELVE_DATA_LICENSE_REVIEW_TC.md`. That review is not a license grant, source, or extract.
 2. Todd source authorization (separate sentence).
 3. Account/plan decision. Do not create a key in this public repo.
 4. Written local-only storage rule: extract stays off GitHub; no reconstructable closes in the public tree.
@@ -297,18 +297,20 @@ This review does not authorize Twelve Data.
 
 # NEXT DECISION REQUIRED FROM TODD
 
-This reframe is complete. Remaining decisions stay unauthorized: license review, source, extract, account/key, and historical bytes.
+This reframe is complete. Public-terms license review is now recorded separately. Remaining decisions stay unauthorized: source, extract, account/key, and historical bytes.
 
 ```text
 CANDIDATE                       TWELVE DATA — TEMPORARY ONLY
 PROPOSED FIRST REAL-DATA CYCLE  SPY / 30 COMPLETED SESSIONS
 PURPOSE                         ADMISSION AND MEASUREMENT VALIDATION ONLY
 TECHNICAL FIT                   PASS WITH CONDITION
-LICENSE FIT                     PASS WITH CONDITION (local internal)
+LICENSE REVIEW                  RECORDED — PASS WITH CONDITIONS
+                                docs/phase5/RADAR_V4_TWELVE_DATA_LICENSE_REVIEW_TC.md
+LICENSE GRANT / SOURCE / EXTRACT
+                                NOT AUTHORIZED
 PUBLIC-REPO RAW STORAGE         FAIL
 RETENTION                       DELETE RAW DATA WITHIN 30 DAYS AFTER END
 HISTORICAL BYTES                NONE
-SOURCE / LICENSE / EXTRACT      NOT AUTHORIZED
 UNITS 1401+                     NOT CREATED
 PHASE 6                         NOT OPENED
 NEXT ACTOR                      TODD

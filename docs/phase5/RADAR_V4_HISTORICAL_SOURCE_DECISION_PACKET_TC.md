@@ -654,15 +654,15 @@ Decisions #1–#8 are recorded. Remaining decisions stay in this order. Stop aft
 8. **Confirm the ordinary baseline.** — **RECORDED (Decision #8).**  
    `close[t] - close[t-1]`. Descriptive only. Not percent, threshold, score, signal, prediction, or edge.
 
-9. **Say whether any candidate in §4 may be reviewed for license text.**  
-   Review means read current terms. It does not mean buy, download, admit, or extract. If Todd wants a candidate that is not in §4, name it; do not treat this list as closed because it is short. Decisions #1–#8 do not authorize this review.
+9. **Say whether any candidate in §4 may be reviewed for license text.** — **RECORDED.**  
+   Todd later wrote `AUTHORIZE LICENSE REVIEW ONLY — TWELVE DATA — TC`. Review means read current public terms. It does not mean buy, download, admit, or extract. Findings: `docs/phase5/RADAR_V4_TWELVE_DATA_LICENSE_REVIEW_TC.md`. LICENSE FIT: PASS WITH CONDITIONS. That review is not a license grant, source, or extract. Decisions #1–#8 did not themselves authorize this review.
 
 10. **Authorization remains a separate sentence.**  
-    After 1–9, the next possible record is still one of:
+    License review only is recorded. The next possible record is still one of:
 
     ```text
     DO NOT AUTHORIZE A HISTORICAL SOURCE
-    AUTHORIZE LICENSE REVIEW ONLY — <named candidate> — TC
+    AUTHORIZE HISTORICAL SOURCE — <named candidate> — TC
     ```
 
     There is no authorization in this packet to ingest, purchase, extract, or open the pack loader.
@@ -692,7 +692,10 @@ DECISION #5 TIMEZONE            RECORDED — AMERICA/NEW_YORK SESSION-DATE
 DECISION #6 ADJUSTMENT          RECORDED — UNADJUSTED
 DECISION #7 STALENESS           RECORDED — NONE
 DECISION #8 BASELINE            RECORDED — CLOSE-TO-CLOSE DIFFERENCE
-LICENSE REVIEW AUTHORIZED       NO
+LICENSE REVIEW AUTHORIZED       YES — TWELVE DATA TERMS ONLY
+                                RECORDED — PASS WITH CONDITIONS
+                                docs/phase5/RADAR_V4_TWELVE_DATA_LICENSE_REVIEW_TC.md
+                                NOT A LICENSE GRANT
 HISTORICAL SOURCE AUTHORIZED    NO
 HISTORICAL EXTRACT AUTHORIZED   NO
 LATER GATES                     RECORDED / NOT IMPLEMENTED

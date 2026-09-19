@@ -98,6 +98,8 @@ SYNTHETIC dress-rehearsal plan and results: `docs/phase5/RADAR_V4_PRE_HISTORICAL
 
 Temporary Twelve Data source-fit review: `docs/phase5/RADAR_V4_TWELVE_DATA_TEMPORARY_SOURCE_FIT_TC.md`. Proposed first real-data cycle is 30 completed SPY sessions for admission/measurement validation only. Not a source, license, or extract. No download.
 
+Authorized Twelve Data license review only: `docs/phase5/RADAR_V4_TWELVE_DATA_LICENSE_REVIEW_TC.md`. Public terms only. LICENSE FIT: PASS WITH CONDITIONS for one private 30-session SPY cycle. Not a source or extract. No account, key, purchase, or download.
+
 ## Still forbidden
 
 Network downloads, broker/paper trading, indicators, thresholds, ranking, and treating software-test numbers as market evidence.
