@@ -227,9 +227,9 @@ HISTORICAL EVIDENCE           still false
 
 # NEXT DECISION REQUIRED FROM TODD
 
-Dress-rehearsal implementation is authorized. Remaining HISTORICAL-source decisions stay on the decision packet: license review, source, and extract remain unauthorized.
+The authorized dress rehearsal has been implemented and run. Remaining HISTORICAL-source decisions stay on the decision packet: license review, source, and extract remain unauthorized.
 
-Approval of this plan is not:
+This result is not:
 
 - license review;
 - a HISTORICAL source;
@@ -241,16 +241,63 @@ Approval of this plan is not:
 
 ---
 
+## Results (2026-09-19)
+
+Command: `PYTHONPATH=. python3 -m unittest tests.test_dress_rehearsal -v`
+
+| Category | Tests | Result |
+|---|---|---|
+| A. Golden arithmetic | 5 | PASS |
+| B. Full-year-shaped pack | 4 | PASS |
+| C. Refusal / mutation | 8 | PASS |
+| D. Deterministic rerun | 2 | PASS |
+| E. One-value checksum mutation | 2 | PASS |
+| F. Calendar-completeness gap probe | 3 | PASS (`CALENDAR_GAP_STILL_OPEN`) |
+| **Dress-rehearsal total** | **24** | **24 passed, 0 failed** |
+
+Full workshop suite after the same revision: `PYTHONPATH=. python3 -m unittest discover -s tests -v` → **341 passed, 0 failed**.
+
+Exact measured stand-ins:
+
+- golden `SYN:ONE` changes `("0.25", "-0.50")`;
+- one-value mutation `100.25` → `100.26` changes `("0.26", "-0.51")` and a different snapshot checksum;
+- existing UTC `SYN:AAA` pack still measures `("0.50", "-0.50")` and was not edited;
+- `SYNTHETIC_WEEKDAY_SPAN` generated 261 Monday–Friday bars from `2024-01-02` through `2024-12-31`.
+
+Known gaps still open (category F proved them; no holiday table was added):
+
+- a Saturday `2024-01-06` bar is admitted and MEASURED;
+- omitting Wednesday `2024-06-12` is not flagged;
+- weekday `2024-07-04` is included by the weekday generator.
+
+`radar_v4/` production modules were not edited. `PHASE5_HIGHEST_UNIT` was not moved. Units 1401+ were not created.
+
+```text
+MAXIMUM HONEST PASS      LOCAL FIXTURE/SYNTHETIC SOFTWARE DRESS REHEARSAL PASSED
+HISTORICAL DATA CORRECTNESS   not earned
+METHOD VALIDITY               not defined
+USEFULNESS / EDGE             not shown
+HISTORICAL EVIDENCE           still false
+```
+
+---
+
 ## Current disposition
 
 ```text
-PLAN                            AUTHORIZED-TC
-DRESS REHEARSAL TESTS           IMPLEMENTING WITHIN APPROVED SCOPE
+PLAN                            AUTHORIZED-TC AND IMPLEMENTED
+DRESS REHEARSAL TESTS           24/24 PASSED
+FULL UNIT SUITE                 341/341 PASSED
+CALENDAR_GAP_STILL_OPEN         YES
+CLAIM                           LOCAL FIXTURE/SYNTHETIC SOFTWARE DRESS REHEARSAL PASSED
+HISTORICAL DATA CORRECTNESS     NOT EARNED
+METHOD VALIDITY                 NOT DEFINED
+USEFULNESS / EDGE               NOT SHOWN
 HISTORICAL BYTES                NONE
 SOURCE / LICENSE / EXTRACT      NOT AUTHORIZED
 UNITS 1401+                     NOT CREATED
 PHASE 6                         NOT OPENED
-NEXT ACTOR                      IMPLEMENTER WITHIN APPROVED SCOPE
+NEXT ACTOR                      TODD
 ```
 
 > Research first. Evidence before machinery. Tools verify. Todd authorizes.

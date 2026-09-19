@@ -15,6 +15,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from radar_v4.baseline import close_to_close_changes
+from radar_v4.dataset import DatasetDeclaration
 from radar_v4.dataset_pack import load_dataset_pack
 from radar_v4.evidence import EvidenceEnvelope, ProvenanceClass
 from radar_v4.local_session import run_session_from_pack
@@ -22,6 +23,7 @@ from radar_v4.observation import Observation, ObservationPayload
 from radar_v4.observation_json import intake_observation_json
 from radar_v4.pack_describe import pack_readiness
 from radar_v4.series import inspect_series
+from radar_v4.session import run_dataset_session
 from radar_v4.validation import validate_envelope
 from radar_v4.workshop_check import check_pack_determinism
 
@@ -92,6 +94,23 @@ def _declaration(**overrides: object) -> dict[str, object]:
     }
     document.update(overrides)
     return document
+
+
+def _declaration_object(**overrides: object) -> DatasetDeclaration:
+    raw = _declaration(**overrides)
+    return DatasetDeclaration(
+        dataset_id=str(raw["dataset_id"]),
+        provenance_class=str(raw["provenance_class"]),
+        provider=str(raw["provider"]),
+        universe=str(raw["universe"]),
+        interval=str(raw["interval"]),
+        timezone=str(raw["timezone"]),
+        transformation_version=str(raw["transformation_version"]),
+        adjustment_policy=str(raw["adjustment_policy"]),
+        locked_question=str(raw["locked_question"]),
+        primary_metric=str(raw["primary_metric"]),
+        max_staleness=None if raw.get("max_staleness") is None else str(raw["max_staleness"]),
+    )
 
 
 def _write_obs(path: Path, item: Observation) -> None:
@@ -383,15 +402,16 @@ class DressRehearsalRefusalTests(unittest.TestCase):
         series = inspect_series((first, second))
         self.assertFalse(series.valid)
         self.assertIn("DUPLICATE_MARKET_TIMESTAMP", series.issue_codes())
-        result_baseline = close_to_close_changes((first, second))
-        # Baseline may still compute if both validate; series lock is the refusal.
-        self.assertIn("DUPLICATE_MARKET_TIMESTAMP", series.issue_codes())
-        pack_result = self._session_from_obs((first, second))
-        self.assertTrue(
-            pack_result.session is None
-            or pack_result.session.baseline is None
-            or pack_result.session.series.valid is False
+        # Series lock is the refusal. Pack identity-gate may drop the second
+        # file earlier; session composition is the DUPLICATE_MARKET_TIMESTAMP path.
+        result = run_dataset_session(
+            _declaration_object(),
+            (first.envelope, second.envelope),
+            (first, second),
         )
+        self.assertFalse(result.series.valid)
+        self.assertIsNone(result.baseline)
+        self.assertIn("DUPLICATE_MARKET_TIMESTAMP", result.series.issue_codes())
 
     def test_single_bar_insufficient(self) -> None:
         report = close_to_close_changes((_synthetic_obs(WINDOW_START, "100.00"),))
@@ -414,18 +434,6 @@ class DressRehearsalRefusalTests(unittest.TestCase):
         result = validate_envelope(envelope)
         self.assertFalse(result.valid)
         self.assertIn("INVALID_MARKET_TIMESTAMP", result.issue_codes())
-
-    def _session_from_obs(self, observations: tuple[Observation, ...]):
-        from tempfile import TemporaryDirectory
-
-        with TemporaryDirectory() as raw:
-            root = Path(raw)
-            (root / "declaration.json").write_text(
-                json.dumps(_declaration(), indent=2) + "\n", encoding="utf-8"
-            )
-            for index, item in enumerate(observations):
-                _write_obs(root / f"obs_{index}.json", item)
-            return run_session_from_pack(root)
 
 
 class DressRehearsalDeterminismTests(unittest.TestCase):
