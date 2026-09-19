@@ -64,6 +64,9 @@ WORKSHOP PACK PATH         FIXTURE / SYNTHETIC only
 HISTORICAL / LIVE          identity class exists; workshop admission remains refused
 VENDOR / PURCHASE / API    not authorized
 LOCKED QUESTION            ordinary close-to-close difference, one symbol, 1d
+                           Decision #1 keeps this question for the first HISTORICAL cycle
+FIRST INSTRUMENT IDENTITY  SPY / NYSE Arca (Decision #2; identity only)
+FIRST DATE RANGE           2024-01-01 through 2024-12-31 (Decision #3; range only)
 CLAIM LEVEL AVAILABLE      LEVEL 0 — MEASURED only
 IN-REPO MEASUREMENT PACK   fixtures/synthetic_one_symbol_1d/  (SYNTHETIC)
 ```
@@ -71,6 +74,16 @@ IN-REPO MEASUREMENT PACK   fixtures/synthetic_one_symbol_1d/  (SYNTHETIC)
 `admit_to_dataset()` can identity-match a HISTORICAL envelope to a HISTORICAL declaration. That is a schema test. The only operational workshop path still refuses HISTORICAL labels even when identity-valid.
 
 A JSON `authorized: true` flag is `ADMISSION_CLAIM`. A JSON `purchase_authorized: true` flag is `PURCHASE_CLAIM`. Neither is Todd authorization.
+
+## Recorded Todd decisions
+
+```text
+DECISION #1 — KEEP EXISTING LOCKED QUESTION FOR FIRST HISTORICAL CYCLE — TC
+DECISION #2 — AUTHORIZE SPY / NYSE ARCA AS THE FIRST HISTORICAL INSTRUMENT IDENTITY — TC
+DECISION #3 — AUTHORIZE 2024-01-01 THROUGH 2024-12-31 AS THE FIRST HISTORICAL DATE RANGE — TC
+```
+
+These three records specify question, instrument identity, and date range for a later first HISTORICAL cycle. They do not authorize a source, license review, extract, purchase, download, admission change, vendor client, Units 1401+, or Phase 6. Historical bytes do not move.
 
 ---
 
@@ -281,46 +294,45 @@ Those gaps are why Todd must specify the items in §2 before any source is even 
 
 # 2. Information Todd must specify before selecting a source
 
-Specify these eight items first. Do not pick a vendor in order to discover the question.
+Specify these eight items first. Do not pick a vendor in order to discover the question. Decisions #1–#3 record question, instrument identity, and date range. Items 2.4–2.8 remain unspecified.
 
 The in-repo locked question and SYNTHETIC pack (`interval=1d`, `timezone=UTC`, `adjustment_policy=UNADJUSTED`, no `max_staleness`) are workshop fixtures. They are not a HISTORICAL declaration.
 
 ## 2.1 One research question
 
-Already locked for the local workshop:
+**Decision #1 recorded:** `KEEP EXISTING LOCKED QUESTION FOR FIRST HISTORICAL CYCLE — TC`
+
+The first HISTORICAL cycle, if later separately authorized, uses the existing locked question:
 
 > In one declared daily dataset for one symbol, what are the ordinary close-to-close differences when every observation uses the same interval, timezone, and transformation version?
 
-Todd must say whether that exact question remains the question for the first HISTORICAL extract, or whether a new question will be locked first.
-
-A new question would be a new lock, not a silent edit after seeing data. Methodology: question before calculation. One primary comparison. Explicit non-goals.
+A later different question would be a new lock, not a silent edit after seeing data. Methodology: question before calculation. One primary comparison. Explicit non-goals.
 
 Out of scope unless Todd later locks a different question: prediction, entry/exit, thresholds, ranking, edge, percent returns, a second asset class.
 
+Keeping the locked question is not authorization of a source, license review, or extract.
+
 ## 2.2 One instrument / market
 
-One symbol or one declared universe identity.
+**Decision #2 recorded:** `AUTHORIZE SPY / NYSE ARCA AS THE FIRST HISTORICAL INSTRUMENT IDENTITY — TC`
 
-Must later become `declaration.universe` / `envelope.symbol_or_universe` exactly.
+Recorded identity for the first HISTORICAL cycle:
 
-Todd must name:
+- instrument: `SPY`;
+- listing market: NYSE Arca;
+- identity form: the ticker/listing pair Todd named.
 
-- the instrument (ticker or other permanent identity);
-- the listing market (for example NYSE or Nasdaq);
-- whether identity is ticker, FIGI, or another id;
-- that this is a US common stock (or another listed US equity type, if that is the question).
+If a later extract class is ever separately authorized, this identity must become `declaration.universe` / `envelope.symbol_or_universe` exactly. No second symbol is authorized.
 
-The locked question forbids a second asset class. This packet’s candidates are US stocks only because that is the asked review set, not because a symbol has been chosen.
+This is instrument-identity authorization only. It is not a source, license review, extract, purchase, or download.
 
 ## 2.3 Date range
 
-Not a current declaration field. Still required from Todd before a source can be judged.
+**Decision #3 recorded:** `AUTHORIZE 2024-01-01 THROUGH 2024-12-31 AS THE FIRST HISTORICAL DATE RANGE — TC`
 
-Name inclusive start date, inclusive end date, and whether weekends/holidays are expected to be absent.
+Recorded inclusive range for the first HISTORICAL cycle: `2024-01-01` through `2024-12-31`.
 
-Radar will not fill missing sessions. A source that silently fills them is a transformation and needs a new `transformation_version`.
-
-The range must be short enough that a later bounded extract, if ever authorized, can stay inside the locked question. A long history is not more honest if the question is ordinary close-to-close difference on one symbol.
+Radar will not fill missing sessions. A source that silently fills them is a transformation and needs a new `transformation_version`. Date-range authorization is not an extract. Historical bytes do not move.
 
 ## 2.4 Cadence / interval
 
@@ -560,21 +572,22 @@ These were considered and **not** added as the 3–5 review set. Omission is not
 5. No Units 1401+. No Phase 6. No method. No paper. No Product B.
 6. PR #37 PASS does not earn DATA CORRECTNESS and does not open Horizon 2.
 7. Recording later gates in §3 is not authorization of an extract, a measurement, or a revision.
+8. Recording Decisions #1–#3 is not authorization of a source, license review, extract, or historical bytes.
 
 ---
 
 # NEXT DECISION REQUIRED FROM TODD
 
-Smallest decisions, in this order. Stop after any `PAUSE` or `REJECT`. Do not skip ahead to a vendor because a later item looks easy.
+Decisions #1–#3 are recorded. Remaining decisions stay in this order. Stop after any `PAUSE` or `REJECT`. Do not skip ahead to a vendor because a later item looks easy. Naming SPY / NYSE Arca and 2024-01-01 through 2024-12-31 does not authorize a source, license review, or extract.
 
-1. **Keep or re-lock the research question.**  
-   Confirm that the first HISTORICAL extract, if ever authorized, still answers the existing locked ordinary close-to-close question — or write a new locked question first.
+1. **Keep or re-lock the research question.** — **RECORDED (Decision #1).**  
+   Existing locked ordinary close-to-close question kept for the first HISTORICAL cycle.
 
-2. **Name one instrument and listing market.**  
-   One US stock identity. No second symbol to “see what happens.”
+2. **Name one instrument and listing market.** — **RECORDED (Decision #2).**  
+   `SPY` / NYSE Arca. No second symbol.
 
-3. **Name the date range.**  
-   Inclusive start, inclusive end. Short enough for the locked question.
+3. **Name the date range.** — **RECORDED (Decision #3).**  
+   Inclusive `2024-01-01` through `2024-12-31`.
 
 4. **Confirm interval and evaluation cadence.**  
    Expected: bar `1d`, evaluation not finer than `1d`.
@@ -592,7 +605,7 @@ Smallest decisions, in this order. Stop after any `PAUSE` or `REJECT`. Do not sk
    Close-to-close difference on the same ruler. Not percent. Not a threshold. Not an edge.
 
 9. **Only after 1–8: say whether any candidate in §4 may be reviewed for license text.**  
-   Review means read current terms. It does not mean buy, download, admit, or extract. If Todd wants a candidate that is not in §4, name it; do not treat this list as closed because it is short.
+   Review means read current terms. It does not mean buy, download, admit, or extract. If Todd wants a candidate that is not in §4, name it; do not treat this list as closed because it is short. Decisions #1–#3 do not authorize this review.
 
 10. **Authorization remains a separate sentence.**  
     After 1–9, the next possible record is still one of:
@@ -606,7 +619,7 @@ Smallest decisions, in this order. Stop after any `PAUSE` or `REJECT`. Do not sk
 
     Source review and license review do not authorize an extract. A later extract-class change, if Todd ever writes one, is a new sentence and must include the §3.2 hard bounds. That sentence is not written here.
 
-Until Todd records those decisions, Radar stays on the local FIXTURE/SYNTHETIC workshop. The bounded file remains sufficient. A JSON flag cannot close this list.
+Until Todd records the remaining decisions, Radar stays on the local FIXTURE/SYNTHETIC workshop. The bounded file remains sufficient. A JSON flag cannot close this list.
 
 ---
 
@@ -620,6 +633,10 @@ DATASET ADMISSION CHANGED       NO
 UNITS 1401+                     NOT CREATED
 PHASE 6                         NOT OPENED
 VENDOR CLIENT                   NONE
+DECISION #1 QUESTION            RECORDED — KEEP EXISTING LOCKED QUESTION
+DECISION #2 INSTRUMENT          RECORDED — SPY / NYSE ARCA
+DECISION #3 DATE RANGE          RECORDED — 2024-01-01 THROUGH 2024-12-31
+LICENSE REVIEW AUTHORIZED       NO
 HISTORICAL SOURCE AUTHORIZED    NO
 HISTORICAL EXTRACT AUTHORIZED   NO
 LATER GATES                     RECORDED / NOT IMPLEMENTED
