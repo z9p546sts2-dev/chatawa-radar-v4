@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import dataclass
+from datetime import date
 from json import JSONDecodeError, loads
 
 from radar_v4.dataset import DatasetDeclaration
@@ -84,6 +85,54 @@ def intake_declaration_json(text: str) -> DeclarationIntakeReport:
             )
         )
 
+    expected_session_dates: tuple[str, ...] = ()
+    raw_dates = raw.get("expected_session_dates")
+    if raw_dates is not None:
+        if not isinstance(raw_dates, list):
+            issues.append(
+                ValidationIssue(
+                    "INVALID_EXPECTED_SESSION_DATES",
+                    "expected_session_dates must be a JSON array of ISO dates",
+                    "expected_session_dates",
+                )
+            )
+        else:
+            parsed_dates: list[str] = []
+            seen_dates: set[str] = set()
+            for value in raw_dates:
+                if not isinstance(value, str):
+                    issues.append(
+                        ValidationIssue(
+                            "INVALID_EXPECTED_SESSION_DATE",
+                            "each expected session date must be an ISO date string",
+                            "expected_session_dates",
+                        )
+                    )
+                    continue
+                try:
+                    canonical = date.fromisoformat(value).isoformat()
+                except ValueError:
+                    issues.append(
+                        ValidationIssue(
+                            "INVALID_EXPECTED_SESSION_DATE",
+                            f"{value!r} is not a valid ISO date",
+                            "expected_session_dates",
+                        )
+                    )
+                    continue
+                if canonical in seen_dates:
+                    issues.append(
+                        ValidationIssue(
+                            "DUPLICATE_EXPECTED_SESSION_DATE",
+                            f"{canonical!r} appears more than once",
+                            "expected_session_dates",
+                        )
+                    )
+                    continue
+                seen_dates.add(canonical)
+                parsed_dates.append(canonical)
+            expected_session_dates = tuple(parsed_dates)
+
     issues.sort(key=lambda item: (item.code, item.field or "", item.reason))
     if issues:
         return DeclarationIntakeReport(
@@ -105,6 +154,7 @@ def intake_declaration_json(text: str) -> DeclarationIntakeReport:
         locked_question=values["locked_question"],
         primary_metric=values["primary_metric"],
         max_staleness=None if staleness is None else str(staleness),
+        expected_session_dates=expected_session_dates,
     )
     return DeclarationIntakeReport(
         declaration=declaration,
