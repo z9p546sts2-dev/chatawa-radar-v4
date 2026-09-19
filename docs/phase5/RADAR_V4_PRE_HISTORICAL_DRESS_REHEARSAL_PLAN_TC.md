@@ -69,7 +69,8 @@ The existing pack `fixtures/synthetic_one_symbol_1d/` stays as-is (`UTC`, `SYN:A
 | Path | Role | Created now? |
 |---|---|---|
 | `docs/phase5/RADAR_V4_PRE_HISTORICAL_DRESS_REHEARSAL_PLAN_TC.md` | this plan | yes |
-| `fixtures/synthetic_dress_rehearsal_1d/README.md` | SYNTHETIC label; not market evidence | yes — authorized |
+| `fixtures/synthetic_dress_rehearsal_1d/README.md` | SYNTHETIC / `PRE_HISTORICAL_DRESS_REHEARSAL` label; not market evidence | yes — authorized |
+| `fixtures/synthetic_dress_rehearsal_1d/IDENTITY.txt` | durable `SYNTHETIC` + `PRE_HISTORICAL_DRESS_REHEARSAL` artifact identity | yes — authorized |
 | `fixtures/synthetic_dress_rehearsal_1d/declaration.json` | one-security `1d` / `America/New_York` / `UNADJUSTED` / `max_staleness: NONE` | yes — authorized |
 | `fixtures/synthetic_dress_rehearsal_1d/obs_2024-01-02.json` | first golden bar | yes — authorized |
 | `fixtures/synthetic_dress_rehearsal_1d/obs_2024-01-03.json` | second golden bar | yes — authorized |
@@ -216,12 +217,14 @@ Pass language for F: `CALENDAR_GAP_STILL_OPEN`. Failure would be a new undocumen
 ## Claim class
 
 ```text
-MAXIMUM HONEST PASS      LOCAL FIXTURE/SYNTHETIC SOFTWARE DRESS REHEARSAL PASSED
-HISTORICAL DATA CORRECTNESS   not earned
-METHOD VALIDITY               not defined
-USEFULNESS / EDGE             not shown
+MAXIMUM HONEST PASS      LOCAL FIXTURE/SYNTHETIC DRESS REHEARSAL PASSED WITH KNOWN GAPS
+HISTORICAL DATA CORRECTNESS   NOT EARNED
+METHOD VALIDITY               NOT DEFINED
+USEFULNESS / EDGE             NOT SHOWN
 HISTORICAL EVIDENCE           still false
 ```
+
+This is not historical readiness, source validation, market-data correctness, predictive validity, or edge.
 
 ---
 
@@ -273,12 +276,14 @@ Known gaps still open (category F proved them; no holiday table was added):
 `radar_v4/` production modules were not edited. `PHASE5_HIGHEST_UNIT` was not moved. Units 1401+ were not created.
 
 ```text
-MAXIMUM HONEST PASS      LOCAL FIXTURE/SYNTHETIC SOFTWARE DRESS REHEARSAL PASSED
-HISTORICAL DATA CORRECTNESS   not earned
-METHOD VALIDITY               not defined
-USEFULNESS / EDGE             not shown
+MAXIMUM HONEST PASS      LOCAL FIXTURE/SYNTHETIC DRESS REHEARSAL PASSED WITH KNOWN GAPS
+HISTORICAL DATA CORRECTNESS   NOT EARNED
+METHOD VALIDITY               NOT DEFINED
+USEFULNESS / EDGE             NOT SHOWN
 HISTORICAL EVIDENCE           still false
 ```
+
+This is not historical readiness, source validation, market-data correctness, predictive validity, or edge.
 
 ---
 
@@ -286,10 +291,11 @@ HISTORICAL EVIDENCE           still false
 
 ```text
 PLAN                            AUTHORIZED-TC AND IMPLEMENTED
-DRESS REHEARSAL TESTS           24/24 PASSED
-FULL UNIT SUITE                 341/341 PASSED
 CALENDAR_GAP_STILL_OPEN         YES
-CLAIM                           LOCAL FIXTURE/SYNTHETIC SOFTWARE DRESS REHEARSAL PASSED
+DATE_WINDOW_GAP_STILL_OPEN      YES
+SESSION_DATE_COLLISION_GAP_STILL_OPEN  YES
+DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN   YES
+CLAIM                           LOCAL FIXTURE/SYNTHETIC DRESS REHEARSAL PASSED WITH KNOWN GAPS
 HISTORICAL DATA CORRECTNESS     NOT EARNED
 METHOD VALIDITY                 NOT DEFINED
 USEFULNESS / EDGE               NOT SHOWN

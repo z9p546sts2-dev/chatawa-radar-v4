@@ -18,12 +18,18 @@ from radar_v4.baseline import close_to_close_changes
 from radar_v4.dataset import DatasetDeclaration
 from radar_v4.dataset_pack import load_dataset_pack
 from radar_v4.evidence import EvidenceEnvelope, ProvenanceClass
+from radar_v4.horizon_bind import horizon_bind
+from radar_v4.horizon_lock import horizon_lock
 from radar_v4.local_session import run_session_from_pack
 from radar_v4.observation import Observation, ObservationPayload
 from radar_v4.observation_json import intake_observation_json
+from radar_v4.observation_validation import validate_observation
 from radar_v4.pack_describe import pack_readiness
+from radar_v4.record_check import describe_adjustment_policy
+from radar_v4.ruler import declaration_ruler, ruler_checksum
 from radar_v4.series import inspect_series
 from radar_v4.session import run_dataset_session
+from radar_v4.session_report import serialize_session_report
 from radar_v4.validation import validate_envelope
 from radar_v4.workshop_check import check_pack_determinism
 
@@ -37,6 +43,10 @@ WINDOW_END = date(2024, 12, 31)
 # 2024-07-04 is a Thursday weekday and is included by SYNTHETIC_WEEKDAY_SPAN.
 HOLIDAY_SHAPED_WEEKDAY = date(2024, 7, 4)
 CALENDAR_GAP_STILL_OPEN = "CALENDAR_GAP_STILL_OPEN"
+DATE_WINDOW_GAP_STILL_OPEN = "DATE_WINDOW_GAP_STILL_OPEN"
+SESSION_DATE_COLLISION_GAP_STILL_OPEN = "SESSION_DATE_COLLISION_GAP_STILL_OPEN"
+DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN = "DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN"
+DISPOSITION = "LOCAL FIXTURE/SYNTHETIC DRESS REHEARSAL PASSED WITH KNOWN GAPS"
 CALENDAR_CODE_FRAGMENTS = (
     "CALENDAR",
     "HOLIDAY",
@@ -399,6 +409,7 @@ class DressRehearsalRefusalTests(unittest.TestCase):
     def test_duplicate_session_timestamp_refused(self) -> None:
         first = _synthetic_obs(WINDOW_START, "100.00")
         second = _synthetic_obs(WINDOW_START, "100.25")
+        self.assertNotEqual(first.payload.close, second.payload.close)
         series = inspect_series((first, second))
         self.assertFalse(series.valid)
         self.assertIn("DUPLICATE_MARKET_TIMESTAMP", series.issue_codes())
@@ -412,6 +423,8 @@ class DressRehearsalRefusalTests(unittest.TestCase):
         self.assertFalse(result.series.valid)
         self.assertIsNone(result.baseline)
         self.assertIn("DUPLICATE_MARKET_TIMESTAMP", result.series.issue_codes())
+        # Conflicting closes are not averaged or repaired into a MEASURED row.
+        self.assertNotEqual(first.payload.close, second.payload.close)
 
     def test_single_bar_insufficient(self) -> None:
         report = close_to_close_changes((_synthetic_obs(WINDOW_START, "100.00"),))
@@ -567,6 +580,300 @@ class DressRehearsalCalendarGapTests(unittest.TestCase):
         ]
         self.assertIn(HOLIDAY_SHAPED_WEEKDAY, stamps)
         self.assertEqual(CALENDAR_GAP_STILL_OPEN, "CALENDAR_GAP_STILL_OPEN")
+
+
+class DressRehearsalRedTeamTests(unittest.TestCase):
+    def test_authoritative_market_timestamp_ordering(self) -> None:
+        reversed_bars = (
+            _synthetic_obs(date(2024, 1, 4), "99.75"),
+            _synthetic_obs(date(2024, 1, 2), "100.00"),
+            _synthetic_obs(date(2024, 1, 3), "100.25"),
+        )
+        series = inspect_series(reversed_bars)
+        stamps = [
+            item.envelope.market_timestamp
+            for item in series.ordered
+            if item.envelope.market_timestamp is not None
+        ]
+        self.assertEqual(stamps, sorted(stamps))
+        report = close_to_close_changes(reversed_bars)
+        self.assertEqual(report.status, "MEASURED")
+        self.assertEqual(report.changes, ("0.25", "-0.50"))
+
+    def test_order_sensitive_adversarial_sorting(self) -> None:
+        from tempfile import TemporaryDirectory
+
+        bars = (
+            _synthetic_obs(date(2024, 1, 4), "99.75"),
+            _synthetic_obs(date(2024, 1, 2), "100.00"),
+            _synthetic_obs(date(2024, 1, 3), "100.25"),
+        )
+        by_close = tuple(sorted(bars, key=lambda item: Decimal(item.payload.close), reverse=True))
+        self.assertEqual(
+            [item.payload.close for item in by_close],
+            ["100.25", "100.00", "99.75"],
+        )
+        report = close_to_close_changes(by_close)
+        self.assertEqual(report.changes, ("0.25", "-0.50"))
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / "declaration.json").write_text(
+                json.dumps(_declaration(), indent=2) + "\n", encoding="utf-8"
+            )
+            _write_obs(root / "a_late.json", bars[0])
+            _write_obs(root / "z_early.json", bars[1])
+            _write_obs(root / "m_mid.json", bars[2])
+            result = run_session_from_pack(root)
+        assert result.session is not None
+        assert result.session.baseline is not None
+        self.assertEqual(result.session.baseline.changes, ("0.25", "-0.50"))
+
+    def test_duplicate_timestamp_with_conflicting_closes(self) -> None:
+        first = _synthetic_obs(WINDOW_START, "100.00")
+        second = _synthetic_obs(WINDOW_START, "100.25")
+        self.assertEqual(first.envelope.market_timestamp, second.envelope.market_timestamp)
+        self.assertNotEqual(first.payload.close, second.payload.close)
+        result = run_dataset_session(
+            _declaration_object(),
+            (first.envelope, second.envelope),
+            (first, second),
+        )
+        self.assertIn("DUPLICATE_MARKET_TIMESTAMP", result.series.issue_codes())
+        self.assertIsNone(result.baseline)
+        self.assertNotIn("100.125", "".join((first.payload.close, second.payload.close)))
+
+    def test_same_session_date_different_timestamp_gap(self) -> None:
+        # Decision #4: one completed session, one bar. Software keys uniqueness
+        # on exact market_timestamp, not session-date.
+        first = _synthetic_obs(WINDOW_START, "100.00")
+        second = _synthetic_obs(
+            WINDOW_START,
+            "100.25",
+            market=_ny_close(WINDOW_START, 16).replace(minute=1),
+            retrieval=_ny_close(WINDOW_START, 17).replace(minute=1),
+        )
+        self.assertEqual(first.envelope.market_timestamp.date(), second.envelope.market_timestamp.date())
+        self.assertNotEqual(first.envelope.market_timestamp, second.envelope.market_timestamp)
+        series = inspect_series((first, second))
+        self.assertTrue(series.valid)
+        self.assertNotIn("DUPLICATE_MARKET_TIMESTAMP", series.issue_codes())
+        report = close_to_close_changes((first, second))
+        self.assertEqual(report.status, "MEASURED")
+        self.assertEqual(report.change_count, 1)
+        self.assertEqual(SESSION_DATE_COLLISION_GAP_STILL_OPEN, "SESSION_DATE_COLLISION_GAP_STILL_OPEN")
+
+    def test_decimal_adversary_cases(self) -> None:
+        exact = close_to_close_changes(
+            (
+                _synthetic_obs(date(2024, 1, 2), "100.10"),
+                _synthetic_obs(date(2024, 1, 3), "100.20"),
+                _synthetic_obs(date(2024, 1, 4), "100.30"),
+            )
+        )
+        self.assertEqual(exact.status, "MEASURED")
+        self.assertEqual(exact.changes, ("0.10", "0.10"))
+        self.assertEqual(exact.changes[0], str(Decimal("100.20") - Decimal("100.10")))
+        malformed = Observation.create(
+            _synthetic_obs(WINDOW_START, "100.00").envelope,
+            ObservationPayload(close="100.2.5"),
+        )
+        refused = validate_observation(malformed)
+        self.assertFalse(refused.valid)
+        self.assertIn("INVALID_CLOSE", refused.issue_codes())
+        baseline = close_to_close_changes(
+            (_synthetic_obs(date(2024, 1, 2), "100.00"), malformed)
+        )
+        self.assertEqual(baseline.status, "INVALID_COMPARISON")
+        self.assertEqual(baseline.claim_level, "NONE")
+
+    def test_decimal_special_values_are_not_refused(self) -> None:
+        # Production parse_decimal accepts NaN/Infinity. Do not fix radar_v4 here.
+        nan_item = Observation.create(
+            _synthetic_obs(WINDOW_START, "100.00").envelope,
+            ObservationPayload(close="NaN"),
+        )
+        later = _synthetic_obs(date(2024, 1, 3), "100.00")
+        self.assertTrue(validate_observation(nan_item).valid)
+        report = close_to_close_changes((nan_item, later))
+        self.assertEqual(report.status, "MEASURED")
+        self.assertEqual(report.changes, ("NaN",))
+        self.assertEqual(DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN, "DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN")
+
+    def test_durable_synthetic_rehearsal_artifact_identity(self) -> None:
+        identity = (GOLDEN / "IDENTITY.txt").read_text(encoding="utf-8")
+        readme = (GOLDEN / "README.md").read_text(encoding="utf-8")
+        declaration = json.loads((GOLDEN / "declaration.json").read_text(encoding="utf-8"))
+        self.assertIn("ARTIFACT_KIND=PRE_HISTORICAL_DRESS_REHEARSAL", identity)
+        self.assertIn("PROVENANCE_CLASS=SYNTHETIC", identity)
+        self.assertIn("PRE_HISTORICAL_DRESS_REHEARSAL", readme)
+        self.assertEqual(declaration["provenance_class"], "SYNTHETIC")
+        self.assertEqual(declaration["universe"], "SYN:ONE")
+        self.assertEqual(declaration["dataset_id"], "synthetic.dress-rehearsal.1d")
+        self.assertNotEqual(declaration["universe"], "SPY")
+        self.assertNotEqual(declaration["provenance_class"], "HISTORICAL")
+        report = load_dataset_pack(GOLDEN)
+        assert report.declaration is not None
+        self.assertEqual(report.declaration.provenance_class, "SYNTHETIC")
+        self.assertEqual(report.declaration.universe, "SYN:ONE")
+
+    def test_before_after_date_window_probes(self) -> None:
+        # Decision #3 names 2024-01-01..2024-12-31. Date range is not a ruler field.
+        before = _synthetic_obs(date(2023, 12, 29), "99.00")
+        bound = _synthetic_obs(date(2024, 1, 1), "99.50")
+        after = _synthetic_obs(date(2025, 1, 2), "101.00")
+        from tempfile import TemporaryDirectory
+
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            (root / "declaration.json").write_text(
+                json.dumps(_declaration(), indent=2) + "\n", encoding="utf-8"
+            )
+            _write_obs(root / "obs_before.json", before)
+            _write_obs(root / "obs_bound.json", bound)
+            _write_obs(root / "obs_after.json", after)
+            report = load_dataset_pack(root)
+            result = run_session_from_pack(root)
+        self.assertEqual(report.observation_intake.accepted_count(), 3)
+        assert result.session is not None
+        self.assertTrue(result.session.series.valid)
+        assert result.session.baseline is not None
+        self.assertEqual(result.session.baseline.status, "MEASURED")
+        stamps = {
+            item.envelope.market_timestamp.date()
+            for item in result.session.observations
+            if item.envelope.market_timestamp is not None
+        }
+        self.assertEqual(stamps, {date(2023, 12, 29), date(2024, 1, 1), date(2025, 1, 2)})
+        self.assertEqual(DATE_WINDOW_GAP_STILL_OPEN, "DATE_WINDOW_GAP_STILL_OPEN")
+
+    def test_lookahead_bar_rehearsal(self) -> None:
+        from tempfile import TemporaryDirectory
+
+        last = "2024-01-04T16:00:00.000000-05:00"
+        early = "2024-01-03T16:00:00.000000-05:00"
+        with TemporaryDirectory() as raw:
+            root = Path(raw)
+            honest = root / "honest.json"
+            early_path = root / "early.json"
+            honest.write_text(
+                json.dumps(
+                    {
+                        "as_of": last,
+                        "document_kind": "radar_v4.horizon",
+                        "include_through": last,
+                    },
+                    separators=(",", ":"),
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            early_path.write_text(
+                json.dumps(
+                    {
+                        "as_of": early,
+                        "document_kind": "radar_v4.horizon",
+                        "include_through": early,
+                    },
+                    separators=(",", ":"),
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            self.assertTrue(horizon_lock(honest).valid)
+            self.assertTrue(horizon_bind(honest, GOLDEN).valid)
+            refused = horizon_bind(early_path, GOLDEN)
+        self.assertFalse(refused.valid)
+        self.assertEqual(refused.error_code, "LOOKAHEAD_BAR")
+
+    def test_deterministic_canonical_measurement_output(self) -> None:
+        first = run_session_from_pack(GOLDEN)
+        second = run_session_from_pack(GOLDEN)
+        assert first.session is not None
+        assert second.session is not None
+        left = serialize_session_report(first.session)
+        right = serialize_session_report(second.session)
+        self.assertEqual(left, right)
+        parsed = json.loads(left)
+        self.assertEqual(parsed["baseline"]["changes"], ["0.25", "-0.50"])
+        self.assertEqual(parsed["baseline"]["status"], "MEASURED")
+        self.assertEqual(parsed["snapshot_checksum"], first.session.snapshot.integrity_checksum())
+
+    def test_new_measurement_artifact_identity_after_mutation(self) -> None:
+        original = run_session_from_pack(GOLDEN)
+        assert original.session is not None
+        left_report = serialize_session_report(original.session)
+        from tempfile import TemporaryDirectory
+
+        with TemporaryDirectory() as raw:
+            copy = Path(raw) / "pack"
+            shutil.copytree(GOLDEN, copy)
+            target = copy / "obs_2024-01-03.json"
+            parsed = intake_observation_json(target.read_text(encoding="utf-8"))
+            old = parsed.accepted[0]
+            _write_obs(
+                target,
+                Observation.create(old.envelope, ObservationPayload(close="100.26")),
+            )
+            (copy / "manifest.json").unlink(missing_ok=True)
+            changed = run_session_from_pack(copy)
+        assert changed.session is not None
+        right_report = serialize_session_report(changed.session)
+        left = json.loads(left_report)
+        right = json.loads(right_report)
+        self.assertNotEqual(left["snapshot_checksum"], right["snapshot_checksum"])
+        self.assertEqual(left["ruler_checksum"], right["ruler_checksum"])
+        self.assertEqual(left["dataset_id"], right["dataset_id"])
+        self.assertEqual(right["baseline"]["changes"], ["0.26", "-0.51"])
+
+    def test_preserved_original_measurement_after_mutation(self) -> None:
+        before = run_session_from_pack(GOLDEN)
+        from tempfile import TemporaryDirectory
+
+        with TemporaryDirectory() as raw:
+            copy = Path(raw) / "pack"
+            shutil.copytree(GOLDEN, copy)
+            target = copy / "obs_2024-01-03.json"
+            parsed = intake_observation_json(target.read_text(encoding="utf-8"))
+            old = parsed.accepted[0]
+            _write_obs(
+                target,
+                Observation.create(old.envelope, ObservationPayload(close="100.26")),
+            )
+            (copy / "manifest.json").unlink(missing_ok=True)
+            mutated = run_session_from_pack(copy)
+        after = run_session_from_pack(GOLDEN)
+        assert before.session is not None
+        assert after.session is not None
+        assert mutated.session is not None
+        assert before.session.baseline is not None
+        assert after.session.baseline is not None
+        self.assertEqual(
+            before.session.snapshot.integrity_checksum(),
+            after.session.snapshot.integrity_checksum(),
+        )
+        self.assertEqual(before.session.baseline.changes, ("0.25", "-0.50"))
+        self.assertEqual(after.session.baseline.changes, ("0.25", "-0.50"))
+        self.assertEqual(
+            serialize_session_report(before.session),
+            serialize_session_report(after.session),
+        )
+        self.assertNotEqual(
+            before.session.snapshot.integrity_checksum(),
+            mutated.session.snapshot.integrity_checksum(),
+        )
+
+    def test_adjustment_policy_ruler_consistency(self) -> None:
+        report = load_dataset_pack(GOLDEN)
+        assert report.declaration is not None
+        ruler = declaration_ruler(report.declaration)
+        self.assertEqual(ruler["adjustment_policy"], "UNADJUSTED")
+        echoed = describe_adjustment_policy(GOLDEN)
+        self.assertTrue(echoed.valid)
+        self.assertEqual(echoed.details["adjustment_policy"], "UNADJUSTED")
+        self.assertEqual(report.declaration.adjustment_policy, "UNADJUSTED")
+        altered = _declaration_object(adjustment_policy="SPLIT_ADJUSTED")
+        self.assertNotEqual(ruler_checksum(report.declaration), ruler_checksum(altered))
+        self.assertEqual(DISPOSITION, "LOCAL FIXTURE/SYNTHETIC DRESS REHEARSAL PASSED WITH KNOWN GAPS")
 
 
 if __name__ == "__main__":
