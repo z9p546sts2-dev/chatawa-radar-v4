@@ -675,9 +675,8 @@ class DressRehearsalRedTeamTests(unittest.TestCase):
         self.assertIsNone(result.baseline)
         self.assertNotIn("100.125", "".join((first.payload.close, second.payload.close)))
 
-    def test_same_session_date_different_timestamp_gap(self) -> None:
-        # Decision #4: one completed session, one bar. Software keys uniqueness
-        # on exact market_timestamp, not session-date.
+    def test_same_session_date_different_timestamp_is_refused(self) -> None:
+        # Authorized pre-extract hardening: one completed 1d session, one bar.
         first = _synthetic_obs(WINDOW_START, "100.00")
         second = _synthetic_obs(
             WINDOW_START,
@@ -688,12 +687,14 @@ class DressRehearsalRedTeamTests(unittest.TestCase):
         self.assertEqual(first.envelope.market_timestamp.date(), second.envelope.market_timestamp.date())
         self.assertNotEqual(first.envelope.market_timestamp, second.envelope.market_timestamp)
         series = inspect_series((first, second))
-        self.assertTrue(series.valid)
-        self.assertNotIn("DUPLICATE_MARKET_TIMESTAMP", series.issue_codes())
-        report = close_to_close_changes((first, second))
-        self.assertEqual(report.status, "MEASURED")
-        self.assertEqual(report.change_count, 1)
-        self.assertEqual(SESSION_DATE_COLLISION_GAP_STILL_OPEN, "SESSION_DATE_COLLISION_GAP_STILL_OPEN")
+        self.assertFalse(series.valid)
+        self.assertIn("SESSION_DATE_COLLISION", series.issue_codes())
+        result = run_dataset_session(
+            _declaration_object(),
+            (first.envelope, second.envelope),
+            (first, second),
+        )
+        self.assertIsNone(result.baseline)
 
     def test_decimal_adversary_cases(self) -> None:
         exact = close_to_close_changes(
@@ -719,18 +720,21 @@ class DressRehearsalRedTeamTests(unittest.TestCase):
         self.assertEqual(baseline.status, "INVALID_COMPARISON")
         self.assertEqual(baseline.claim_level, "NONE")
 
-    def test_decimal_special_values_are_not_refused(self) -> None:
-        # Production parse_decimal accepts NaN. Do not fix radar_v4 here.
-        nan_item = Observation.create(
-            _synthetic_obs(WINDOW_START, "100.00").envelope,
-            ObservationPayload(close="NaN"),
-        )
+    def test_decimal_special_values_are_refused(self) -> None:
+        # Authorized pre-extract hardening: non-finite closes are invalid.
         later = _synthetic_obs(date(2024, 1, 3), "100.00")
-        self.assertTrue(validate_observation(nan_item).valid)
-        report = close_to_close_changes((nan_item, later))
-        self.assertEqual(report.status, "MEASURED")
-        self.assertEqual(report.changes, ("NaN",))
-        self.assertEqual(DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN, "DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN")
+        for special in ("NaN", "Infinity", "-Infinity"):
+            with self.subTest(close=special):
+                item = Observation.create(
+                    _synthetic_obs(WINDOW_START, "100.00").envelope,
+                    ObservationPayload(close=special),
+                )
+                validation = validate_observation(item)
+                self.assertFalse(validation.valid)
+                self.assertIn("NON_FINITE_CLOSE", validation.issue_codes())
+                report = close_to_close_changes((item, later))
+                self.assertEqual(report.status, "INVALID_COMPARISON")
+                self.assertEqual(report.claim_level, "NONE")
 
     def test_durable_synthetic_rehearsal_artifact_identity(self) -> None:
         identity = (GOLDEN / "IDENTITY.txt").read_text(encoding="utf-8")
