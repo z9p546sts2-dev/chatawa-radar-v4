@@ -96,7 +96,7 @@ Read-only first-HISTORICAL-source decision packet: `docs/phase5/RADAR_V4_HISTORI
 
 SYNTHETIC dress-rehearsal plan and results: `docs/phase5/RADAR_V4_PRE_HISTORICAL_DRESS_REHEARSAL_PLAN_TC.md`. Disposition: `LOCAL FIXTURE/SYNTHETIC DRESS REHEARSAL PASSED WITH KNOWN GAPS`. Not HISTORICAL. No vendor dependency.
 
-Temporary Twelve Data source-fit review: `docs/phase5/RADAR_V4_TWELVE_DATA_TEMPORARY_SOURCE_FIT_TC.md`. Not a source, license, or extract. No download.
+Temporary Twelve Data source-fit review: `docs/phase5/RADAR_V4_TWELVE_DATA_TEMPORARY_SOURCE_FIT_TC.md`. Proposed first real-data cycle is 30 completed SPY sessions for admission/measurement validation only. Not a source, license, or extract. No download.
 
 ## Still forbidden
 
