@@ -138,13 +138,13 @@ format               JSON
 previous_close       false
 prepost              false
 timezone             exchange-local semantics for 1day
-mic_code             ARCX if supported by the chosen request shape
+mic_code             ARCX REQUIRED — if the request shape cannot constrain ARCX, STOP before any historical-series call
 purpose              admission / measurement validation only
 ```
 
 No intraday request is authorized by this packet.
 
-Daily provider timestamps must be interpreted as exchange-local session dates, not as required 16:00 close-clock timestamps.
+Daily provider timestamps must be interpreted as exchange-local session dates, not as required 16:00 close-clock timestamps. ARCX is a hard identity constraint for this cycle: if the chosen request shape cannot constrain ARCX, or if returned metadata cannot verify ARCX consistently with the frozen identity, STOP. Do not silently widen to another SPY-labeled listing or venue.
 
 ---
 
@@ -319,6 +319,8 @@ Permitted public-repo artifacts are limited to non-price governance material, co
 
 The actual vendor response, if later authorized, must remain in a private local location outside the public repository.
 
+Mechanical safeguards now back this policy: `.gitignore` excludes designated vendor-data and credential paths, and `radar_v4.public_repo_guard.scan_public_repo(...)` is exercised by `tests/test_public_repo_guard.py` to fail on forbidden vendor-data locations, credential-like filenames, vendor-data-shaped CSV/JSON names, or obvious embedded secret assignments. These are defense-in-depth controls, not permission to store real vendor data inside an ignored directory; real vendor bytes remain outside the repository root.
+
 Repository privacy may be changed separately by Todd, but this packet does not depend on a privacy change so long as no vendor Data enters the public repository.
 
 ---
@@ -413,7 +415,7 @@ Stop before measurement if any of the following occurs:
 - source identity unresolved;
 - returned symbol/listing identity inconsistent with frozen SPY identity;
 - unexpected session date appears;
-- fewer than all 30 expected session dates are admitted;
+- fewer than all 30 expected session dates are admitted or the actual admitted session-date set differs from the frozen 30-date manifest;
 - more than one distinct 1day timestamp resolves to the same session date;
 - duplicate exact timestamp is present;
 - close is NaN / Infinity / -Infinity;
@@ -478,7 +480,7 @@ No source or extract is authorized merely because this packet exists.
 ## 17. Current state
 
 ```text
-PRE-EXTRACT TEST DESIGN                CLOSED
+PRE-EXTRACT TEST DESIGN                COMPLETED FOR CURRENT BOUNDED SCOPE
 MINIMUM PRE-EXTRACT HARDENING          BANKED — PASS WITH CAVEAT
 BANKED SHA                             6662e28e15942894eb6bf3fb9476aecd6877c4ff
 FULL SUITE AT BANKED SHA               370 / 370
@@ -490,7 +492,7 @@ ACCOUNT / API KEY / PURCHASE           NOT AUTHORIZED
 HISTORICAL EXTRACT                     NOT AUTHORIZED
 MARKET BYTES                           NONE
 UNITS 1401+                            NOT AUTHORIZED
-PHASE 6                                CLOSED
+PHASE 6                                OUT OF SCOPE — NOT OPENED
 ```
 
 **Research first. Evidence before machinery. Inventory before ingestion. Learning and Earning It. Stay on course. No drift.**
