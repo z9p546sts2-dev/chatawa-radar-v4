@@ -98,7 +98,7 @@ DECISION #7 — AUTHORIZE MAX_STALENESS = NONE FOR FIRST FROZEN HISTORICAL CYCLE
 DECISION #8 — CONFIRM EXISTING ORDINARY CLOSE-TO-CLOSE BASELINE FOR FIRST HISTORICAL CYCLE — TC
 ```
 
-Decisions #1–#8 specify the first HISTORICAL cycle’s question, instrument identity, date range, cadence, timezone convention, adjustment policy, staleness, and ordinary baseline. They do not authorize a source, license review, extract, purchase, download, admission change, vendor client, Units 1401+, Phase 6, paper trading, or live trading. Historical bytes do not move.
+Decisions #1–#8 specify the first HISTORICAL cycle’s question, instrument identity, date range, cadence, timezone convention, adjustment policy, staleness, and ordinary baseline. Decision #2 was later amended with durable SPY security identifiers. These records do not authorize a source, license review, extract, purchase, download, admission change, vendor client, Units 1401+, Phase 6, paper trading, or live trading. Historical bytes do not move.
 
 ---
 
