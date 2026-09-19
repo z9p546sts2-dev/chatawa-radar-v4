@@ -7,13 +7,14 @@ AUTHORITY — Todd C. only
 RECORD TYPE — MINIMUM EXACT EXTRACT PACKET
 DATE — 2026-09-19
 STATUS — DRAFTED / NOT AUTHORIZED FOR EXTRACT
-SOURCE CANDIDATE — Twelve Data (TEMPORARY only)
+SOURCE — Twelve Data (TEMPORARY only; Todd-authorized for this cycle)
 BANKED HARDENING SHA — 6662e28e15942894eb6bf3fb9476aecd6877c4ff
+BANKED PRE-EXTRACT STATE SHA — 7bef28443ec3ab2ab7087a7883c72143197a4f03
 APPROVED HISTORICAL MEASUREMENT ENTRY POINT — run_dataset_session(...)
 CLAIM CEILING — LEVEL 0 — MEASURED
 ```
 
-This packet freezes the exact bounds and controls for a proposed first real-data learning cycle. It does **not** authorize Twelve Data as the source, an account, API key, purchase, API call, historical extract, market bytes, vendor client, Units 1401+, Phase 6, prediction, signals, edge, paper trading, or live trading.
+This packet freezes the exact bounds and controls for a proposed first real-data learning cycle. Todd separately authorized Twelve Data as the **temporary source only** for this one 30-session SPY cycle on 2026-09-19. That source authorization does **not** authorize an account, API key, purchase, API call, historical extract, market bytes, vendor client, Units 1401+, Phase 6, prediction, signals, edge, paper trading, or live trading.
 
 **Tools verify. Todd authorizes.**
 
@@ -123,7 +124,7 @@ This is a bounded frozen manifest, not a general exchange-calendar engine.
 
 ## 4. Proposed vendor request bounds
 
-If Todd later authorizes Twelve Data as temporary source **and** separately authorizes the extract, the request must be bounded to:
+Twelve Data is now Todd-authorized as the temporary source for this cycle only. If Todd later separately authorizes the extract, the request must be bounded to:
 
 ```text
 endpoint             /time_series
@@ -456,14 +457,16 @@ This packet is drafted only.
 
 The next gates remain separate:
 
-### Gate A — temporary source authorization
+### Gate A — temporary source authorization — CROSSED
 
-Example wording only; not issued by this document:
+Todd issued:
 
 ```text
 AUTHORIZE TWELVE DATA AS TEMPORARY SOURCE ONLY
 FOR THE FIRST 30-SESSION SPY HISTORICAL LEARNING CYCLE — TC
 ```
+
+This authorizes the source choice only. It does not authorize account creation, API key creation, purchase, an API call, an extract, or market bytes.
 
 ### Gate B — account / key / purchase if required
 
@@ -483,11 +486,11 @@ No source or extract is authorized merely because this packet exists.
 PRE-EXTRACT TEST DESIGN                COMPLETED FOR CURRENT BOUNDED SCOPE
 MINIMUM PRE-EXTRACT HARDENING          BANKED — PASS WITH CAVEAT
 BANKED SHA                             6662e28e15942894eb6bf3fb9476aecd6877c4ff
-FULL SUITE AT BANKED SHA               370 / 370
+FULL SUITE AT PRE-EXTRACT STATE        377 / 377
 CATALOG AUDIT                          VALID
 
 EXACT EXTRACT PACKET                   DRAFTED
-TWELVE DATA TEMPORARY SOURCE           NOT AUTHORIZED
+TWELVE DATA TEMPORARY SOURCE           AUTHORIZED — THIS 30-SESSION CYCLE ONLY
 ACCOUNT / API KEY / PURCHASE           NOT AUTHORIZED
 HISTORICAL EXTRACT                     NOT AUTHORIZED
 MARKET BYTES                           NONE
