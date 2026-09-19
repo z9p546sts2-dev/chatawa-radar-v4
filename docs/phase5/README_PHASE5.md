@@ -92,6 +92,8 @@ Phase 5 adds dataset admission, an optional numeric observation payload, and a d
 
 Locked question: `docs/phase5/RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md`
 
+Read-only first-HISTORICAL-source decision packet: `docs/phase5/RADAR_V4_HISTORICAL_SOURCE_DECISION_PACKET_TC.md`. Availability is not authorization. The packet does not change admission, buy data, or open Phase 6.
+
 ## Still forbidden
 
 Network downloads, broker/paper trading, indicators, thresholds, ranking, and treating software-test numbers as market evidence.
