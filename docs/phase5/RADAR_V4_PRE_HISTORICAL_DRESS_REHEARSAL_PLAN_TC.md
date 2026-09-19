@@ -256,9 +256,10 @@ Command: `PYTHONPATH=. python3 -m unittest tests.test_dress_rehearsal -v`
 | D. Deterministic rerun | 2 | PASS |
 | E. One-value checksum mutation | 2 | PASS |
 | F. Calendar-completeness gap probe | 3 | PASS (`CALENDAR_GAP_STILL_OPEN`) |
-| **Dress-rehearsal total** | **24** | **24 passed, 0 failed** |
+| G. Revised red-team probes | 13 | PASS (includes documented gaps) |
+| **Dress-rehearsal total** | **37** | **37 passed, 0 failed** |
 
-Full workshop suite after the same revision: `PYTHONPATH=. python3 -m unittest discover -s tests -v` → **341 passed, 0 failed**.
+Full workshop suite after the close correction: `PYTHONPATH=. python3 -m unittest discover -s tests -v` → **354 passed, 0 failed**.
 
 Exact measured stand-ins:
 
@@ -267,11 +268,29 @@ Exact measured stand-ins:
 - existing UTC `SYN:AAA` pack still measures `("0.50", "-0.50")` and was not edited;
 - `SYNTHETIC_WEEKDAY_SPAN` generated 261 Monday–Friday bars from `2024-01-02` through `2024-12-31`.
 
-Known gaps still open (category F proved them; no holiday table was added):
+### Revised red-team comparison
 
-- a Saturday `2024-01-06` bar is admitted and MEASURED;
-- omitting Wednesday `2024-06-12` is not flagged;
-- weekday `2024-07-04` is included by the weekday generator.
+| # | Required probe | Implemented? | Notes |
+|---|---|---|---|
+| 1 | authoritative `market_timestamp` ordering | yes | `test_authoritative_market_timestamp_ordering` |
+| 2 | order-sensitive adversarial sorting | yes | `test_order_sensitive_adversarial_sorting` |
+| 3 | duplicate timestamp with conflicting closes | yes | `test_duplicate_timestamp_with_conflicting_closes` plus existing series lock |
+| 4 | same session-date / different timestamp | yes — gap still open | `test_same_session_date_different_timestamp_gap` → `SESSION_DATE_COLLISION_GAP_STILL_OPEN` |
+| 5 | Decimal adversary cases | yes, with one production gap | exact `0.10` arithmetic and `INVALID_CLOSE` pass; `NaN`/`Infinity` are accepted — `DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN`. Production `radar_v4` was not changed. |
+| 6 | durable `SYNTHETIC` + `PRE_HISTORICAL_DRESS_REHEARSAL` identity | yes | `IDENTITY.txt` + `test_durable_synthetic_rehearsal_artifact_identity` |
+| 7 | before/after date-window probes | yes — gap still open | `test_before_after_date_window_probes` → `DATE_WINDOW_GAP_STILL_OPEN` |
+| 8 | direct `LOOKAHEAD_BAR` rehearsal | yes | `test_lookahead_bar_rehearsal` uses existing `horizon_bind` |
+| 9 | deterministic canonical measurement-output | yes | `test_deterministic_canonical_measurement_output` |
+| 10 | new measurement artifact identity after mutation | yes | `test_new_measurement_artifact_identity_after_mutation` |
+| 11 | preserved original measurement after mutation | yes | `test_preserved_original_measurement_after_mutation` |
+| 12 | adjustment-policy consistency at declared ruler | yes | `test_adjustment_policy_ruler_consistency` |
+
+Known gaps still open (proved; no production fix; no holiday table added):
+
+- `CALENDAR_GAP_STILL_OPEN` — Saturday `2024-01-06` admitted; omitted Wednesday `2024-06-12` not flagged; weekday `2024-07-04` included;
+- `DATE_WINDOW_GAP_STILL_OPEN` — bars dated `2023-12-29`, `2024-01-01`, and `2025-01-02` are admitted and MEASURED;
+- `SESSION_DATE_COLLISION_GAP_STILL_OPEN` — two `1d` bars on the same civil date with different timestamps are MEASURED;
+- `DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN` — `NaN` close is identity-valid and MEASURED. Refusing it would require a production `radar_v4` change, which this close does not make.
 
 `radar_v4/` production modules were not edited. `PHASE5_HIGHEST_UNIT` was not moved. Units 1401+ were not created.
 
@@ -291,6 +310,8 @@ This is not historical readiness, source validation, market-data correctness, pr
 
 ```text
 PLAN                            AUTHORIZED-TC AND IMPLEMENTED
+DRESS REHEARSAL TESTS           37/37 PASSED
+FULL UNIT SUITE                 354/354 PASSED
 CALENDAR_GAP_STILL_OPEN         YES
 DATE_WINDOW_GAP_STILL_OPEN      YES
 SESSION_DATE_COLLISION_GAP_STILL_OPEN  YES
