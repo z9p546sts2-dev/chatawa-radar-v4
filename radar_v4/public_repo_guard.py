@@ -22,7 +22,8 @@ FORBIDDEN_CREDENTIAL_FILENAMES = {
 }
 
 SECRET_ASSIGNMENT = re.compile(
-    r"(?i)\b(api[_-]?key|apikey|access[_-]?token|secret)\b\s*[:=]\s*[\"'][^\"']{16,}[\"']"
+    r"(?i)\\b(api[_-]?key|apikey|access[_-]?token|secret)\\b\\s*[:=]\\s*"
+    r"(?:[\"'][^\"'\\r\\n]{16,}[\"']|[A-Za-z0-9_./+=-]{16,})(?=\\s*(?:#|$))"
 )
 
 
@@ -43,7 +44,7 @@ def scan_public_repo(root: str | Path) -> tuple[str, ...]:
         if any(part in {".git", "__pycache__", ".pytest_cache"} for part in parts):
             continue
 
-        if parts and parts[0] in FORBIDDEN_ROOT_NAMES:
+        if any(part in FORBIDDEN_ROOT_NAMES for part in parts):
             issues.append(f"forbidden private/vendor-data path tracked or present: {rel.as_posix()}")
 
         name = path.name.lower()
