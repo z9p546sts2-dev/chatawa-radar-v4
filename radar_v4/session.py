@@ -78,9 +78,35 @@ def run_dataset_session(
 
     series = inspect_series(kept)
     snapshot = make_snapshot(declaration, series.ordered)
-    baseline = (
-        close_to_close_changes(series.ordered) if measure and series.valid else None
-    )
+    baseline: BaselineReport | None = None
+    if measure and series.valid:
+        if declaration.expected_session_dates:
+            expected = set(declaration.expected_session_dates)
+            actual = {
+                item.envelope.market_timestamp.date().isoformat()
+                for item in series.ordered
+                if item.envelope.market_timestamp is not None
+            }
+            if actual != expected:
+                baseline = BaselineReport(
+                    claim_level="NONE",
+                    status="INSUFFICIENT_EVIDENCE",
+                    symbol_or_universe=declaration.universe,
+                    interval=declaration.interval,
+                    timezone=declaration.timezone,
+                    observation_count=len(series.ordered),
+                    change_count=0,
+                    changes=(),
+                    notes=(
+                        "expected-session manifest is incomplete",
+                        f"expected {len(expected)} unique session dates; admitted {len(actual)}",
+                        "no missing bar was synthesized or bridged",
+                    ),
+                )
+            else:
+                baseline = close_to_close_changes(series.ordered)
+        else:
+            baseline = close_to_close_changes(series.ordered)
     return SessionResult(
         admission=admission,
         observations=tuple(kept),
