@@ -288,18 +288,43 @@ class AdmissionHardeningTests(unittest.TestCase):
 
 
 class RemainingBoundedGapTests(unittest.TestCase):
-    def test_missing_expected_session_is_not_synthesized_or_detected(self) -> None:
-        first = _obs(EXPECTED_SESSIONS[0], "100.00")
-        third = _obs(EXPECTED_SESSIONS[2], "100.20")
+    def test_missing_expected_session_blocks_level0_measurement(self) -> None:
+        observations = tuple(
+            _obs(day, f"{100 + index / 100:.2f}")
+            for index, day in enumerate(EXPECTED_SESSIONS[:-1])
+        )
         result = run_dataset_session(
             _declaration(),
-            (first.envelope, third.envelope),
-            (first, third),
+            tuple(item.envelope for item in observations),
+            observations,
         )
         self.assertTrue(result.series.valid)
+        self.assertEqual(result.kept_observation_count(), 29)
         self.assertIsNotNone(result.baseline)
+        assert result.baseline is not None
+        self.assertEqual(result.baseline.status, "INSUFFICIENT_EVIDENCE")
+        self.assertEqual(result.baseline.claim_level, "NONE")
+        self.assertEqual(result.baseline.change_count, 0)
+        self.assertIn("expected-session manifest is incomplete", result.baseline.notes)
+
+    def test_complete_expected_session_set_can_measure(self) -> None:
+        observations = tuple(
+            _obs(day, f"{100 + index / 100:.2f}")
+            for index, day in enumerate(EXPECTED_SESSIONS)
+        )
+        result = run_dataset_session(
+            _declaration(),
+            tuple(item.envelope for item in observations),
+            observations,
+        )
+        self.assertTrue(result.series.valid)
+        self.assertEqual(result.kept_observation_count(), 30)
+        self.assertIsNotNone(result.baseline)
+        assert result.baseline is not None
         self.assertEqual(result.baseline.status, "MEASURED")
-        self.assertNotIn("MISSING_EXPECTED_SESSION", result.series.issue_codes())
+        self.assertEqual(result.baseline.claim_level, "LEVEL 0 — MEASURED")
+        self.assertEqual(result.baseline.observation_count, 30)
+        self.assertEqual(result.baseline.change_count, 29)
 
     def test_manifestless_series_still_has_no_general_exchange_calendar(self) -> None:
         valid = _obs(EXPECTED_SESSIONS[0], "100.00")
