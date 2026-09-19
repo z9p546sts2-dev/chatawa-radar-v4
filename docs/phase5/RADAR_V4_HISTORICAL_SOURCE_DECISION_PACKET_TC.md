@@ -9,12 +9,15 @@ DATE — 2026-09-19
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 MAIN HEAD REVIEWED — 5bbb726 (units 7–1300 on main)
 BANKED STACK — draft PR #36 (units 1301–1350) + draft PR #37 (units 1351–1400)
-PR #37 INDEPENDENT AUDIT — PASS (2026-09-12)
+PR #37 SOFTWARE HEAD 1fbda42f74f6b3701812caa3806cb9244295a428
+INDEPENDENT AUDIT — PASS (2026-09-12)
 SOFTWARE CORRECTNESS — earned only for local FIXTURE/SYNTHETIC workshop scope
 DATA CORRECTNESS — not earned
 METHOD VALIDITY — not defined
 USEFULNESS / EDGE — not shown
 ```
+
+PR #37 later branch-head movement after 1fbda42 was audit/documentation-only; no production Python changed between the audited software head and the current PR #37 head.
 
 This packet is documentation. It does not implement a client, buy a feed, download market data, change dataset admission, create Units 1401+, open Phase 6, or authorize a source.
 
