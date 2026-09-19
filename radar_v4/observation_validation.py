@@ -21,7 +21,7 @@ def validate_observation(observation: Observation) -> ValidationResult:
             if close is not None and not close.is_finite():
                 issues.append(
                     ValidationIssue(
-                        "NONFINITE_CLOSE",
+                        "NON_FINITE_CLOSE",
                         "close must be a finite decimal value",
                         "close",
                     )
