@@ -276,7 +276,7 @@ Exact measured stand-ins:
 | 2 | order-sensitive adversarial sorting | yes | `test_order_sensitive_adversarial_sorting` |
 | 3 | duplicate timestamp with conflicting closes | yes | `test_duplicate_timestamp_with_conflicting_closes` plus existing series lock |
 | 4 | same session-date / different timestamp | yes — gap still open | `test_same_session_date_different_timestamp_gap` → `SESSION_DATE_COLLISION_GAP_STILL_OPEN` |
-| 5 | Decimal adversary cases | yes, with one production gap | exact `0.10` arithmetic and `INVALID_CLOSE` pass; `NaN`/`Infinity` are accepted — `DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN`. Production `radar_v4` was not changed. |
+| 5 | Decimal adversary cases | yes, with one production gap | exact `0.10` arithmetic and `INVALID_CLOSE` pass; `NaN` close is identity-valid and MEASURED — `DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN`. Infinity is not dress-proven. Production `radar_v4` was not changed. |
 | 6 | durable `SYNTHETIC` + `PRE_HISTORICAL_DRESS_REHEARSAL` identity | yes | `IDENTITY.txt` + `test_durable_synthetic_rehearsal_artifact_identity` |
 | 7 | before/after date-window probes | yes — gap still open | `test_before_after_date_window_probes` → `DATE_WINDOW_GAP_STILL_OPEN` |
 | 8 | direct `LOOKAHEAD_BAR` rehearsal | yes | `test_lookahead_bar_rehearsal` uses existing `horizon_bind` |

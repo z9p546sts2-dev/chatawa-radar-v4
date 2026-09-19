@@ -70,6 +70,7 @@ def _synthetic_obs(
     timezone_name: str = "America/New_York",
     market: datetime | None = None,
     retrieval: datetime | None = None,
+    transformation_version: str = "phase5-v1",
 ) -> Observation:
     stamp = market if market is not None else _ny_close(day)
     retrieved = retrieval if retrieval is not None else _ny_close(day, 17)
@@ -82,7 +83,7 @@ def _synthetic_obs(
             retrieval_timestamp=retrieved,
             interval=interval,
             timezone=timezone_name,
-            transformation_version="phase5-v1",
+            transformation_version=transformation_version,
         ),
         ObservationPayload(close=close),
     )
@@ -357,6 +358,38 @@ class DressRehearsalRefusalTests(unittest.TestCase):
             "TIMEZONE_MISMATCH",
             report.observation_intake.quarantined[0].validation.issue_codes(),
         )
+
+    def test_transformation_version_mismatch_refused(self) -> None:
+        first = _synthetic_obs(date(2024, 1, 2), "100.00")
+        second = _synthetic_obs(
+            date(2024, 1, 3),
+            "100.25",
+            transformation_version="phase5-v1-mutated",
+        )
+        self.assertNotEqual(
+            first.envelope.transformation_version,
+            second.envelope.transformation_version,
+        )
+        mixed = close_to_close_changes((first, second))
+        self.assertEqual(mixed.status, "INVALID_COMPARISON")
+        self.assertEqual(mixed.claim_level, "NONE")
+        self.assertNotEqual(mixed.claim_level, "LEVEL 0 — MEASURED")
+        result = run_dataset_session(
+            _declaration_object(),
+            (first.envelope, second.envelope),
+            (first, second),
+        )
+        codes = [
+            code
+            for record in result.admission.quarantined
+            for code in record.validation.issue_codes()
+        ]
+        self.assertIn("DATASET_DECLARATION_MISMATCH", codes)
+        if result.baseline is None:
+            self.assertIsNone(result.baseline)
+        else:
+            self.assertNotEqual(result.baseline.status, "MEASURED")
+            self.assertNotEqual(result.baseline.claim_level, "LEVEL 0 — MEASURED")
 
     def test_interval_mismatch_quarantined(self) -> None:
         from tempfile import TemporaryDirectory
@@ -687,7 +720,7 @@ class DressRehearsalRedTeamTests(unittest.TestCase):
         self.assertEqual(baseline.claim_level, "NONE")
 
     def test_decimal_special_values_are_not_refused(self) -> None:
-        # Production parse_decimal accepts NaN/Infinity. Do not fix radar_v4 here.
+        # Production parse_decimal accepts NaN. Do not fix radar_v4 here.
         nan_item = Observation.create(
             _synthetic_obs(WINDOW_START, "100.00").envelope,
             ObservationPayload(close="NaN"),
