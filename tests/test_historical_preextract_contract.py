@@ -10,7 +10,7 @@ before the first bounded HISTORICAL extract.
 from __future__ import annotations
 
 import unittest
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from radar_v4.baseline import close_to_close_changes
@@ -63,6 +63,15 @@ CALENDAR_GAP_STILL_OPEN = "CALENDAR_GAP_STILL_OPEN"
 DATE_WINDOW_GAP_STILL_OPEN = "DATE_WINDOW_GAP_STILL_OPEN"
 SESSION_DATE_COLLISION_GAP_STILL_OPEN = "SESSION_DATE_COLLISION_GAP_STILL_OPEN"
 DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN = "DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN"
+CALENDAR_CODE_FRAGMENTS = (
+    "CALENDAR",
+    "HOLIDAY",
+    "WEEKEND",
+    "MISSING_SESSION",
+    "EXCHANGE",
+)
+MANIFEST_START = date(2024, 11, 18)
+MANIFEST_END = date(2024, 12, 31)
 
 
 def _stamp(day: date, hour: int = 16) -> datetime:
@@ -108,12 +117,33 @@ def _declaration() -> DatasetDeclaration:
     )
 
 
+def _weekdays_minus_known_closed() -> tuple[date, ...]:
+    """Civil Mon–Fri in the frozen window, minus KNOWN_CLOSED_WEEKDAYS.
+
+    Not an exchange calendar. Not a holiday API.
+    """
+    days: list[date] = []
+    cursor = MANIFEST_START
+    while cursor <= MANIFEST_END:
+        if cursor.weekday() < 5 and cursor not in KNOWN_CLOSED_WEEKDAYS:
+            days.append(cursor)
+        cursor += timedelta(days=1)
+    return tuple(days)
+
+
+def _kept_checksums(result) -> set[str]:
+    return {item.envelope.checksum for item in result.observations}
+
+
 class ExpectedSessionManifestTests(unittest.TestCase):
     def test_manifest_has_exactly_30_unique_sessions(self) -> None:
         self.assertEqual(len(EXPECTED_SESSIONS), 30)
         self.assertEqual(len(set(EXPECTED_SESSIONS)), 30)
         self.assertEqual(EXPECTED_SESSIONS[0], date(2024, 11, 18))
         self.assertEqual(EXPECTED_SESSIONS[-1], date(2024, 12, 31))
+
+    def test_manifest_equals_weekdays_minus_known_closed(self) -> None:
+        self.assertEqual(EXPECTED_SESSIONS, _weekdays_minus_known_closed())
 
     def test_known_closed_weekdays_are_not_expected_sessions(self) -> None:
         for day in KNOWN_CLOSED_WEEKDAYS:
@@ -155,6 +185,8 @@ class AlreadyEnforcedAdmissionTests(unittest.TestCase):
             for code in record.validation.issue_codes()
         ]
         self.assertIn("DATASET_DECLARATION_MISMATCH", codes)
+        self.assertEqual(result.kept_observation_count(), 1)
+        self.assertNotIn(wrong.envelope.checksum, _kept_checksums(result))
 
     def test_transformation_version_mismatch_is_refused(self) -> None:
         good = _obs(EXPECTED_SESSIONS[0], "100.00")
@@ -174,6 +206,8 @@ class AlreadyEnforcedAdmissionTests(unittest.TestCase):
             for code in record.validation.issue_codes()
         ]
         self.assertIn("DATASET_DECLARATION_MISMATCH", codes)
+        self.assertEqual(result.kept_observation_count(), 1)
+        self.assertNotIn(wrong.envelope.checksum, _kept_checksums(result))
 
     def test_exact_duplicate_timestamp_refuses_series_measurement(self) -> None:
         first = _obs(EXPECTED_SESSIONS[0], "100.00")
@@ -209,6 +243,30 @@ class KnownGapEvidenceTests(unittest.TestCase):
         self.assertNotIn("MISSING_EXPECTED_SESSION", report.issue_codes())
         self.assertEqual(CALENDAR_GAP_STILL_OPEN, "CALENDAR_GAP_STILL_OPEN")
 
+    def test_known_closed_weekday_can_currently_measure(self) -> None:
+        closed = date(2024, 11, 28)
+        self.assertIn(closed, KNOWN_CLOSED_WEEKDAYS)
+        self.assertNotIn(closed, EXPECTED_SESSIONS)
+        valid = _obs(EXPECTED_SESSIONS[0], "100.00")
+        holiday = _obs(closed, "99.50")
+        report = inspect_series((valid, holiday))
+        self.assertTrue(report.valid)
+        joined = " ".join(report.issue_codes())
+        for fragment in CALENDAR_CODE_FRAGMENTS:
+            self.assertNotIn(fragment, joined)
+        measured = close_to_close_changes((valid, holiday))
+        self.assertEqual(measured.status, "MEASURED")
+        self.assertEqual(measured.claim_level, "LEVEL 0 — MEASURED")
+        session = run_dataset_session(
+            _declaration(),
+            (valid.envelope, holiday.envelope),
+            (valid, holiday),
+        )
+        self.assertEqual(session.kept_observation_count(), 2)
+        self.assertIsNotNone(session.baseline)
+        self.assertEqual(session.baseline.status, "MEASURED")
+        self.assertEqual(CALENDAR_GAP_STILL_OPEN, "CALENDAR_GAP_STILL_OPEN")
+
     def test_outside_window_row_can_currently_measure(self) -> None:
         outside = _obs(date(2024, 11, 15), "99.90")
         inside = _obs(EXPECTED_SESSIONS[0], "100.00")
@@ -241,6 +299,24 @@ class KnownGapEvidenceTests(unittest.TestCase):
             DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN,
             "DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN",
         )
+
+    def test_infinity_closes_are_currently_identity_valid_and_measured(self) -> None:
+        first = _obs(EXPECTED_SESSIONS[0], "100.00")
+        for special, expected_change in (
+            ("Infinity", "Infinity"),
+            ("-Infinity", "-Infinity"),
+        ):
+            with self.subTest(close=special):
+                second = _obs(EXPECTED_SESSIONS[1], special)
+                self.assertTrue(validate_observation(second).valid)
+                result = close_to_close_changes((first, second))
+                self.assertEqual(result.status, "MEASURED")
+                self.assertEqual(result.claim_level, "LEVEL 0 — MEASURED")
+                self.assertEqual(result.changes, (expected_change,))
+                self.assertEqual(
+                    DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN,
+                    "DECIMAL_SPECIAL_VALUE_GAP_STILL_OPEN",
+                )
 
 
 if __name__ == "__main__":
