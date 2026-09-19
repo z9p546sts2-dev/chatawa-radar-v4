@@ -23,6 +23,15 @@ class PublicRepoGuardTests(unittest.TestCase):
             issues = scan_public_repo(root)
             self.assertTrue(any("forbidden private/vendor-data path" in item for item in issues))
 
+    def test_nested_forbidden_vendor_data_path_is_detected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = root / "scratch" / "vendor_data" / "spy.json"
+            target.parent.mkdir(parents=True)
+            target.write_text('{"close":"100.00"}', encoding="utf-8")
+            issues = scan_public_repo(root)
+            self.assertTrue(any("forbidden private/vendor-data path" in item for item in issues))
+
     def test_credential_like_file_is_detected(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -36,6 +45,17 @@ class PublicRepoGuardTests(unittest.TestCase):
             source = root / "config.py"
             source.write_text(
                 "api" + "_key = " + repr("abcdefghijklmnop123456"),
+                encoding="utf-8",
+            )
+            issues = scan_public_repo(root)
+            self.assertTrue(any("credential-like assignment" in item for item in issues))
+
+    def test_unquoted_yaml_secret_assignment_is_detected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "config.yaml"
+            source.write_text(
+                "api" + "_key: " + "abcdefghijklmnop123456",
                 encoding="utf-8",
             )
             issues = scan_public_repo(root)
