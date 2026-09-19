@@ -67,6 +67,11 @@ LOCKED QUESTION            ordinary close-to-close difference, one symbol, 1d
                            Decision #1 keeps this question for the first HISTORICAL cycle
 FIRST INSTRUMENT IDENTITY  SPY / NYSE Arca (Decision #2; identity only)
 FIRST DATE RANGE           2024-01-01 through 2024-12-31 (Decision #3; range only)
+INTERVAL / EVALUATION      1d bar; daily post-session; not intraday (Decision #4)
+TIMEZONE CONVENTION        America/New_York session-date (Decision #5)
+ADJUSTMENT POLICY          UNADJUSTED (Decision #6)
+MAX STALENESS              NONE — frozen cycle; no live SLA (Decision #7)
+ORDINARY BASELINE          close[t] - close[t-1] confirmed (Decision #8)
 CLAIM LEVEL AVAILABLE      LEVEL 0 — MEASURED only
 IN-REPO MEASUREMENT PACK   fixtures/synthetic_one_symbol_1d/  (SYNTHETIC)
 ```
@@ -81,9 +86,14 @@ A JSON `authorized: true` flag is `ADMISSION_CLAIM`. A JSON `purchase_authorized
 DECISION #1 — KEEP EXISTING LOCKED QUESTION FOR FIRST HISTORICAL CYCLE — TC
 DECISION #2 — AUTHORIZE SPY / NYSE ARCA AS THE FIRST HISTORICAL INSTRUMENT IDENTITY — TC
 DECISION #3 — AUTHORIZE 2024-01-01 THROUGH 2024-12-31 AS THE FIRST HISTORICAL DATE RANGE — TC
+DECISION #4 — AUTHORIZE 1D BAR INTERVAL AND DAILY POST-SESSION EVALUATION CADENCE — TC
+DECISION #5 — AUTHORIZE AMERICA/NEW_YORK SESSION-DATE CONVENTION — TC
+DECISION #6 — AUTHORIZE UNADJUSTED CLOSE POLICY FOR FIRST HISTORICAL CYCLE — TC
+DECISION #7 — AUTHORIZE MAX_STALENESS = NONE FOR FIRST FROZEN HISTORICAL CYCLE — TC
+DECISION #8 — CONFIRM EXISTING ORDINARY CLOSE-TO-CLOSE BASELINE FOR FIRST HISTORICAL CYCLE — TC
 ```
 
-These three records specify question, instrument identity, and date range for a later first HISTORICAL cycle. They do not authorize a source, license review, extract, purchase, download, admission change, vendor client, Units 1401+, or Phase 6. Historical bytes do not move.
+Decisions #1–#8 specify the first HISTORICAL cycle’s question, instrument identity, date range, cadence, timezone convention, adjustment policy, staleness, and ordinary baseline. They do not authorize a source, license review, extract, purchase, download, admission change, vendor client, Units 1401+, Phase 6, paper trading, or live trading. Historical bytes do not move.
 
 ---
 
@@ -294,7 +304,7 @@ Those gaps are why Todd must specify the items in §2 before any source is even 
 
 # 2. Information Todd must specify before selecting a source
 
-Specify these eight items first. Do not pick a vendor in order to discover the question. Decisions #1–#3 record question, instrument identity, and date range. Items 2.4–2.8 remain unspecified.
+Specify these eight items first. Do not pick a vendor in order to discover the question. Decisions #1–#8 now record all eight. That completeness is not a source, license review, or extract.
 
 The in-repo locked question and SYNTHETIC pack (`interval=1d`, `timezone=UTC`, `adjustment_policy=UNADJUSTED`, no `max_staleness`) are workshop fixtures. They are not a HISTORICAL declaration.
 
@@ -332,75 +342,100 @@ This is instrument-identity authorization only. It is not a source, license revi
 
 Recorded inclusive range for the first HISTORICAL cycle: `2024-01-01` through `2024-12-31`.
 
+Decision #5 interprets those dates as inclusive calendar boundaries in `America/New_York`. `2024-01-01` is a boundary date, not an expected market bar. Eligible observations are completed U.S. regular trading sessions whose session dates fall within the boundaries.
+
 Radar will not fill missing sessions. A source that silently fills them is a transformation and needs a new `transformation_version`. Date-range authorization is not an extract. Historical bytes do not move.
 
 ## 2.4 Cadence / interval
 
-Locked question: `1d`.
+**Decision #4 recorded:** `AUTHORIZE 1D BAR INTERVAL AND DAILY POST-SESSION EVALUATION CADENCE — TC`
 
-Cadence lock: evaluation cadence may not be finer than the bar (`CADENCE_OVERRUN`).
+Recorded cadence for the first HISTORICAL cycle:
 
-Todd must name:
+- bar interval: `1d`;
+- evaluation cadence: no finer than once per completed U.S. regular trading session;
+- series meaning: one daily regular-session bar for the identified `SPY` security.
 
-- bar interval (expected: `1d`);
-- evaluation cadence (must not outrun `1d` if the bar is daily);
-- that this extract is not an intraday decision series.
+Session handling:
 
-Daily bars used as if they were intraday was a V1/V2 failure. That reuse is already a refusal, not a score.
+- weekends produce no bar;
+- full-market holidays produce no bar;
+- official early-close trading days remain valid daily sessions;
+- missing expected sessions are not forward-filled or invented;
+- unexplained missing expected sessions must be flagged for review.
+
+This is not an intraday series. Evaluation cadence may not outrun the bar (`CADENCE_OVERRUN`). Daily bars used as if they were intraday was a V1/V2 failure. That reuse remains a refusal, not a score.
+
+Cadence authorization is not a source, license review, or extract.
 
 ## 2.5 Timezone
 
-Required on declaration and every envelope. Not defaulted to UTC.
+**Decision #5 recorded:** `AUTHORIZE AMERICA/NEW_YORK SESSION-DATE CONVENTION — TC`
 
-Todd must name the IANA zone or `UTC`, and whether market timestamps are:
+Recorded convention for the first HISTORICAL cycle:
 
-- session-close in US/Eastern (or America/New_York);
-- midnight UTC labeled as the session date;
-- or another declared convention.
+- timezone: `America/New_York`;
+- `2024-01-01` through `2024-12-31` are inclusive calendar boundaries in `America/New_York`;
+- eligible observations are completed U.S. regular trading sessions whose session dates fall within those boundaries;
+- `2024-01-01` is a boundary date, not an expected market bar.
 
-The offset on each timestamp must match that zone. A vendor that emits naive dates or mixed offsets cannot be admitted without a declared transformation.
+Required on declaration and every envelope. Not defaulted to UTC. The offset on each timestamp must match `America/New_York`.
 
-The SYNTHETIC pack uses `UTC`. That is a fixture convention, not a HISTORICAL decision.
+Any source using naive dates, UTC-midnight labels, or another timestamp convention requires an explicit documented transformation before admission.
+
+The SYNTHETIC pack uses `UTC`. That is a fixture convention, not this HISTORICAL decision. Timezone authorization is not a source, license review, or extract.
 
 ## 2.6 Adjustment policy
 
-Required on the declaration and the ruler. Required on the banked need lock. Not stored on the envelope. Not checked by `admit_to_dataset()`.
+**Decision #6 recorded:** `AUTHORIZE UNADJUSTED CLOSE POLICY FOR FIRST HISTORICAL CYCLE — TC`
 
-Todd must name one policy, for example:
+Recorded policy: `UNADJUSTED`.
 
-- `UNADJUSTED` — raw session close;
-- `SPLIT_ADJUSTED`;
-- `SPLIT_AND_DIVIDEND_ADJUSTED`;
-- another exact string, if a later source uses a named vendor method.
+Use the raw reported regular-session close for this first HISTORICAL evidence cycle. Do not mix with the UNADJUSTED series:
 
-The same policy must apply to every bar in the series. Mixing adjusted and unadjusted closes is a ruler change, not a convenience.
+- split-adjusted close;
+- dividend-adjusted close;
+- total-return series;
+- vendor-specific adjusted-close fields.
 
-The SYNTHETIC pack declares `UNADJUSTED`. That does not decide the HISTORICAL policy.
+Any later change in adjustment policy is a new ruler and requires a new frozen record. `adjustment_policy` remains a declaration/ruler/need-lock field, not an envelope field, and is still not checked by `admit_to_dataset()`.
+
+The SYNTHETIC pack also declares `UNADJUSTED`. That fixture label is not this HISTORICAL decision. Adjustment authorization is not a source, license review, or extract.
 
 ## 2.7 Maximum staleness
 
-Optional on the declaration. Required on the banked need lock. `NONE` means no live freshness SLA.
+**Decision #7 recorded:** `AUTHORIZE MAX_STALENESS = NONE FOR FIRST FROZEN HISTORICAL CYCLE — TC`
 
-Todd must name:
+Recorded value: `NONE`.
 
-- the maximum acceptable age of the last bar relative to `as_of` / retrieval;
-- or `NONE` if this extract is a frozen historical file with no live freshness claim.
+This first cycle concerns a frozen HISTORICAL extract, not a current or live freshness claim. `NONE` does not mean stale data is acceptable for future live use. It means no live freshness SLA applies to this frozen historical dataset.
 
-A later retrieval stamp may not claim a stale daily series is current (`FRESH_STAMP_STALE_BARS`). A bar after `as_of` is lookahead (`LOOKAHEAD_BAR`).
+A later retrieval stamp may not claim a stale daily series is current (`FRESH_STAMP_STALE_BARS`). A bar after `as_of` is lookahead (`LOOKAHEAD_BAR`). Freshness is not the locked question.
 
-For a first frozen extract, `NONE` is the honest operational value unless Todd is asking a freshness question. Freshness is not the locked question.
+Staleness authorization is not a source, license review, or extract. No frozen extract exists yet.
 
 ## 2.8 Ordinary baseline
 
-Already defined. Todd must confirm it remains the baseline:
+**Decision #8 recorded:** `CONFIRM EXISTING ORDINARY CLOSE-TO-CLOSE BASELINE FOR FIRST HISTORICAL CYCLE — TC`
 
-- ordinary close-to-close **difference**, not percent;
-- same ruler on every bar;
-- no threshold, signal, or edge;
-- `NO EDGE SHOWN` is not applicable because no edge was asked;
-- at least two admitted bars or the result is `INSUFFICIENT_EVIDENCE`.
+Keep the existing ordinary baseline unchanged.
 
-If Todd wants a different ordinary baseline, lock that question first. Do not change the metric after seeing HISTORICAL numbers.
+Primary metric: `close[t] - close[t-1]`.
+
+Conditions:
+
+- same instrument;
+- same interval;
+- same timezone convention;
+- same transformation version;
+- same adjustment policy;
+- observations ordered by market timestamp.
+
+This remains a descriptive measurement. It is not percent return, a threshold, a score, a signal, a prediction, or an edge claim. `NO EDGE SHOWN` is not applicable because no edge was asked.
+
+Allowed result language remains: `MEASURED`, `INSUFFICIENT_EVIDENCE`, `INVALID_COMPARISON`, `UNCLEAR`.
+
+At least two admitted bars or the result is `INSUFFICIENT_EVIDENCE`. Confirming the baseline is not a source, license review, or extract. Do not change the metric after seeing HISTORICAL numbers.
 
 ---
 
@@ -572,13 +607,13 @@ These were considered and **not** added as the 3–5 review set. Omission is not
 5. No Units 1401+. No Phase 6. No method. No paper. No Product B.
 6. PR #37 PASS does not earn DATA CORRECTNESS and does not open Horizon 2.
 7. Recording later gates in §3 is not authorization of an extract, a measurement, or a revision.
-8. Recording Decisions #1–#3 is not authorization of a source, license review, extract, or historical bytes.
+8. Recording Decisions #1–#8 is not authorization of a source, license review, extract, purchase, or historical bytes.
 
 ---
 
 # NEXT DECISION REQUIRED FROM TODD
 
-Decisions #1–#3 are recorded. Remaining decisions stay in this order. Stop after any `PAUSE` or `REJECT`. Do not skip ahead to a vendor because a later item looks easy. Naming SPY / NYSE Arca and 2024-01-01 through 2024-12-31 does not authorize a source, license review, or extract.
+Decisions #1–#8 are recorded. Remaining decisions stay in this order. Stop after any `PAUSE` or `REJECT`. Completing the eight specification items does not authorize a source, license review, or extract.
 
 1. **Keep or re-lock the research question.** — **RECORDED (Decision #1).**  
    Existing locked ordinary close-to-close question kept for the first HISTORICAL cycle.
@@ -589,23 +624,23 @@ Decisions #1–#3 are recorded. Remaining decisions stay in this order. Stop aft
 3. **Name the date range.** — **RECORDED (Decision #3).**  
    Inclusive `2024-01-01` through `2024-12-31`.
 
-4. **Confirm interval and evaluation cadence.**  
-   Expected: bar `1d`, evaluation not finer than `1d`.
+4. **Confirm interval and evaluation cadence.** — **RECORDED (Decision #4).**  
+   Bar `1d`. Evaluation no finer than once per completed U.S. regular trading session. Not an intraday series.
 
-5. **Name the timezone convention.**  
-   IANA zone or `UTC`, plus how a vendor date becomes a timezone-aware close timestamp.
+5. **Name the timezone convention.** — **RECORDED (Decision #5).**  
+   `America/New_York` session-date convention. `2024-01-01` is a boundary date, not an expected market bar.
 
-6. **Name the adjustment policy.**  
-   One string. Unadjusted or a named adjustment. Not “whatever the vendor sends.”
+6. **Name the adjustment policy.** — **RECORDED (Decision #6).**  
+   `UNADJUSTED` raw regular-session close. No mixed adjusted series.
 
-7. **Name maximum staleness.**  
-   For a frozen extract, `NONE` is the honest default unless Todd is asking a freshness question.
+7. **Name maximum staleness.** — **RECORDED (Decision #7).**  
+   `NONE`. Frozen cycle. No live freshness SLA.
 
-8. **Confirm the ordinary baseline.**  
-   Close-to-close difference on the same ruler. Not percent. Not a threshold. Not an edge.
+8. **Confirm the ordinary baseline.** — **RECORDED (Decision #8).**  
+   `close[t] - close[t-1]`. Descriptive only. Not percent, threshold, score, signal, prediction, or edge.
 
-9. **Only after 1–8: say whether any candidate in §4 may be reviewed for license text.**  
-   Review means read current terms. It does not mean buy, download, admit, or extract. If Todd wants a candidate that is not in §4, name it; do not treat this list as closed because it is short. Decisions #1–#3 do not authorize this review.
+9. **Say whether any candidate in §4 may be reviewed for license text.**  
+   Review means read current terms. It does not mean buy, download, admit, or extract. If Todd wants a candidate that is not in §4, name it; do not treat this list as closed because it is short. Decisions #1–#8 do not authorize this review.
 
 10. **Authorization remains a separate sentence.**  
     After 1–9, the next possible record is still one of:
@@ -636,6 +671,11 @@ VENDOR CLIENT                   NONE
 DECISION #1 QUESTION            RECORDED — KEEP EXISTING LOCKED QUESTION
 DECISION #2 INSTRUMENT          RECORDED — SPY / NYSE ARCA
 DECISION #3 DATE RANGE          RECORDED — 2024-01-01 THROUGH 2024-12-31
+DECISION #4 INTERVAL            RECORDED — 1D BAR / DAILY POST-SESSION
+DECISION #5 TIMEZONE            RECORDED — AMERICA/NEW_YORK SESSION-DATE
+DECISION #6 ADJUSTMENT          RECORDED — UNADJUSTED
+DECISION #7 STALENESS           RECORDED — NONE
+DECISION #8 BASELINE            RECORDED — CLOSE-TO-CLOSE DIFFERENCE
 LICENSE REVIEW AUTHORIZED       NO
 HISTORICAL SOURCE AUTHORIZED    NO
 HISTORICAL EXTRACT AUTHORIZED   NO
