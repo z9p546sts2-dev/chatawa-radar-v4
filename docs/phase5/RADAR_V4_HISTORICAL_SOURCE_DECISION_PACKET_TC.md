@@ -65,7 +65,11 @@ HISTORICAL / LIVE          identity class exists; workshop admission remains ref
 VENDOR / PURCHASE / API    not authorized
 LOCKED QUESTION            ordinary close-to-close difference, one symbol, 1d
                            Decision #1 keeps this question for the first HISTORICAL cycle
-FIRST INSTRUMENT IDENTITY  SPY / NYSE Arca (Decision #2; identity only)
+FIRST INSTRUMENT IDENTITY  State Street SPDR S&P 500 ETF Trust / SPY /
+                           NYSE Arca primary listing / CUSIP 78462F103 /
+                           ISIN US78462F1030
+                           (Decision #2 as amended; identity only;
+                           not venue-only Arca prints)
 FIRST DATE RANGE           2024-01-01 through 2024-12-31 (Decision #3; range only)
 INTERVAL / EVALUATION      1d bar; daily post-session; not intraday (Decision #4)
 TIMEZONE CONVENTION        America/New_York session-date (Decision #5)
@@ -85,6 +89,7 @@ A JSON `authorized: true` flag is `ADMISSION_CLAIM`. A JSON `purchase_authorized
 ```text
 DECISION #1 — KEEP EXISTING LOCKED QUESTION FOR FIRST HISTORICAL CYCLE — TC
 DECISION #2 — AUTHORIZE SPY / NYSE ARCA AS THE FIRST HISTORICAL INSTRUMENT IDENTITY — TC
+AMEND DECISION #2 WITH DURABLE SPY SECURITY IDENTITY — TC
 DECISION #3 — AUTHORIZE 2024-01-01 THROUGH 2024-12-31 AS THE FIRST HISTORICAL DATE RANGE — TC
 DECISION #4 — AUTHORIZE 1D BAR INTERVAL AND DAILY POST-SESSION EVALUATION CADENCE — TC
 DECISION #5 — AUTHORIZE AMERICA/NEW_YORK SESSION-DATE CONVENTION — TC
@@ -326,13 +331,23 @@ Keeping the locked question is not authorization of a source, license review, or
 
 **Decision #2 recorded:** `AUTHORIZE SPY / NYSE ARCA AS THE FIRST HISTORICAL INSTRUMENT IDENTITY — TC`
 
-Recorded identity for the first HISTORICAL cycle:
+**Amendment recorded:** `AMEND DECISION #2 WITH DURABLE SPY SECURITY IDENTITY — TC`
 
-- instrument: `SPY`;
-- listing market: NYSE Arca;
-- identity form: the ticker/listing pair Todd named.
+Recorded durable identity for the first HISTORICAL cycle:
 
-If a later extract class is ever separately authorized, this identity must become `declaration.universe` / `envelope.symbol_or_universe` exactly. No second symbol is authorized.
+- security: State Street SPDR S&P 500 ETF Trust;
+- ticker: `SPY`;
+- primary listing: NYSE Arca;
+- CUSIP: `78462F103`;
+- ISIN: `US78462F1030`.
+
+Series intent: one consolidated U.S. end-of-day daily series for this security.
+
+NYSE Arca identifies the primary listing. It does not mean venue-only NYSE Arca trade prints.
+
+No second security or alias is authorized.
+
+If a later extract class is ever separately authorized, this identity must become `declaration.universe` / `envelope.symbol_or_universe` exactly, using this security and not a substitute ticker, share class, or venue slice.
 
 This is instrument-identity authorization only. It is not a source, license review, extract, purchase, or download.
 
@@ -354,7 +369,7 @@ Recorded cadence for the first HISTORICAL cycle:
 
 - bar interval: `1d`;
 - evaluation cadence: no finer than once per completed U.S. regular trading session;
-- series meaning: one daily regular-session bar for the identified `SPY` security.
+- series meaning: one consolidated U.S. end-of-day daily regular-session bar for the identified State Street SPDR S&P 500 ETF Trust (`SPY`) security.
 
 Session handling:
 
@@ -618,8 +633,8 @@ Decisions #1–#8 are recorded. Remaining decisions stay in this order. Stop aft
 1. **Keep or re-lock the research question.** — **RECORDED (Decision #1).**  
    Existing locked ordinary close-to-close question kept for the first HISTORICAL cycle.
 
-2. **Name one instrument and listing market.** — **RECORDED (Decision #2).**  
-   `SPY` / NYSE Arca. No second symbol.
+2. **Name one instrument and listing market.** — **RECORDED (Decision #2, amended).**  
+   State Street SPDR S&P 500 ETF Trust; ticker `SPY`; primary listing NYSE Arca; CUSIP `78462F103`; ISIN `US78462F1030`. Consolidated U.S. EOD series. Not venue-only Arca prints. No second security or alias.
 
 3. **Name the date range.** — **RECORDED (Decision #3).**  
    Inclusive `2024-01-01` through `2024-12-31`.
@@ -670,6 +685,7 @@ PHASE 6                         NOT OPENED
 VENDOR CLIENT                   NONE
 DECISION #1 QUESTION            RECORDED — KEEP EXISTING LOCKED QUESTION
 DECISION #2 INSTRUMENT          RECORDED — SPY / NYSE ARCA
+                                AMENDED — DURABLE SPY SECURITY IDENTITY
 DECISION #3 DATE RANGE          RECORDED — 2024-01-01 THROUGH 2024-12-31
 DECISION #4 INTERVAL            RECORDED — 1D BAR / DAILY POST-SESSION
 DECISION #5 TIMEZONE            RECORDED — AMERICA/NEW_YORK SESSION-DATE
