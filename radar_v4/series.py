@@ -22,9 +22,11 @@ class SeriesReport:
 
 
 def inspect_series(observations: Sequence[Observation]) -> SeriesReport:
-    """Check timestamp uniqueness and produce a time-ordered copy.
+    """Check timestamp/session-date uniqueness and produce a time-ordered copy.
 
     Missing bars are not invented. Exchange calendars are not applied.
+    For 1d observations, more than one distinct timestamp on the same civil
+    session date is refused rather than silently selected.
     """
     issues: list[ValidationIssue] = []
     for index, item in enumerate(observations):
@@ -42,7 +44,9 @@ def inspect_series(observations: Sequence[Observation]) -> SeriesReport:
         item.envelope.market_timestamp for item in observations
     ]
     seen: dict[datetime, int] = {}
-    for index, stamp in enumerate(timestamps):
+    seen_session_dates: dict[object, tuple[int, datetime]] = {}
+    for index, item in enumerate(observations):
+        stamp = item.envelope.market_timestamp
         if stamp is None:
             issues.append(
                 ValidationIssue(
@@ -62,6 +66,23 @@ def inspect_series(observations: Sequence[Observation]) -> SeriesReport:
             )
         else:
             seen[stamp] = index
+
+        if item.envelope.interval == "1d":
+            session_date = stamp.date()
+            previous = seen_session_dates.get(session_date)
+            if previous is not None and previous[1] != stamp:
+                issues.append(
+                    ValidationIssue(
+                        "SESSION_DATE_COLLISION",
+                        (
+                            f"observations {previous[0]} and {index} resolve to "
+                            f"session date {session_date.isoformat()}"
+                        ),
+                        "market_timestamp",
+                    )
+                )
+            else:
+                seen_session_dates[session_date] = (index, stamp)
 
     ordered = tuple(
         sorted(
