@@ -44,6 +44,9 @@ class DatasetSnapshot:
         declaration_raw = raw.get("declaration")
         if not isinstance(declaration_raw, Mapping):
             raise ValueError("snapshot declaration is missing")
+        raw_expected_dates = declaration_raw.get("expected_session_dates", ())
+        if not isinstance(raw_expected_dates, (list, tuple)):
+            raise ValueError("snapshot expected_session_dates must be an array")
         declaration = DatasetDeclaration(
             dataset_id=str(declaration_raw["dataset_id"]),
             provenance_class=str(declaration_raw["provenance_class"]),
@@ -56,6 +59,7 @@ class DatasetSnapshot:
             locked_question=str(declaration_raw["locked_question"]),
             primary_metric=str(declaration_raw["primary_metric"]),
             max_staleness=declaration_raw.get("max_staleness"),
+            expected_session_dates=tuple(str(item) for item in raw_expected_dates),
         )
         rows = raw.get("observations")
         if not isinstance(rows, list):
