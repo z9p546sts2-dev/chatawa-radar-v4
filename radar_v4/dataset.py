@@ -25,6 +25,7 @@ class DatasetDeclaration:
     locked_question: str
     primary_metric: str
     max_staleness: str | None = None
+    expected_session_dates: tuple[str, ...] = ()
 
 
 def admit_to_dataset(
@@ -34,7 +35,9 @@ def admit_to_dataset(
     """Admit envelopes that match the dataset declaration.
 
     Identity-invalid envelopes are quarantined first. Declaration mismatches
-    are quarantined even if the envelope would otherwise be valid.
+    are quarantined even if the envelope would otherwise be valid. When a
+    bounded expected-session manifest is declared, only those session dates
+    are eligible. No exchange calendar is inferred.
     """
     intake = intake_envelopes(envelopes)
     accepted: list[IntakeRecord] = []
@@ -73,6 +76,18 @@ def _declaration_mismatch(
                     field,
                 )
             )
+
+    if declaration.expected_session_dates and envelope.market_timestamp is not None:
+        session_date = envelope.market_timestamp.date().isoformat()
+        if session_date not in declaration.expected_session_dates:
+            issues.append(
+                ValidationIssue(
+                    "SESSION_DATE_NOT_IN_MANIFEST",
+                    f"session date {session_date!r} is not in the declared expected-session manifest",
+                    "market_timestamp",
+                )
+            )
+
     if not issues:
         return None
     issues.sort(key=lambda item: (item.code, item.field or "", item.reason))
