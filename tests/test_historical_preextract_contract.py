@@ -281,7 +281,7 @@ class AdmissionHardeningTests(unittest.TestCase):
                 second = _obs(EXPECTED_SESSIONS[1], special)
                 validation = validate_observation(second)
                 self.assertFalse(validation.valid)
-                self.assertIn("NONFINITE_CLOSE", validation.issue_codes())
+                self.assertIn("NON_FINITE_CLOSE", validation.issue_codes())
                 result = close_to_close_changes((first, second))
                 self.assertEqual(result.status, "INVALID_COMPARISON")
                 self.assertEqual(result.claim_level, "NONE")
