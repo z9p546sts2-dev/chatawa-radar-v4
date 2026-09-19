@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from decimal import InvalidOperation
+from decimal import Decimal, InvalidOperation
 
 from radar_v4.observation import Observation, parse_decimal
 from radar_v4.validation import ValidationIssue, ValidationResult, validate_envelope
@@ -12,12 +12,20 @@ def validate_observation(observation: Observation) -> ValidationResult:
     issues: list[ValidationIssue] = list(validate_envelope(observation.envelope).issues)
     payload = observation.payload
 
-    close = None
+    close: Decimal | None = None
     if payload.close is None or str(payload.close).strip() == "":
         issues.append(ValidationIssue("MISSING_CLOSE", "close is required", "close"))
     else:
         try:
             close = parse_decimal(payload.close, "close")
+            if close is not None and not close.is_finite():
+                issues.append(
+                    ValidationIssue(
+                        "NONFINITE_CLOSE",
+                        "close must be a finite decimal value",
+                        "close",
+                    )
+                )
         except InvalidOperation:
             issues.append(
                 ValidationIssue(
@@ -59,6 +67,7 @@ def validate_observation(observation: Observation) -> ValidationResult:
         )
     if (
         close is not None
+        and close.is_finite()
         and high is not None
         and low is not None
         and (close > high or close < low)
