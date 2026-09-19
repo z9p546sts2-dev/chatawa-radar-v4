@@ -22,8 +22,8 @@ FORBIDDEN_CREDENTIAL_FILENAMES = {
 }
 
 SECRET_ASSIGNMENT = re.compile(
-    r"(?i)\\b(api[_-]?key|apikey|access[_-]?token|secret)\\b\\s*[:=]\\s*"
-    r"(?:[\"'][^\"'\\r\\n]{16,}[\"']|[A-Za-z0-9_./+=-]{16,})(?=\\s*(?:#|$))"
+    r"(?i)\b(api[_-]?key|apikey|access[_-]?token|secret)\b\s*[:=]\s*"
+    r"(?:[\"'][^\"'\r\n]{16,}[\"']|[A-Za-z0-9_./+=-]{16,})(?=\s*(?:#|$))"
 )
 
 
