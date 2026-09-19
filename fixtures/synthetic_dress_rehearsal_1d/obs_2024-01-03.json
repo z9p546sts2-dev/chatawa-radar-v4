@@ -1,0 +1,11 @@
+{
+  "envelope": "{\"checksum\":\"1084156537f7f4b6a5e7d9a2667075ce45364c33f42d8efa3a093ee17ea71e3f\",\"context_decision_use_tag\":null,\"interval\":\"1d\",\"market_timestamp\":\"2024-01-03T16:00:00.000000-05:00\",\"provenance_class\":\"SYNTHETIC\",\"provider\":\"PHASE5_SOURCE\",\"retrieval_timestamp\":\"2024-01-03T17:00:00.000000-05:00\",\"symbol_or_universe\":\"SYN:ONE\",\"timezone\":\"America/New_York\",\"transformation_version\":\"phase5-v1\"}",
+  "payload": {
+    "close": "100.25",
+    "high": null,
+    "low": null,
+    "open": null,
+    "volume": null
+  },
+  "payload_checksum": "094a59264a50df776ab97ef32a5045e8101a62e02da92bf5cbd4b879f00f45b3"
+}

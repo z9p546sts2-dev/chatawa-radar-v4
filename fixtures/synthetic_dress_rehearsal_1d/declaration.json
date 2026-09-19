@@ -1,0 +1,13 @@
+{
+  "dataset_id": "synthetic.dress-rehearsal.1d",
+  "provenance_class": "SYNTHETIC",
+  "provider": "PHASE5_SOURCE",
+  "universe": "SYN:ONE",
+  "interval": "1d",
+  "timezone": "America/New_York",
+  "transformation_version": "phase5-v1",
+  "adjustment_policy": "UNADJUSTED",
+  "locked_question": "ordinary close-to-close changes for one symbol",
+  "primary_metric": "close-to-close difference",
+  "max_staleness": "NONE"
+}

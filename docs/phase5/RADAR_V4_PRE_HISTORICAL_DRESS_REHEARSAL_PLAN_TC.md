@@ -4,18 +4,19 @@
 TO — Todd C.
 FROM — Cursor (bounded implementer)
 AUTHORITY — Todd C. only
-RECORD TYPE — TEST-ONLY PLAN / NOT IMPLEMENTED
+RECORD TYPE — TEST-ONLY PLAN / AUTHORIZED-TC
 DATE — 2026-09-19
 REPO — github.com/z9p546sts2-dev/chatawa-radar-v4
 PACKET PR — https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/38
-WORKSHOP SOFTWARE — existing FIXTURE/SYNTHETIC path on this branch (main through unit 1300)
+WORKSHOP SOFTWARE — existing FIXTURE/SYNTHETIC path
+AUTHORIZATION — AUTHORIZE DRESS REHEARSAL TEST PLAN — TC
 ```
 
-This is a proposed test plan. It is not implementation. It is not HISTORICAL evidence. It does not authorize a source, license review, extract, vendor client, Units 1401+, or Phase 6.
+This rehearsal uses the existing local FIXTURE/SYNTHETIC workshop. Phase 5 local software is banked through Unit 1400 on the stacked PR path. This document does not say Phase 5 ends at Unit 1300, does not raise or lock `PHASE5_HIGHEST_UNIT`, and does not create Units 1401+.
+
+This is not HISTORICAL evidence. It does not authorize a source, license review, extract, vendor client, Units 1401+, or Phase 6.
 
 No historical market data is used or downloaded. No vendor is an implementation dependency.
-
-**Do not implement until Todd approves this plan.**
 
 **Tools verify. Todd authorizes.**
 
@@ -63,18 +64,18 @@ The existing pack `fixtures/synthetic_one_symbol_1d/` stays as-is (`UTC`, `SYN:A
 
 ---
 
-## Proposed files (not created until approved)
+## Authorized files
 
 | Path | Role | Created now? |
 |---|---|---|
 | `docs/phase5/RADAR_V4_PRE_HISTORICAL_DRESS_REHEARSAL_PLAN_TC.md` | this plan | yes |
-| `fixtures/synthetic_dress_rehearsal_1d/README.md` | SYNTHETIC label; not market evidence | no — after approval |
-| `fixtures/synthetic_dress_rehearsal_1d/declaration.json` | one-security `1d` / `America/New_York` / `UNADJUSTED` / `max_staleness: NONE` | no — after approval |
-| `fixtures/synthetic_dress_rehearsal_1d/obs_2024-01-02.json` | first golden bar | no — after approval |
-| `fixtures/synthetic_dress_rehearsal_1d/obs_2024-01-03.json` | second golden bar | no — after approval |
-| `fixtures/synthetic_dress_rehearsal_1d/obs_2024-01-04.json` | third golden bar | no — after approval |
-| `fixtures/synthetic_dress_rehearsal_1d/manifest.json` | optional file digests, same as existing pack | no — after approval |
-| `tests/test_dress_rehearsal.py` | all required categories | no — after approval |
+| `fixtures/synthetic_dress_rehearsal_1d/README.md` | SYNTHETIC label; not market evidence | yes — authorized |
+| `fixtures/synthetic_dress_rehearsal_1d/declaration.json` | one-security `1d` / `America/New_York` / `UNADJUSTED` / `max_staleness: NONE` | yes — authorized |
+| `fixtures/synthetic_dress_rehearsal_1d/obs_2024-01-02.json` | first golden bar | yes — authorized |
+| `fixtures/synthetic_dress_rehearsal_1d/obs_2024-01-03.json` | second golden bar | yes — authorized |
+| `fixtures/synthetic_dress_rehearsal_1d/obs_2024-01-04.json` | third golden bar | yes — authorized |
+| `fixtures/synthetic_dress_rehearsal_1d/manifest.json` | optional file digests, same as existing pack | yes — authorized |
+| `tests/test_dress_rehearsal.py` | all required categories | yes — authorized |
 
 Full-year-shaped bars are **generated inside the test**, not committed as hundreds of observation files. That keeps the repo inspectable and avoids a silent calendar catalog.
 
@@ -201,9 +202,9 @@ Pass language for F: `CALENDAR_GAP_STILL_OPEN`. Failure would be a new undocumen
 
 ---
 
-## Implementation boundary if later approved
+## Implementation boundary
 
-If Todd later records `AUTHORIZE DRESS REHEARSAL TEST PLAN — TC`:
+`AUTHORIZE DRESS REHEARSAL TEST PLAN — TC` is recorded.
 
 1. Add only the files listed above.
 2. Do not edit `radar_v4/` production modules unless a test cannot construct `America/New_York` envelopes with current helpers — and then only `tests/helpers.py` or the test module.
@@ -212,25 +213,21 @@ If Todd later records `AUTHORIZE DRESS REHEARSAL TEST PLAN — TC`:
 5. Do not open HISTORICAL admission.
 6. Keep `fixtures/synthetic_one_symbol_1d/` unchanged.
 
-## Claim class after a later approved implementation
+## Claim class
 
 ```text
-SOFTWARE CORRECTNESS     may be extended for this SYNTHETIC dress rehearsal
-DATA CORRECTNESS         synthetic identity / arithmetic only; not market tape
-METHOD VALIDITY          still not defined
-USEFULNESS / EDGE        still not shown
-HISTORICAL EVIDENCE      still false
+MAXIMUM HONEST PASS      LOCAL FIXTURE/SYNTHETIC SOFTWARE DRESS REHEARSAL PASSED
+HISTORICAL DATA CORRECTNESS   not earned
+METHOD VALIDITY               not defined
+USEFULNESS / EDGE             not shown
+HISTORICAL EVIDENCE           still false
 ```
 
 ---
 
 # NEXT DECISION REQUIRED FROM TODD
 
-```text
-AUTHORIZE DRESS REHEARSAL TEST PLAN — TC
-```
-
-or `REVISE` or `REJECT`.
+Dress-rehearsal implementation is authorized. Remaining HISTORICAL-source decisions stay on the decision packet: license review, source, and extract remain unauthorized.
 
 Approval of this plan is not:
 
@@ -242,20 +239,18 @@ Approval of this plan is not:
 - Units 1401+;
 - Phase 6.
 
-Until one of those sentences is recorded, no dress-rehearsal fixture or test file is added.
-
 ---
 
 ## Current disposition
 
 ```text
-PLAN                            PROPOSED / NOT IMPLEMENTED
-DRESS REHEARSAL TESTS           NOT CREATED
+PLAN                            AUTHORIZED-TC
+DRESS REHEARSAL TESTS           IMPLEMENTING WITHIN APPROVED SCOPE
 HISTORICAL BYTES                NONE
 SOURCE / LICENSE / EXTRACT      NOT AUTHORIZED
 UNITS 1401+                     NOT CREATED
 PHASE 6                         NOT OPENED
-NEXT ACTOR                      TODD ONLY
+NEXT ACTOR                      IMPLEMENTER WITHIN APPROVED SCOPE
 ```
 
 > Research first. Evidence before machinery. Tools verify. Todd authorizes.
