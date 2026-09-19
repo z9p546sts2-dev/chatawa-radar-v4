@@ -21,6 +21,7 @@ Controlling files stay at the repository root:
 | `phase5/RADAR_V4_PHASE5_LOCKED_QUESTION_TC.md` | Locked LEVEL 0 question |
 | `phase5/RADAR_V4_HISTORICAL_SOURCE_DECISION_PACKET_TC.md` | Read-only first-HISTORICAL-source decision packet. Not authorization. |
 | `phase5/RADAR_V4_PRE_HISTORICAL_DRESS_REHEARSAL_PLAN_TC.md` | SYNTHETIC dress-rehearsal plan and results. Passed with known gaps. Not HISTORICAL. |
+| `phase5/RADAR_V4_TWELVE_DATA_TEMPORARY_SOURCE_FIT_TC.md` | Temporary Twelve Data source-fit review. Not a source, license, or extract. |
 | `audit/RADAR_V4_CHATGPT_STATUS_2026-08-23.md` | Current status packet for ChatGPT |
 | `audit/RADAR_V4_SESSION_CLOSE_2026-08-23.md` | Implementer self-audit and session close |
 | `audit/RADAR_V4_CHATGPT_AUDIT_HANDOFF.md` | Independent-audit handoff (slice history) |

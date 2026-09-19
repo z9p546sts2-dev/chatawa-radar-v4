@@ -96,6 +96,8 @@ Read-only first-HISTORICAL-source decision packet: `docs/phase5/RADAR_V4_HISTORI
 
 SYNTHETIC dress-rehearsal plan and results: `docs/phase5/RADAR_V4_PRE_HISTORICAL_DRESS_REHEARSAL_PLAN_TC.md`. Disposition: `LOCAL FIXTURE/SYNTHETIC DRESS REHEARSAL PASSED WITH KNOWN GAPS`. Not HISTORICAL. No vendor dependency.
 
+Temporary Twelve Data source-fit review: `docs/phase5/RADAR_V4_TWELVE_DATA_TEMPORARY_SOURCE_FIT_TC.md`. Not a source, license, or extract. No download.
+
 ## Still forbidden
 
 Network downloads, broker/paper trading, indicators, thresholds, ranking, and treating software-test numbers as market evidence.
