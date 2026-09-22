@@ -137,7 +137,7 @@ Not authorized now:
 8. Portfolio authority.
 9. Copying, importing, adapting, or cherry-picking legacy Radar code.
 
-A later class of work (vendor API, Phase 6, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–850 does not authorize that class.
+A later class of work (vendor API, real HISTORICAL admission, Phase 6, historical validation/backtesting, paper trading) may begin only after Todd provides a new explicit authorization. Completion of Units 7–1300 does not authorize that class.
 
 ## Evidence rules
 
