@@ -121,8 +121,9 @@ Authorized now:
 2. Read-only repository inspection.
 3. Preservation and review of completed V1/V2 forensic evidence.
 4. Build Units 1–6 evidence/provenance, intake, JSON, registry, collision, and fixture-pack software.
-5. Phase 5 units 7–850 dataset admission through local pack session, integrity, inspect/compare/bind, claim/arithmetic/scope checks, pack safety, local audit copy, record/round-trip/catalog checks, hygiene/lineage/decimal/certify compose, byte-identity and freeze records, path/name/kind lock, workshop stamp, journal lock, report/ruler lock, snapshot/disposition lock, manifest/sidecar lock, bundle/export lock, audit/chain lock, inventory/layout lock, safety/leftover lock, and a workshop stop record.
+5. Phase 5 units 7–1300 local FIXTURE/SYNTHETIC dataset admission and inspectability software within the authorized local-software scope, as recorded in `docs/UNITS.md`.
 6. Future evidence requirements and non-executing research planning.
+7. Educational/non-executing Method Design and Validation Design learning/documentation; this does not authorize an actual market method, HISTORICAL admission, historical validation, or backtesting.
 
 Not authorized now:
 
