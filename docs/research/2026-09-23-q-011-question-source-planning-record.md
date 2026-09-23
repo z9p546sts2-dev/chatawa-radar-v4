@@ -1,7 +1,6 @@
 # Q-011 — Research question and source-planning record
 
 **Recorded:** 2026-09-23  
-**Record status:** draft for repository review  
 **Q-011 M0:** closed for question definition  
 **Q-011 M1:** in progress; no dataset admitted
 
@@ -43,4 +42,11 @@ This record does not authorize historical admission, a vendor client or API call
 
 ## Decision provenance
 
-The M0 question closure, S-001 source-class selection, SPICE access-path selection, and product hold were recorded in the Q-011 research-gate review on 2026-09-23. This repository draft preserves those stated decisions; it does not claim that a vendor agreement, export, or independent data audit exists.
+The following named Q-011 research-gate decisions were recorded on 2026-09-23:
+
+- **M0 Research Question Gate Closure Audit #001:** question definition closed.
+- **M1 Source Selection Decision #001:** S-001 declared as the conditional primary source class.
+- **M1 S-001 Access Path Selection Decision #001:** SPICE Advanced Download prioritized for verification.
+- **M1 SPICE Product Qualification Decision #001:** product qualification held for missing evidence.
+
+This record preserves those stated decisions; it does not claim that a vendor agreement, export, or independent data audit exists.
