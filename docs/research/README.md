@@ -19,9 +19,13 @@ Completed:
 Next earned learning unit:
 - VALIDATION-002 — Holdout Integrity & Untouched Evaluation Sets
 
+## Specific question planning
+
+- [Q-011 question and source-planning record](2026-09-23-q-011-question-source-planning-record.md) — M0 question definition closed; M1 source/product evidence open. This does not open Phase 6 or admit HISTORICAL data.
+
 ## Boundaries
 
-Actual research question: NONE  
+Actual research question: Q-011 defined for planning; no admitted data or evaluation  
 Actual method candidate: NONE  
 Real HISTORICAL data admission: NOT AUTHORIZED  
 Phase 6 market-method research: NOT AUTHORIZED  
