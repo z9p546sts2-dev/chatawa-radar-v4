@@ -1,0 +1,52 @@
+# Q-011 — Research question and source-planning record
+
+**Recorded:** 2026-09-23  
+**Q-011 M0:** closed for question definition  
+**Q-011 M1:** in progress; no dataset admitted
+
+This record carries Q-011 research-gate decisions into Radar V4 documentation. It is a decision and provenance record, not a dataset, result, market method, or authority to run one.
+
+## M0 — locked question
+
+For the daily **S&P 500 Price Return Index** over the primary **2014–2023** calendar span, compare the next trading day's simple return after a positive day-`t` simple return with the next trading day's simple return after a negative day-`t` simple return. The primary metric is the **difference in group means** of those next-day returns.
+
+- Unit: an eligible day-`t` to immediately following trading-day `t+1` pair.
+- Groups: `r[t] > 0` and `r[t] < 0`, where `r[t]` is the index-level simple return.
+- Outcome: `r[t+1] = (P[t+1] / P[t]) - 1` for index level `P`.
+- Zero-return day-`t` observations: exclude from both sign groups and report their count.
+- The 2023 calendar year is the selected historical endpoint; 2024 onward is reserved from this primary span.
+- Claim ceiling: descriptive comparison only. No predictive, causal, profitability, trading, or edge claim follows from this question.
+
+M0 closure locks the question before data acquisition. It does not assert an observed difference, sample count, or result. Product-specific trading-calendar and boundary handling still require documentation before calculation.
+
+## M1 — source and product state
+
+| Item | Decision or status |
+|---|---|
+| Primary source class | **S-001 — S&P Dow Jones Indices direct**, declared conditionally |
+| Alternative source candidate | Alpha Vantage `SPX` held for unresolved exact Price Return identity, lineage, date semantics, and custody |
+| Priority access path | **SPICE Advanced Download**, selected for product-level verification, not qualified |
+| SPICE product qualification | **HOLD** |
+| Entitlement and license evidence | Not verified for Q-011 |
+| Historical data | None acquired or admitted for Q-011 |
+
+To qualify an actual product, verify the exact S&P 500 Price Return series and export fields; daily 2014–2023 entitlement and complete delivery; observation-date, timezone, and correction semantics; and the applicable rights to retain the original export, custody record, and derived records. General product literature does not establish a specific subscription's rights. The [S&P 500 index page](https://www.spglobal.com/spdji/en/indices/equity/sp-500/), [SPICE brochure](https://www.spglobal.com/spdji/es/documents/additional-material/spice-brochure.pdf), and [SPICE data-availability FAQ](https://www.spglobal.com/spdji/en/contentAsset/raw-data/0c0154fd-a35a-4fdd-adad-20184e4b0722/fileAsset/) are public supporting materials, not qualification evidence for Q-011.
+
+The evidence route is to review applicable authorized subscription and agreement records, if they exist, then obtain specific S&P DJI documentation for unresolved product questions under a separate decision. This public repository must not contain credentials, contracts, or licensed market data.
+
+## Separation from other Radar V4 work
+
+Q-011 concerns the **S&P 500 Price Return Index, 2014–2023**. Closed, unmerged [PR #38](https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/38) concerned a separate bounded **SPY** historical learning cycle and remains preserved as historical evidence. Its source authorization, scope, code, and proposed extract do not transfer to Q-011.
+
+This record does not authorize historical admission, a vendor client or API call, Phase 6 method research, backtesting, a signal, a claim of edge, or trading. The canonical [Radar V4 methodology](../methodology/RADAR_V4_METHODOLOGY_DEFINITION_TC.md) controls later gates. A question-definition record is not a method or an evaluation.
+
+## Decision provenance
+
+The following named Q-011 research-gate decisions were recorded on 2026-09-23:
+
+- **M0 Research Question Gate Closure Audit #001:** question definition closed.
+- **M1 Source Selection Decision #001:** S-001 declared as the conditional primary source class.
+- **M1 S-001 Access Path Selection Decision #001:** SPICE Advanced Download prioritized for verification.
+- **M1 SPICE Product Qualification Decision #001:** product qualification held for missing evidence.
+
+This record preserves those stated decisions; it does not claim that a vendor agreement, export, or independent data audit exists.

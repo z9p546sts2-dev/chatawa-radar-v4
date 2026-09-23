@@ -39,3 +39,4 @@ The Python package stays flat in `../radar_v4/`. Do not treat module count as re
 - `research/2026-09-22-forward-methodology-expansion-decision.md` — Validation Design Foundation deliberately opened for educational/non-executing learning.
 - `research/2026-09-22-validation-001-learning-bank.md` — VALIDATION-001 learning pass.
 - `research/README.md` — current research-learning status and boundaries.
+- `research/2026-09-23-q-011-question-source-planning-record.md` — Q-011 M0 question and conditional M1 source-planning custody; no data admission or method authority.
