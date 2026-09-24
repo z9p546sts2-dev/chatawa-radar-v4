@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import unittest
 from datetime import timedelta
 from hashlib import sha256
 from pathlib import Path
+from unittest.mock import patch
 
 from radar_v4.evidence import EvidenceEnvelope, ProvenanceClass
 from radar_v4.manual_observation import ManualObservationError, prepare_manual_observation
@@ -109,6 +111,34 @@ class ManualObservationTests(unittest.TestCase):
         with self.assertRaises(ManualObservationError) as error:
             prepare_manual_observation(self.raw, self.raw, self.custody)
         self.assertEqual(error.exception.code, "INVALID_OBSERVATION")
+
+    def test_hard_link_inputs_are_refused(self) -> None:
+        linked = self.base / "same-bytes-other-name.json"
+        try:
+            os.link(self.raw, linked)
+        except OSError as exc:
+            self.skipTest(f"hard links unavailable: {exc}")
+        with self.assertRaises(ManualObservationError) as error:
+            prepare_manual_observation(linked, self.raw, self.custody)
+        self.assertEqual(error.exception.code, "INVALID_OBSERVATION")
+        self.assertEqual(list(self.custody.iterdir()), [])
+
+    def test_custody_write_failure_returns_a_refusal_and_cleans_up(self) -> None:
+        self._write_observation(Observation.create(
+            envelope(provenance=ProvenanceClass.HISTORICAL),
+            ObservationPayload(close="10"),
+        ))
+        with patch("radar_v4.manual_observation._write_private", side_effect=OSError("disk full")):
+            with self.assertRaises(ManualObservationError) as error:
+                prepare_manual_observation(self.observation_path, self.raw, self.custody)
+        self.assertEqual(error.exception.code, "CUSTODY_WRITE_FAILED")
+        self.assertEqual(list(self.custody.iterdir()), [])
+
+        with patch("radar_v4.manual_observation.tempfile.mkdtemp", side_effect=OSError("read only")):
+            with self.assertRaises(ManualObservationError) as error:
+                prepare_manual_observation(self.observation_path, self.raw, self.custody)
+        self.assertEqual(error.exception.code, "CUSTODY_WRITE_FAILED")
+        self.assertEqual(list(self.custody.iterdir()), [])
 
     def test_other_git_worktree_is_not_custody(self) -> None:
         worktree = self.base / "another-project"
