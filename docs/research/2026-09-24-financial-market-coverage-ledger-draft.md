@@ -78,4 +78,16 @@ These checks explain meanings; they are **SOURCE-LOCATED for educational example
 | Sovereign rates | [Treasury note versus auction versus CMT curve](2026-09-24-treasury-rate-identity-source-check-draft.md) | Exact series/issue, methodology vintage and rights. |
 | Commodities/futures | [WTI spot versus delivery-month futures](2026-09-24-crude-spot-futures-identity-source-check-draft.md) | Product grade/location, contract month, roll and source rights. |
 
-**Next priority:** stop adding examples long enough to audit this first set against the missing original GM/IND lesson texts and decide whether the ledger's common questions exposed a missing dimension. A larger list of sourced examples is not by itself evidence that Radar can evaluate markets correctly.
+## First-pass audit disposition (2026-09-24)
+
+The six example rows were reviewed for source identity, measurement identity, historical qualification, and unsupported operational implications. The cited issuer, regulator, publisher, and exchange materials support the bounded **educational distinctions** described in the linked notes. This is not an audit of the unrecovered GM/IND lessons or a qualification of any market-data product.
+
+| Audit finding | Disposition |
+|---|---|
+| Toyota's pre-1999 ADS facilities do not establish their historical share-per-ADS ratios in this check. | Wording corrected; historical ratio remains UNKNOWN. |
+| The linked CME chapter is not by itself a dated verification of rules at a future observation time. | “Current” removed; then-applicable rules remain OPEN. |
+| The Treasury security row uses an offering announcement and its auction row uses a general pricing explanation. | Conceptual distinction stands; a named auction **result** and secondary-market quotation have not been checked. |
+| SPY, FX, Treasury, and WTI references describe distinct objects or measurements. | Examples only; feed semantics, effective dates, corrections, rights, and access remain OPEN. |
+| The common questions cover identity, rules, observation, context, custody, and claim; a future data comparison additionally needs explicit **as-of availability** and transformation lineage. | Record both fields for any proposed comparison before data qualification. |
+
+**Next priority:** recover the original GM/IND texts and audits, then reconcile their scope with this ledger. For any bounded example proposed for actual data, identify exact product terms, historical semantics, correction path, as-of availability, and transformations before an observation. More educational examples alone do not establish market evaluation ability.
