@@ -263,7 +263,7 @@ def summarize_observation_intake(report: ObservationIntakeReport) -> dict[str, A
         "accepted": report.accepted_count(),
         "quarantined": report.quarantined_count(),
         "unreadable": report.unreadable_count(),
-        "complete": (
+        "intake_clean": (
             bool(report.accepted)
             and not report.quarantined
             and not report.unreadable
