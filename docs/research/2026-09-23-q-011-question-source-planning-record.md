@@ -47,6 +47,13 @@ The evidence route is to review applicable authorized subscription and agreement
 
 **Disposition:** S-001 direct and SPICE Advanced Download remain conditional selections for investigation. M1 product qualification remains **HOLD**; no Q-011 data, calculation, Phase 6 work or live operation was authorized by this public evidence check.
 
+## 2026-09-24 alternative-source screen (no source switch)
+
+- **Alpha Vantage — targeted candidate / HOLD.** The [official API documentation](https://www.alphavantage.co/documentation/) now names a premium `INDEX_DATA` endpoint with `symbol=SPX`, `interval=daily`, and decades of S&P 500 index OHLC history. This is a closer candidate than applying its equity `TIME_SERIES_DAILY` endpoint to an index. The [premium page](https://www.alphavantage.co/premium/) says historical index data requires a separate personal-use entitlement process; [terms](https://www.alphavantage.co/terms_of_service/) distinguish personal and commercial uses. Still unverified: exact Price Return lineage to S&P DJI, 2014–2023 daily completeness, correction semantics, private retention/derived-output rights, and any future Triton commercial use. No API call or purchase made.
+- **Massive Indices Custom Bars — reject for Q-011 period.** Its [published endpoint documentation](https://massive.com/docs/rest/indices/aggregates/custom-bars) says index aggregate records start **February 14, 2023**. That cannot supply Q-011's full 2014–2023 daily primary span even if a plan advertises “all history.” This finding is limited to that documented product.
+
+**Decision:** S-001 direct remains the declared conditional primary source class. Alpha Vantage `INDEX_DATA` is a specific alternative to qualify if the direct path is unavailable or unsuitable. Neither candidate is data-qualified, and Q-011 M1 remains HOLD. Do not substitute an ETF or shorten the locked period to make a source fit.
+
 ## Separation from other Radar V4 work
 
 Q-011 concerns the **S&P 500 Price Return Index, 2014–2023**. Closed, unmerged [PR #38](https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/38) concerned a separate bounded **SPY** historical learning cycle and remains preserved as historical evidence. Its source authorization, scope, code, and proposed extract do not transfer to Q-011.
