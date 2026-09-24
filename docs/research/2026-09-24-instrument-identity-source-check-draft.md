@@ -43,7 +43,7 @@ Repeat this identity check separately for each instrument and jurisdiction: secu
 | U.S. ADS, symbol `TM` | A U.S. quote needs its NYSE venue, USD, ADS unit and the date-effective ten-share ratio. |
 | Issuer relationship | Same company exposure does not mean price equality or interchangeable daily closes. A comparison would additionally require synchronized market dates, FX basis, corporate-action treatment and source licensing; no such comparison is performed here. |
 
-**Historical warning:** Toyota's filing says the ADSs used an earlier, different arrangement before the sponsored NYSE listing in September 1999. Never apply the present ratio or listing history to older observations without date-specific evidence. This is an educational identity distinction only; no Toyota price, FX rate or market feed was acquired or admitted.
+**Historical warning:** Toyota's filing describes five unsponsored ADS facilities on Nasdaq before the sponsored NYSE listing in September 1999. This record does not establish their historical share-per-ADS ratios. Never apply the present ratio or listing history to older observations without date-specific evidence. This is an educational identity distinction only; no Toyota price, FX rate or market feed was acquired or admitted.
 
 
 ## Third source-backed case: equity option contract versus underlying share
