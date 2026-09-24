@@ -33,7 +33,7 @@ from radar_v4.integrity import (
     scan_forbidden_fields,
 )
 from radar_v4.local_session import run_session_from_pack
-from radar_v4.observation_json import intake_observation_json
+from radar_v4.observation_json import intake_observation_json, summarize_observation_intake
 from radar_v4.pack_describe import (
     describe_pack,
     inspect_pack_layout,
@@ -3569,16 +3569,11 @@ def _show_observation(path: str) -> int:
         sys.stderr.write(f"UNREADABLE_JSON: {exc}\n")
         return 2
     report = intake_observation_json(text)
-    document = {
-        "accepted": report.accepted_count(),
-        "document_kind": "radar_v4.observation",
-        "quarantined": report.quarantined_count(),
-        "unreadable": report.unreadable_count(),
-    }
+    document = summarize_observation_intake(report)
     sys.stdout.write(
         dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True) + "\n"
     )
-    return 0 if report.accepted_count() else 2
+    return 0 if document["intake_clean"] else 2
 
 
 def _run_admission(pack: str) -> int:
