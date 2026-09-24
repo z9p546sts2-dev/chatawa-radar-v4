@@ -5,7 +5,7 @@
 
 ## Retrieval outcome
 
-A bounded repository search of default branches for `GM-001` and `IND-014` found no original lessons. The conversation-history retrieval was unavailable on two attempts. A saved-file search did not identify an original lesson file. This establishes only that the original text was **not located by these checks**; it does not prove it never existed. The recovery draft's exact-text and completion claims remain unverified.
+A bounded repository search of default branches for `GM-001` and `IND-014` found no original lessons. Two early conversation-history retrieval attempts failed; a later retrieval returned summaries of the sequences but no full lesson text, audit, or durable original source link. A saved-file search did not identify an original lesson file. This establishes only that the original text was **not located by these checks**; it does not prove it never existed. The recovery draft's exact-text and completion claims remain unverified.
 
 ## First source-backed identity case: SPY
 
@@ -20,7 +20,7 @@ The fund page is a **primary fund/identity source**, not the selected price-feed
 
 ## Evidence still missing for one daily SPY observation
 
-- The original GM-001 lesson and audit, including exact wording and status.
+- Curriculum reconciliation with the original GM-001 lesson remains a separate open task; it does not itself select or qualify an SPY price source.
 - A selected provider and applicable terms for the exact proposed dataset and retained raw response.
 - Provider confirmation that `SPY` maps to this security and that its daily unadjusted close is the desired regular-session measurement.
 - Timezone, completed-session publication cutoff, revision/correction behavior, and exact exchange-close versus consolidated-close semantics.
