@@ -34,6 +34,26 @@ To qualify an actual product, verify the exact S&P 500 Price Return series and e
 
 The evidence route is to review applicable authorized subscription and agreement records, if they exist, then obtain specific S&P DJI documentation for unresolved product questions under a separate decision. This public repository must not contain credentials, contracts, or licensed market data.
 
+## 2026-09-24 public product-evidence check
+
+| Claim checked | Provider evidence | Gate result |
+|---|---|---|
+| Public index variant identity | On the [S&P 500 index page, Data → Tickers](https://www.spglobal.com/spdji/en/indices/equity/sp-500/), S&P DJI lists **Price Return** as Bloomberg ticker **SPX**, Reuters **.SPX**, and ISIN **US78378X1072**, separately from Total Return **SPXT** and Net Total Return **SPTR500N**. The page displays the USD Price Return variant. | **Public variant identity located.** The SPICE product/series key, exact export field, and account entitlement are still unverified. |
+| SPICE product capability | The [SPICE brochure](https://www.spglobal.com/spdji/es/documents/additional-material/spice-brochure.pdf) describes Advanced Download for index-level data and adjustable frequency/period, and describes S&P 500 index-level history dating to 1928. | **General capability located.** This does not establish the exact Price Return export, complete daily 2014–2023 rows, or this account's entitlement. |
+| Account-specific scope | The [SPICE subscription and licensing FAQ](https://www.spglobal.com/spdji/en/contentAsset/raw-data/67b43edf-1f23-414a-a922-8259432cb26d/fileAsset/) says subscriptions vary by indices, data type and historical depth, and directs a subscriber to confirm their coverage. | **HOLD.** No account-specific scope was reviewed. |
+| Storage and use | The [S&P DJI general disclaimer](https://www.spglobal.com/spdji/en/disclaimers/?indexes=) restricts storing, reproducing and distributing content without prior written permission. | **HOLD.** A relevant agreement or written authorization must establish permitted private retention, research use and derived-record handling. A public download description is not permission. |
+
+**Qualification checklist, in order:** (1) map the public S&P 500 Price Return identity (SPX) to the exact SPICE series/product key and reject total-return variants; (2) index-level daily closing field, calendar/date and timezone meaning, corrections and revision behavior; (3) account entitlement to the complete 2014–2023 span and export format; (4) written rights for the proposed raw-export custody and derived descriptive research records. Keep contracts, account identifiers, credentials and licensed observations outside this public repository. After those checks pass, separately decide whether to acquire and admit one provenance-complete artifact under the controlling gates.
+
+**Disposition:** S-001 direct and SPICE Advanced Download remain conditional selections for investigation. M1 product qualification remains **HOLD**; no Q-011 data, calculation, Phase 6 work or live operation was authorized by this public evidence check.
+
+## 2026-09-24 alternative-source screen (no source switch)
+
+- **Alpha Vantage — targeted candidate / HOLD.** The [official API documentation](https://www.alphavantage.co/documentation/) now names a premium `INDEX_DATA` endpoint with `symbol=SPX`, `interval=daily`, and decades of S&P 500 index OHLC history. This is a closer candidate than applying its equity `TIME_SERIES_DAILY` endpoint to an index. The [premium page](https://www.alphavantage.co/premium/) says historical index data requires a separate personal-use entitlement process; [terms](https://www.alphavantage.co/terms_of_service/) distinguish personal and commercial uses. Still unverified: exact Price Return lineage to S&P DJI, 2014–2023 daily completeness, correction semantics, private retention/derived-output rights, and any future Triton commercial use. No API call or purchase made.
+- **Massive Indices Custom Bars — reject for Q-011 period.** Its [published endpoint documentation](https://massive.com/docs/rest/indices/aggregates/custom-bars) says index aggregate records start **February 14, 2023**. That cannot supply Q-011's full 2014–2023 daily primary span even if a plan advertises “all history.” This finding is limited to that documented product.
+
+**Decision:** S-001 direct remains the declared conditional primary source class. Alpha Vantage `INDEX_DATA` is a specific alternative to qualify if the direct path is unavailable or unsuitable. Neither candidate is data-qualified, and Q-011 M1 remains HOLD. Do not substitute an ETF or shorten the locked period to make a source fit.
+
 ## Separation from other Radar V4 work
 
 Q-011 concerns the **S&P 500 Price Return Index, 2014–2023**. Closed, unmerged [PR #38](https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/38) concerned a separate bounded **SPY** historical learning cycle and remains preserved as historical evidence. Its source authorization, scope, code, and proposed extract do not transfer to Q-011.
