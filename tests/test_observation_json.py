@@ -131,7 +131,7 @@ class ObservationJsonIntakeTests(unittest.TestCase):
         report = intake_observation_json(json.dumps([valid, valid, other, invalid, 17]))
         summary = summarize_observation_intake(report)
         self.assertEqual((summary["accepted"], summary["quarantined"], summary["unreadable"]), (3, 1, 1))
-        self.assertFalse(summary["complete"])
+        self.assertFalse(summary["intake_clean"])
         self.assertEqual(summary["refusal_codes"], {"INVALID_CLOSE": 1, "UNREADABLE_ITEM": 1})
         self.assertEqual(len(summary["groups"]), 2)
         first = next(group for group in summary["groups"] if group["symbol_or_universe"] == "SYN:AAA")
@@ -139,11 +139,11 @@ class ObservationJsonIntakeTests(unittest.TestCase):
         self.assertEqual(first["observations"], 2)
         self.assertEqual(len(first["market_timestamps"]), 2)
         self.assertFalse(
-            summarize_observation_intake(intake_observation_json(json.dumps([valid, valid])))["complete"]
+            summarize_observation_intake(intake_observation_json(json.dumps([valid, valid])))["intake_clean"]
         )
         other_group = next(group for group in summary["groups"] if group["symbol_or_universe"] == "SYN:BBB")
         self.assertEqual(other_group["missing_fields"], {"open": 1, "high": 1, "low": 1, "volume": 1})
-        self.assertTrue(summarize_observation_intake(intake_observation_json(json.dumps(valid)))["complete"])
+        self.assertTrue(summarize_observation_intake(intake_observation_json(json.dumps(valid)))["intake_clean"])
 
 
 if __name__ == "__main__":
