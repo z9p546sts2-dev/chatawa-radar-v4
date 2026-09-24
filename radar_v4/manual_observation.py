@@ -37,7 +37,7 @@ def prepare_manual_observation(
     if root.is_symlink() or not root.is_dir():
         raise ManualObservationError("PRIVATE_ROOT_REQUIRED", "use an existing private directory")
     resolved_root = root.resolve()
-    if _inside(resolved_root, repository):
+    if _inside_repository(resolved_root, repository):
         raise ManualObservationError("PUBLIC_PATH_REFUSED", "custody directory is inside the repository")
     if os.name != "nt" and stat.S_IMODE(root.stat().st_mode) & 0o077:
         raise ManualObservationError("PRIVATE_ROOT_REQUIRED", "custody directory must be owner-only")
@@ -105,7 +105,11 @@ def prepare_manual_observation(
 
 def _read_private_input(path: str | Path, repository: Path) -> bytes:
     candidate = Path(path)
-    if candidate.is_symlink() or not candidate.is_file() or _inside(candidate.resolve(), repository):
+    if (
+        candidate.is_symlink()
+        or not candidate.is_file()
+        or _inside_repository(candidate.resolve(), repository)
+    ):
         raise ManualObservationError("PUBLIC_PATH_REFUSED", "input must be a regular file outside the repository")
     try:
         data = candidate.read_bytes()
@@ -128,3 +132,9 @@ def _inside(path: Path, root: Path) -> bool:
     except ValueError:
         return False
     return True
+
+
+def _inside_repository(path: Path, project_root: Path) -> bool:
+    return _inside(path, project_root) or any(
+        (parent / ".git").exists() for parent in (path, *path.parents)
+    )
