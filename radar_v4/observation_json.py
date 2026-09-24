@@ -44,8 +44,8 @@ class ObservationIntakeReport:
 def intake_observation_json(text: str) -> ObservationIntakeReport:
     """Parse one object or array of observation documents."""
     try:
-        raw = loads(text)
-    except JSONDecodeError as exc:
+        raw = loads(text, object_pairs_hook=_unique_keys)
+    except (JSONDecodeError, ValueError) as exc:
         return ObservationIntakeReport(
             accepted=(),
             quarantined=(),
@@ -54,7 +54,7 @@ def intake_observation_json(text: str) -> ObservationIntakeReport:
                     index=0,
                     raw=text,
                     code="UNREADABLE_JSON",
-                    reason=f"JSON could not be parsed: {exc.msg}",
+                    reason=f"JSON could not be parsed: {exc.msg if isinstance(exc, JSONDecodeError) else exc}",
                 ),
             ),
         )
@@ -114,6 +114,15 @@ def intake_observation_json(text: str) -> ObservationIntakeReport:
         quarantined=tuple(quarantined),
         unreadable=tuple(unreadable),
     )
+
+
+def _unique_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
 
 
 def _parse_document(item: Mapping[str, Any]) -> Observation | UnreadableDocument:
