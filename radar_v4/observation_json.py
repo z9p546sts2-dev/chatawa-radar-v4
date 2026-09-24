@@ -221,7 +221,10 @@ def _parse_envelope(raw: object) -> EvidenceEnvelope | UnreadableDocument:
             )
     if isinstance(raw, str):
         try:
-            return EvidenceEnvelope.deserialize(raw)
+            decoded = loads(raw, object_pairs_hook=_unique_keys)
+            if not isinstance(decoded, Mapping):
+                raise ValueError("serialized envelope must be a JSON object")
+            return EvidenceEnvelope.from_mapping(decoded)
         except (TypeError, ValueError) as exc:
             reason = str(exc)
             code = (
