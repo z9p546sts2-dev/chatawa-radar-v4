@@ -10,7 +10,10 @@ from py_compile import compile as py_compile
 
 from radar_v4.evidence import ProvenanceClass
 from radar_v4.observation import Observation, ObservationPayload
-from radar_v4.observation_json import intake_observation_json
+from radar_v4.observation_json import (
+    intake_observation_json,
+    summarize_observation_intake,
+)
 from tests.helpers import envelope
 
 
@@ -164,6 +167,62 @@ class ObservationJsonIntakeTests(unittest.TestCase):
                 self.assertEqual(result.accepted_count(), 0)
                 self.assertEqual(result.unreadable[0].code, "JSON_NUMBER_NOT_STRING")
 
+
+    def test_summary_groups_sources_and_reports_partial_refusal(self) -> None:
+        second = Observation.create(
+            envelope(provenance=ProvenanceClass.SYNTHETIC, symbol="SYN:BBB"),
+            ObservationPayload(close="4"),
+        )
+        valid = {
+            "envelope": self.obs.envelope.serialize(),
+            "payload": self.obs.payload.canonical_payload(),
+            "payload_checksum": self.obs.payload_checksum,
+        }
+        other = {
+            "envelope": second.envelope.serialize(),
+            "payload": second.payload.canonical_payload(),
+            "payload_checksum": second.payload_checksum,
+        }
+        invalid = {**valid, "payload": {**valid["payload"], "close": "oops"}}
+        invalid["payload_checksum"] = ObservationPayload(
+            close="oops", open="10.00", high="11.00", low="9.00", volume="100"
+        ).compute_checksum()
+        report = intake_observation_json(json.dumps([valid, valid, other, invalid, 17]))
+        summary = summarize_observation_intake(report)
+        self.assertEqual(
+            (summary["accepted"], summary["quarantined"], summary["unreadable"]),
+            (3, 1, 1),
+        )
+        self.assertFalse(summary["intake_clean"])
+        self.assertEqual(
+            summary["refusal_codes"], {"INVALID_CLOSE": 1, "UNREADABLE_ITEM": 1}
+        )
+        self.assertEqual(len(summary["groups"]), 2)
+        first = next(
+            group for group in summary["groups"]
+            if group["symbol_or_universe"] == "SYN:AAA"
+        )
+        self.assertEqual(first["repeated_market_timestamps"], 1)
+        self.assertEqual(first["observations"], 2)
+        self.assertEqual(len(first["market_timestamps"]), 2)
+        self.assertFalse(
+            summarize_observation_intake(
+                intake_observation_json(json.dumps([valid, valid]))
+            )["intake_clean"]
+        )
+        other_group = next(
+            group for group in summary["groups"]
+            if group["symbol_or_universe"] == "SYN:BBB"
+        )
+        self.assertEqual(
+            other_group["missing_fields"],
+            {"open": 1, "high": 1, "low": 1, "volume": 1},
+        )
+        self.assertTrue(
+            summarize_observation_intake(intake_observation_json(json.dumps(valid)))[
+                "intake_clean"
+            ]
+        )
 
 if __name__ == "__main__":
     unittest.main()
