@@ -86,7 +86,7 @@ The six example rows were reviewed for source identity, measurement identity, hi
 |---|---|
 | Toyota's pre-1999 ADS facilities do not establish their historical share-per-ADS ratios in this check. | Wording corrected; historical ratio remains UNKNOWN. |
 | The linked CME chapter is not by itself a dated verification of rules at a future observation time. | “Current” removed; then-applicable rules remain OPEN. |
-| The Treasury security row uses an offering announcement and its auction row uses a general pricing explanation. | Conceptual distinction stands; a named auction **result** and secondary-market quotation have not been checked. |
+| The Treasury security row uses an offering announcement and its auction row initially used a general pricing explanation. | The [official June 7, 2022 auction result](https://www.treasurydirect.gov/instit/annceresult/press/preanre/2022/R_20220607_1.pdf) now matches CUSIP `91282CEU1` and the issue date. A date-qualified secondary-market quotation and source rights remain OPEN. |
 | SPY, FX, Treasury, and WTI references describe distinct objects or measurements. | Examples only; feed semantics, effective dates, corrections, rights, and access remain OPEN. |
 | The common questions cover identity, rules, observation, context, custody, and claim; a future data comparison additionally needs explicit **as-of availability** and transformation lineage. | Record both fields for any proposed comparison before data qualification. |
 
