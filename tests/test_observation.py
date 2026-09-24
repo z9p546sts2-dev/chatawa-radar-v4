@@ -53,6 +53,39 @@ class ObservationTests(unittest.TestCase):
         self.assertFalse(result.valid)
         self.assertIn("INVALID_CLOSE", result.issue_codes())
 
+    def test_nonfinite_values_are_refused_without_crashing(self) -> None:
+        for field, value in (
+            ("close", "NaN"),
+            ("close", "Infinity"),
+            ("open", "sNaN"),
+            ("high", "NaN"),
+            ("low", "-Infinity"),
+            ("volume", "Infinity"),
+        ):
+            with self.subTest(field=field, value=value):
+                payload = {"close": "10", "high": "11", "low": "9", field: value}
+                result = validate_observation(
+                    Observation.create(envelope(), ObservationPayload(**payload))
+                )
+                self.assertFalse(result.valid)
+                self.assertIn(f"INVALID_{field.upper()}", result.issue_codes())
+
+    def test_negative_volume_rejected(self) -> None:
+        item = Observation.create(envelope(), ObservationPayload(close="10", volume="-1"))
+        self.assertIn("INVALID_VOLUME", validate_observation(item).issue_codes())
+
+    def test_open_outside_range_rejected(self) -> None:
+        item = Observation.create(
+            envelope(), ObservationPayload(open="12", high="11", low="9", close="10")
+        )
+        self.assertIn("OHLC_CONTRADICTION", validate_observation(item).issue_codes())
+
+    def test_negative_price_allowed_for_asset_agnostic_observation(self) -> None:
+        item = Observation.create(
+            envelope(), ObservationPayload(open="-10", high="-9", low="-11", close="-10")
+        )
+        self.assertTrue(validate_observation(item).valid)
+
 
 if __name__ == "__main__":
     unittest.main()
