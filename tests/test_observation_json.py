@@ -92,6 +92,18 @@ class ObservationJsonIntakeTests(unittest.TestCase):
                 self.assertEqual(result.unreadable[0].code, "UNREADABLE_JSON")
                 self.assertIn("duplicate JSON key", result.unreadable[0].reason)
 
+        serialized_envelope = self.obs.envelope.serialize().replace(
+            '"provider":', '"provider":"OTHER","provider":', 1
+        )
+        result = intake_observation_json(json.dumps({
+            "envelope": serialized_envelope,
+            "payload": self.obs.payload.canonical_payload(),
+            "payload_checksum": self.obs.payload_checksum,
+        }))
+        self.assertEqual(result.accepted_count(), 0)
+        self.assertEqual(result.unreadable[0].code, "UNREADABLE_ITEM")
+        self.assertIn("duplicate JSON key", result.unreadable[0].reason)
+
     def test_payload_checksum_mismatch_is_quarantined(self) -> None:
         doc = json.dumps(
             {
