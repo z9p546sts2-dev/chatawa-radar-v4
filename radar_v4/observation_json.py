@@ -6,12 +6,13 @@ invalid observations are quarantined with their validation issues.
 
 from __future__ import annotations
 
+from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from json import JSONDecodeError, loads
 from typing import Any
 
-from radar_v4.evidence import EvidenceEnvelope
+from radar_v4.evidence import EvidenceEnvelope, format_canonical_timestamp
 from radar_v4.json_intake import UnreadableDocument
 from radar_v4.observation import Observation, ObservationPayload
 from radar_v4.observation_validation import validate_observation
@@ -208,3 +209,66 @@ def _optional(value: object) -> str | None:
     if value is None:
         return None
     return str(value)
+
+
+def summarize_observation_intake(report: ObservationIntakeReport) -> dict[str, Any]:
+    """Read-only coverage and refusal summary. No calendar or freshness claim."""
+    groups: dict[tuple[str, ...], dict[str, Any]] = {}
+    for item in report.accepted:
+        envelope = item.envelope
+        key = (
+            envelope.provenance_class or "",
+            envelope.provider or "",
+            envelope.symbol_or_universe or "",
+            envelope.interval or "",
+            envelope.timezone or "",
+            envelope.transformation_version or "",
+        )
+        if key not in groups:
+            groups[key] = {
+                "provenance_class": key[0],
+                "provider": key[1],
+                "symbol_or_universe": key[2],
+                "interval": key[3],
+                "timezone": key[4],
+                "transformation_version": key[5],
+                "observations": 0,
+                "missing_fields": {"open": 0, "high": 0, "low": 0, "volume": 0},
+                "market_timestamps": [],
+            }
+        group = groups[key]
+        group["observations"] += 1
+        for field in ("open", "high", "low", "volume"):
+            if getattr(item.payload, field) is None:
+                group["missing_fields"][field] += 1
+        assert envelope.market_timestamp is not None  # accepted observations are valid
+        group["market_timestamps"].append(envelope.market_timestamp)
+
+    summaries = []
+    for key in sorted(groups):
+        group = groups[key]
+        timestamps = sorted(group["market_timestamps"])
+        group["market_timestamps"] = [
+            format_canonical_timestamp(timestamp) for timestamp in timestamps
+        ]
+        group["repeated_market_timestamps"] = len(timestamps) - len(set(timestamps))
+        summaries.append(group)
+
+    refusal_codes: Counter[str] = Counter()
+    for item in report.quarantined:
+        refusal_codes.update(item.validation.issue_codes())
+    refusal_codes.update(item.code for item in report.unreadable)
+    return {
+        "document_kind": "radar_v4.observation",
+        "accepted": report.accepted_count(),
+        "quarantined": report.quarantined_count(),
+        "unreadable": report.unreadable_count(),
+        "complete": (
+            bool(report.accepted)
+            and not report.quarantined
+            and not report.unreadable
+            and all(group["repeated_market_timestamps"] == 0 for group in summaries)
+        ),
+        "groups": summaries,
+        "refusal_codes": dict(sorted(refusal_codes.items())),
+    }
