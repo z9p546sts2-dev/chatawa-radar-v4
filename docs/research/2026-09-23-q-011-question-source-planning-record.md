@@ -34,6 +34,18 @@ To qualify an actual product, verify the exact S&P 500 Price Return series and e
 
 The evidence route is to review applicable authorized subscription and agreement records, if they exist, then obtain specific S&P DJI documentation for unresolved product questions under a separate decision. This public repository must not contain credentials, contracts, or licensed market data.
 
+## 2026-09-24 public product-evidence check
+
+| Claim checked | Provider evidence | Gate result |
+|---|---|---|
+| SPICE product capability | The [SPICE brochure](https://www.spglobal.com/spdji/es/documents/additional-material/spice-brochure.pdf) describes Advanced Download for index-level data and adjustable frequency/period, and describes S&P 500 index-level history dating to 1928. | **General capability located.** This does not establish the exact Price Return export, complete daily 2014–2023 rows, or this account's entitlement. |
+| Account-specific scope | The [SPICE subscription and licensing FAQ](https://www.spglobal.com/spdji/en/contentAsset/raw-data/67b43edf-1f23-414a-a922-8259432cb26d/fileAsset/) says subscriptions vary by indices, data type and historical depth, and directs a subscriber to confirm their coverage. | **HOLD.** No account-specific scope was reviewed. |
+| Storage and use | The [S&P DJI general disclaimer](https://www.spglobal.com/spdji/en/disclaimers/?indexes=) restricts storing, reproducing and distributing content without prior written permission. | **HOLD.** A relevant agreement or written authorization must establish permitted private retention, research use and derived-record handling. A public download description is not permission. |
+
+**Qualification checklist, in order:** (1) provider-identified S&P 500 Price Return series and stable identifier, not a total-return variant; (2) index-level daily closing field, calendar/date and timezone meaning, corrections and revision behavior; (3) account entitlement to the complete 2014–2023 span and export format; (4) written rights for the proposed raw-export custody and derived descriptive research records. Keep contracts, account identifiers, credentials and licensed observations outside this public repository. After those checks pass, separately decide whether to acquire and admit one provenance-complete artifact under the controlling gates.
+
+**Disposition:** S-001 direct and SPICE Advanced Download remain conditional selections for investigation. M1 product qualification remains **HOLD**; no Q-011 data, calculation, Phase 6 work or live operation was authorized by this public evidence check.
+
 ## Separation from other Radar V4 work
 
 Q-011 concerns the **S&P 500 Price Return Index, 2014–2023**. Closed, unmerged [PR #38](https://github.com/z9p546sts2-dev/chatawa-radar-v4/pull/38) concerned a separate bounded **SPY** historical learning cycle and remains preserved as historical evidence. Its source authorization, scope, code, and proposed extract do not transfer to Q-011.
