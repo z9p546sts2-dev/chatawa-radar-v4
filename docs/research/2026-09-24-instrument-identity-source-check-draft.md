@@ -31,3 +31,16 @@ The fund page is a **primary fund/identity source**, not the selected price-feed
 Repeat this identity check separately for each instrument and jurisdiction: security/contract identity, benchmark or underlying, exchange or publisher, currency, effective dates, and the precise observed measure. If a cross-listed instrument, ADR, local share, future continuation, FX pair, or index variant fails one field, mark it UNKNOWN rather than carrying over an apparently similar U.S. mapping.
 
 **Disposition:** SPY fund-versus-index and closing-price-versus-NAV distinctions are source-backed educational facts. GM-001 source recovery is OPEN; source-qualified real observation is HOLD. This note does not complete a lesson or change pilot authority.
+
+
+## Second source-backed case: Japanese ordinary share versus U.S. ADS
+
+[Toyota's corporate stock overview](https://global.toyota/en/ir/stock/outline/) identifies its Japanese securities code as `7203`, with Tokyo and Nagoya listings. Its [fiscal 2026 Form 20-F](https://global.toyota/pages/global_toyota/ir/library/sec/20-F_202603_final.pdf) identifies `TM` as the New York Stock Exchange trading symbol for American Depositary Shares (ADSs). Each ADS represents **ten** common shares under that filing; BNY Mellon operates the sponsored facility. The [SEC's ADR bulletin](https://www.sec.gov/files/investor/alerts/adr-bulletin.pdf) explains the general depositary-share structure and that such ratios vary by program.
+
+| Same issuer, distinct security/market identity | Consequence for a future observation |
+|---|---|
+| Japanese ordinary share, code `7203` | A local share quote needs its Japanese venue, currency, date/session and share basis. |
+| U.S. ADS, symbol `TM` | A U.S. quote needs its NYSE venue, USD, ADS unit and the date-effective ten-share ratio. |
+| Issuer relationship | Same company exposure does not mean price equality or interchangeable daily closes. A comparison would additionally require synchronized market dates, FX basis, corporate-action treatment and source licensing; no such comparison is performed here. |
+
+**Historical warning:** Toyota's filing says the ADSs used an earlier, different arrangement before the sponsored NYSE listing in September 1999. Never apply the present ratio or listing history to older observations without date-specific evidence. This is an educational identity distinction only; no Toyota price, FX rate or market feed was acquired or admitted.
