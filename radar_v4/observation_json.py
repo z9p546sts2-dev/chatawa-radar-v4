@@ -143,6 +143,35 @@ def _parse_document(item: Mapping[str, Any]) -> Observation | UnreadableDocument
             code="PAYLOAD_NOT_JSON_OBJECT",
             reason="payload must be a JSON object",
         )
+    # Preserve fixture shorthand, but never infer or discard parts of a
+    # non-fixture market record while parsing it for review.
+    strict = envelope.provenance_class not in {"FIXTURE", "SYNTHETIC"}
+    if strict:
+        extra = sorted(set(payload_raw) - {"close", "open", "high", "low", "volume"})
+        if extra:
+            return UnreadableDocument(
+                index=0,
+                raw=repr(payload_raw),
+                code="EXTRA_PAYLOAD_KEY",
+                reason=f"unsupported payload keys: {', '.join(extra)}",
+            )
+        for field in ("close", "open", "high", "low", "volume"):
+            value = payload_raw.get(field)
+            if value is not None and not isinstance(value, str):
+                number = isinstance(value, (int, float)) and not isinstance(value, bool)
+                return UnreadableDocument(
+                    index=0,
+                    raw=repr(payload_raw),
+                    code="JSON_NUMBER_NOT_STRING" if number else "UNREADABLE_ITEM",
+                    reason=f"{field} must be a decimal string",
+                )
+        if item.get("payload_checksum") is None:
+            return UnreadableDocument(
+                index=0,
+                raw=repr(item),
+                code="MISSING_PAYLOAD_CHECKSUM",
+                reason="non-fixture observation requires a supplied payload checksum",
+            )
     try:
         payload = ObservationPayload(
             close="" if payload_raw.get("close") is None else str(payload_raw.get("close")),
