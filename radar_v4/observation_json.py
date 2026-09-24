@@ -143,8 +143,8 @@ def _parse_document(item: Mapping[str, Any]) -> Observation | UnreadableDocument
             code="PAYLOAD_NOT_JSON_OBJECT",
             reason="payload must be a JSON object",
         )
-    # Preserve fixture shorthand, but never infer or discard parts of a
-    # non-fixture market record while parsing it for review.
+    # Preserve fixture shorthand; refuse missing checksums, numeric coercion,
+    # and discarded payload fields for non-fixture records.
     strict = envelope.provenance_class not in {"FIXTURE", "SYNTHETIC"}
     if strict:
         extra = sorted(set(payload_raw) - {"close", "open", "high", "low", "volume"})
