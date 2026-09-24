@@ -3573,7 +3573,7 @@ def _show_observation(path: str) -> int:
     sys.stdout.write(
         dumps(document, sort_keys=True, separators=(",", ":"), ensure_ascii=True) + "\n"
     )
-    return 0 if document["complete"] else 2
+    return 0 if document["intake_clean"] else 2
 
 
 def _run_admission(pack: str) -> int:
