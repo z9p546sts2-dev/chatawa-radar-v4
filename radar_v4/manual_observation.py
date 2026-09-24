@@ -68,7 +68,7 @@ def prepare_manual_observation(
 
     receipt = {
         "document_kind": "radar_v4.manual_observation_receipt",
-        "review_status": "PENDING_SOURCE_REVIEW",
+        "review_status": "pending_source_review",
         "provenance_class": envelope.provenance_class,
         "provider": envelope.provider,
         "symbol_or_universe": envelope.symbol_or_universe,
