@@ -110,6 +110,16 @@ class ManualObservationTests(unittest.TestCase):
             prepare_manual_observation(self.raw, self.raw, self.custody)
         self.assertEqual(error.exception.code, "INVALID_OBSERVATION")
 
+    def test_other_git_worktree_is_not_custody(self) -> None:
+        worktree = self.base / "another-project"
+        worktree.mkdir()
+        (worktree / ".git").mkdir()
+        candidate = worktree / "custody"
+        candidate.mkdir(mode=0o700)
+        with self.assertRaises(ManualObservationError) as error:
+            prepare_manual_observation(self.observation_path, self.raw, candidate)
+        self.assertEqual(error.exception.code, "PUBLIC_PATH_REFUSED")
+
 
 if __name__ == "__main__":
     unittest.main()
