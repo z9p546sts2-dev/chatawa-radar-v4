@@ -49,21 +49,16 @@ All rows start **UNVERIFIED AS OPERATIONAL KNOWLEDGE**. The GM/IND recovery draf
 
 Track status for each **family × instrument × venue/jurisdiction × source/product × interval × period**, not as a single global completion percentage. Mark unavailable or contradictory coverage as **UNKNOWN**. Do not fill an evidence gap with a neighboring market proxy without naming and reviewing the substitution.
 
-## First bounded work
+## Work status and boundaries
 
-1. Recover original GM-001–GM-015 and IND-001–IND-014 lesson texts and audits. Reconcile exact scope and status; do not invent missing IND titles.
-2. Pick the first educational subtopic, instrument identity, and fill a row with source citations and unresolved terms. Use it to test whether this ledger captures real gaps without new code.
-3. Keep the provisional SPY one-close observer in PR #41 as a separate source and operational decision. It is one narrow example, not a prerequisite for learning every family and not proof of global readiness.
-4. Expand one family at a time only when a specific learning or research question needs it. Maintain an explicit map of missing countries, instruments and periods.
+- **Done for this draft:** mapped market families; recorded six educational identity examples and a first-pass audit below. The source checks do not complete any original GM/IND lesson.
+- **Still open:** recover and privately reconcile the original GM-001–GM-015 and IND-001–IND-014 texts and audits. The later conversation retrieval returned summaries only; connected repository and saved-file searches did not locate the originals. Keep unresolved exact titles and banked status UNKNOWN.
+- **Separate:** the provisional SPY one-close observer remains in draft PR #41. Its source and operating decisions do not qualify this curriculum or demonstrate global readiness.
+- **When expanding:** add a family only for a specific learning question and maintain explicit missing countries, instruments and periods. An actual comparison requires as-of availability and transformation lineage as described below.
 
 Atlas and World Almanac may later supply source-checked economic and geographic context, but their inventories do not become Radar market observations or market understanding by linkage alone.
 
 This ledger grants no vendor access, purchase, raw-data admission, method, feature, score, threshold, ranking, backtest, dashboard, broker connection or execution. Todd retains the separate decisions named in `GOVERNANCE.md`.
-
-Learning and Earning It.
-Stay on course.
-No drift.
-
 
 ## First-pass source checks recorded on this draft branch
 
@@ -91,3 +86,7 @@ The six example rows were reviewed for source identity, measurement identity, hi
 | The common questions cover identity, rules, observation, context, custody, and claim; a future data comparison additionally needs explicit **as-of availability** and transformation lineage. | Record both fields for any proposed comparison before data qualification. |
 
 **Next priority:** recover the original GM/IND texts and audits, then reconcile their scope with this ledger. For any bounded example proposed for actual data, identify exact product terms, historical semantics, correction path, as-of availability, and transformations before an observation. More educational examples alone do not establish market evaluation ability.
+
+Learning and Earning It.
+Stay on course.
+No drift.
