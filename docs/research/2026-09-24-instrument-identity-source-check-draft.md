@@ -44,3 +44,16 @@ Repeat this identity check separately for each instrument and jurisdiction: secu
 | Issuer relationship | Same company exposure does not mean price equality or interchangeable daily closes. A comparison would additionally require synchronized market dates, FX basis, corporate-action treatment and source licensing; no such comparison is performed here. |
 
 **Historical warning:** Toyota's filing says the ADSs used an earlier, different arrangement before the sponsored NYSE listing in September 1999. Never apply the present ratio or listing history to older observations without date-specific evidence. This is an educational identity distinction only; no Toyota price, FX rate or market feed was acquired or admitted.
+
+
+## Third source-backed case: equity option contract versus underlying share
+
+The [Options Industry Council's basics](https://www.optionseducation.org/optionsoverview/options-basics), published by OCC, defines an equity call/put by **underlying security, right, strike and expiration**. Standard contracts usually represent 100 shares; a quoted premium is on a per-share basis. The [OIC corporate-actions FAQ](https://www.optionseducation.org/referencelibrary/faq/splits-mergers-spinoffs-bankruptcies) explains that a split, merger or spinoff can change the deliverable and that OCC information memos describe specific adjustments.
+
+| Distinct identity | Required before a future observation |
+|---|---|
+| Underlying share | Actual security identity and date-effective listing/corporate actions. A share price is not an option premium. |
+| Option series | Clearing/venue product, option root, underlying, expiration, call/put right, strike, currency, exercise and settlement terms, premium multiplier, date-effective deliverable. |
+| Adjusted contract | Exact OCC adjustment memo and effective date; do not assume the ordinary 100-share deliverable from a familiar ticker or strike. |
+
+**Refusal example:** Two contracts showing the same underlying symbol and strike can have different roots and different deliverables after a corporate action. They cannot be treated as identical option observations without the exact series and adjustment state. No option quote, chain or market data was acquired here. Original GM-004 remains unrecovered.
