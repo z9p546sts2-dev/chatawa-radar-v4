@@ -105,6 +105,65 @@ class ObservationJsonIntakeTests(unittest.TestCase):
         self.assertEqual(result.accepted_count(), 0)
         self.assertEqual(result.unreadable[0].code, "ENVELOPE_NOT_JSON_OBJECT")
 
+    def test_historical_record_with_supplied_checksum_is_shape_valid(self) -> None:
+        item = Observation.create(
+            envelope(provenance=ProvenanceClass.HISTORICAL),
+            ObservationPayload(close="10.50", volume="100"),
+        )
+        doc = json.dumps({
+            "envelope": item.envelope.serialize(),
+            "payload": item.payload.canonical_payload(),
+            "payload_checksum": item.payload_checksum,
+        })
+        result = intake_observation_json(doc)
+        self.assertEqual(result.accepted_count(), 1)
+        self.assertEqual(result.unreadable_count(), 0)
+
+    def test_nonfixture_missing_checksum_is_not_filled_in(self) -> None:
+        item = Observation.create(
+            envelope(provenance=ProvenanceClass.HISTORICAL),
+            ObservationPayload(close="10.50"),
+        )
+        doc = json.dumps({
+            "envelope": item.envelope.serialize(),
+            "payload": item.payload.canonical_payload(),
+        })
+        result = intake_observation_json(doc)
+        self.assertEqual(result.accepted_count(), 0)
+        self.assertEqual(result.unreadable[0].code, "MISSING_PAYLOAD_CHECKSUM")
+
+    def test_nonfixture_extra_payload_field_is_not_discarded(self) -> None:
+        item = Observation.create(
+            envelope(provenance=ProvenanceClass.HISTORICAL),
+            ObservationPayload(close="10.50"),
+        )
+        payload = {**item.payload.canonical_payload(), "signal": "buy"}
+        doc = json.dumps({
+            "envelope": item.envelope.serialize(),
+            "payload": payload,
+            "payload_checksum": item.payload_checksum,
+        })
+        result = intake_observation_json(doc)
+        self.assertEqual(result.accepted_count(), 0)
+        self.assertEqual(result.unreadable[0].code, "EXTRA_PAYLOAD_KEY")
+
+    def test_nonfixture_numeric_json_is_not_coerced(self) -> None:
+        item = Observation.create(
+            envelope(provenance=ProvenanceClass.LIVE),
+            ObservationPayload(close="10.50", volume="100"),
+        )
+        for field, value in (("close", 10.5), ("volume", 100)):
+            with self.subTest(field=field):
+                payload = {**item.payload.canonical_payload(), field: value}
+                doc = json.dumps({
+                    "envelope": item.envelope.serialize(),
+                    "payload": payload,
+                    "payload_checksum": item.payload_checksum,
+                })
+                result = intake_observation_json(doc)
+                self.assertEqual(result.accepted_count(), 0)
+                self.assertEqual(result.unreadable[0].code, "JSON_NUMBER_NOT_STRING")
+
 
 if __name__ == "__main__":
     unittest.main()
