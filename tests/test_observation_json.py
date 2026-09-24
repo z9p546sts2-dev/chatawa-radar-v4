@@ -80,6 +80,18 @@ class ObservationJsonIntakeTests(unittest.TestCase):
         self.assertEqual(result.unreadable_count(), 1)
         self.assertEqual(result.unreadable[0].code, "UNREADABLE_JSON")
 
+    def test_duplicate_keys_are_refused_before_values_are_discarded(self) -> None:
+        for doc in (
+            '{"payload":{},"payload":{},"envelope":{}}',
+            '{"payload":{"close":"1","close":"2"},"envelope":{}}',
+            '{"payload":{},"envelope":{"provider":"A","provider":"B"}}',
+        ):
+            with self.subTest(doc=doc):
+                result = intake_observation_json(doc)
+                self.assertEqual(result.accepted_count(), 0)
+                self.assertEqual(result.unreadable[0].code, "UNREADABLE_JSON")
+                self.assertIn("duplicate JSON key", result.unreadable[0].reason)
+
     def test_payload_checksum_mismatch_is_quarantined(self) -> None:
         doc = json.dumps(
             {
