@@ -46,7 +46,7 @@ class ManualObservationTests(unittest.TestCase):
         self._write_observation(item)
         first = prepare_manual_observation(self.observation_path, self.raw, self.custody)
         receipt = json.loads(first.read_text(encoding="utf-8"))
-        self.assertEqual(receipt["review_status"], "PENDING_SOURCE_REVIEW")
+        self.assertEqual(receipt["review_status"], "pending_source_review")
         self.assertEqual(receipt["raw_sha256"], sha256(self.raw.read_bytes()).hexdigest())
         self.assertEqual(
             receipt["observation_sha256"],
