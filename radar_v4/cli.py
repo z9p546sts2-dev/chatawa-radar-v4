@@ -12,6 +12,7 @@ from radar_v4.bundle_verify import verify_snapshot_bundle, write_bundle_sidecars
 from radar_v4.checksum_sidecar import verify_checksum_sidecar, write_checksum_sidecar
 from radar_v4.declaration_json import intake_declaration_json
 from radar_v4.local_session import run_session_from_pack, run_session_from_snapshot_file
+from radar_v4.manual_observation import ManualObservationError, prepare_manual_observation
 from radar_v4.pack_export import PackExportError, export_snapshot_to_pack
 from radar_v4.pack_inventory import inventory_pack
 from radar_v4.pack_manifest import (
@@ -113,6 +114,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     export_pack.add_argument("--snapshot", required=True, help="snapshot file")
     export_pack.add_argument("--out", required=True, help="empty output directory")
+
+    manual = sub.add_parser(
+        "prepare-observation",
+        help="preserve one supplied HISTORICAL 1d record for private human review",
+    )
+    manual.add_argument("--observation", required=True, help="local observation JSON")
+    manual.add_argument("--raw", required=True, help="local raw source response file")
+    manual.add_argument("--custody", required=True, help="existing private directory")
 
     sub.add_parser("codes", help="print the refusal-code catalog")
 
@@ -217,6 +226,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
     if args.command == "export-pack":
         return _run_export_pack(args.snapshot, args.out)
+    if args.command == "prepare-observation":
+        try:
+            receipt = prepare_manual_observation(
+                args.observation, args.raw, args.custody
+            )
+        except ManualObservationError as exc:
+            sys.stderr.write(f"{exc.code}: {exc.reason}\n")
+            return 2
+        sys.stdout.write(str(receipt) + "\n")
+        return 0
     if args.command == "codes":
         return _run_codes()
     if args.command == "quarantine":
@@ -523,3 +542,4 @@ def _run_pack_compare(left: str, right: str) -> int:
         return 2
     sys.stdout.write(comparison.serialize() + "\n")
     return 0 if comparison.equal else 1
+
