@@ -63,3 +63,19 @@ This ledger grants no vendor access, purchase, raw-data admission, method, featu
 Learning and Earning It.
 Stay on course.
 No drift.
+
+
+## First-pass source checks recorded on this draft branch
+
+These checks explain meanings; they are **SOURCE-LOCATED for educational examples only**. No original GM lesson was recovered, and no row is DATA-QUALIFIED or OBSERVED.
+
+| Family touched | Example and source check | Remaining decisive gap |
+|---|---|---|
+| Funds/indexes | [SPY ETF, index, close and NAV](2026-09-24-instrument-identity-source-check-draft.md) | Vendor close semantics and fund-versus-index source rights. |
+| Listed equities/global receipts | [Toyota ordinary share versus U.S. ADS](2026-09-24-instrument-identity-source-check-draft.md) | Date-qualified foreign security mapping for any selected price source. |
+| Options | [Underlying versus option series and adjusted deliverable](2026-09-24-instrument-identity-source-check-draft.md) | Exact contract/adjustment memo for a specific date and source. |
+| FX | [ECB EUR-base informational reference rate](2026-09-24-fx-reference-identity-source-check-draft.md) | Fixing versus executable quote; terms and time alignment for an actual question. |
+| Sovereign rates | [Treasury note versus auction versus CMT curve](2026-09-24-treasury-rate-identity-source-check-draft.md) | Exact series/issue, methodology vintage and rights. |
+| Commodities/futures | [WTI spot versus delivery-month futures](2026-09-24-crude-spot-futures-identity-source-check-draft.md) | Product grade/location, contract month, roll and source rights. |
+
+**Next priority:** stop adding examples long enough to audit this first set against the missing original GM/IND lesson texts and decide whether the ledger's common questions exposed a missing dimension. A larger list of sourced examples is not by itself evidence that Radar can evaluate markets correctly.
