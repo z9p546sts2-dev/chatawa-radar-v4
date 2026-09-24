@@ -43,6 +43,14 @@ def prepare_manual_observation(
         raise ManualObservationError("PRIVATE_ROOT_REQUIRED", "custody directory must be owner-only")
     if Path(observation_path).resolve() == Path(raw_path).resolve():
         raise ManualObservationError("INVALID_OBSERVATION", "raw and observation inputs must be separate files")
+    try:
+        if Path(observation_path).samefile(raw_path):
+            raise ManualObservationError(
+                "INVALID_OBSERVATION", "raw and observation inputs must be separate files"
+            )
+    except OSError:
+        # The input reader below reports a missing or unreadable file.
+        pass
 
     observation_bytes = _read_private_input(observation_path, repository)
     raw_bytes = _read_private_input(raw_path, repository)
@@ -82,8 +90,9 @@ def prepare_manual_observation(
         "raw_sha256": sha256(raw_bytes).hexdigest(),
         "observation_sha256": sha256(observation_bytes).hexdigest(),
     }
-    temporary = Path(tempfile.mkdtemp(prefix=".observation-", dir=resolved_root))
+    temporary: Path | None = None
     try:
+        temporary = Path(tempfile.mkdtemp(prefix=".observation-", dir=resolved_root))
         _write_private(temporary / "raw.bin", raw_bytes)
         _write_private(temporary / "observation.json", observation_bytes)
         _write_private(
@@ -97,9 +106,15 @@ def prepare_manual_observation(
             raise ManualObservationError("FILE_EXISTS", "custody receipt already exists")
         temporary.rename(target)
         return target / "receipt.json"
+    except OSError as exc:
+        if temporary is not None:
+            shutil.rmtree(temporary, ignore_errors=True)
+        raise ManualObservationError(
+            "CUSTODY_WRITE_FAILED", "private custody could not be written"
+        ) from exc
     except BaseException:
-        if temporary.exists():
-            shutil.rmtree(temporary)
+        if temporary is not None:
+            shutil.rmtree(temporary, ignore_errors=True)
         raise
 
 
