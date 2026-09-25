@@ -4,7 +4,7 @@
 
 Radar V4 has a bounded evidence foundation plus a local Phase 5 path: admit a declared dataset, describe ordinary close-to-close differences, persist/verify/export snapshots, journal refusals, bind a measurement ruler, and verify pack-file integrity.
 
-Vendor download, live capture, and method research are not authorized. This is not a trading system.
+Vendor download, live capture, and method research are not authorized. This is not a trading system. (HA-1 authorizes only a private offline HISTORICAL pack MEASURED path for SPY/STOOQ via `session --allow-historical` — not a vendor client in `radar_v4/`. See `docs/governance/2026-09-24-ha1-authorize-spy-stooq-TC.md`.)
 
 ### Private VTI daily description
 
@@ -15,8 +15,7 @@ This command reads `receipt.json` and `vanguard-response.json`, checks source
 identity and the three latest dated prices, then prints one close-to-close
 price difference. It makes no network call and writes no files. Vanguard's
 `effectiveDate` remains a session date; no market timestamp is inferred.
-It does not admit a HISTORICAL dataset pack or change the `session` gate.
-Keep the source response, receipt, and any licensed bytes outside the repo.
+It does not admit a HISTORICAL dataset pack on the VTI path and does not widen VTI into pack admission. Separately, HA-1 on `main` (`a7451e4605ff…`; `docs/governance/2026-09-24-ha1-authorize-spy-stooq-TC.md`) lets `session --allow-historical` admit identity-valid HISTORICAL packs for private SPY/STOOQ MEASURED only; LIVE stays refused. Keep the VTI source response, receipt, and any licensed bytes outside the repo.
 
 ## Intended future role
 

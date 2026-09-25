@@ -121,3 +121,18 @@ TODD:                                  TC
 4. Claude audits memo ↔ landed `vti_date_observe` / CLI / tests before treating Item 1 as closed for audit purposes.
 
 **Tools verify. Cursor codes. Claude audits. Todd authorizes.**
+
+---
+
+## ADDENDUM — HA-1 session gate (2026-09-24) — TC accepted
+
+After this memo was signed, HA-1 #47 landed on `main` at a7451e4605ffb6914d4b1541add086c11fb1c2bb.
+`session --allow-historical` may admit identity-valid HISTORICAL packs for the
+SPY/STOOQ private MEASURED entitlement in docs/governance/2026-09-24-ha1-authorize-spy-stooq-TC.md. LIVE remains refused.
+
+This addendum corrects the factual statement that "`session` still refuses
+HISTORICAL". It does **not** change VTI scope: VTI remains a side path;
+`radar_pack_admitted: false`; VTI does not route through HA-1; Phase 5 metric
+remains close-to-close **difference**.
+
+TODD ACCEPT ADDENDUM: TC  DATE: 2026-09-24

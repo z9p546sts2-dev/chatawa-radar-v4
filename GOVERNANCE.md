@@ -57,13 +57,13 @@ The existence of this repository, roadmap, methodology, proposal, audit, authori
 - production status has been earned;
 - a vendor API, live download, or HISTORICAL data purchase is authorized.
 
-Phase 5 local FIXTURE/SYNTHETIC software is authorized. Phase 5 vendor/historical data access is not.
+Phase 5 local FIXTURE/SYNTHETIC software remains authorized. Separately, HA-1 (`docs/governance/2026-09-24-ha1-authorize-spy-stooq-TC.md`, on `main` at `a7451e4605ffb6914d4b1541add086c11fb1c2bb`) authorizes a narrow private HISTORICAL pack MEASURED path for SPY/STOOQ only via `session --allow-historical`. That is not open historical access, not LIVE, and not a vendor download inside `radar_v4/`.
 
 Todd subsequently authorized one narrow VTI private daily observation: an
 offline command may read a manually captured Vanguard VTI source response and
 receipt outside the repository and print a LEVEL 0 date-based price difference.
 This exception authorizes neither network code nor real-data pack admission;
-`session` continues to refuse HISTORICAL and LIVE records. The source's
+`session` refuses HISTORICAL unless `--allow-historical` is set (HA-1; SPY/STOOQ private MEASURED only — see `docs/governance/2026-09-24-ha1-authorize-spy-stooq-TC.md` @ `a7451e4605ff…`). LIVE stays refused. This VTI exception still authorizes neither network code nor pack admission through the VTI path. The source's
 session date may not be represented as an exact market timestamp. Raw vendor
 bytes and credentials remain outside the repository. The durable
 AUTHORIZE memo is
@@ -319,7 +319,9 @@ BUILD UNIT 2 — COMPLETE WITHIN SCOPE / ACCEPTED-TC
 BUILD UNITS 3–6 — COMPLETE WITHIN SCOPE
 PHASE 5 — AUTHORIZED-TC / UNITS 7–1300 COMPLETE WITHIN SCOPE
 VENDOR API / LIVE DOWNLOAD — NOT AUTHORIZED
-LIVE / HISTORICAL MARKET DATA — NOT AUTHORIZED
+LIVE MARKET DATA — NOT AUTHORIZED
+HISTORICAL PACK MEASURED — HA-1 ONLY (SPY/STOOQ; `session --allow-historical`; memo `docs/governance/2026-09-24-ha1-authorize-spy-stooq-TC.md`)
+OPEN / GENERAL HISTORICAL ACCESS — NOT AUTHORIZED
 BACKTESTING — NOT AUTHORIZED
 SIGNALS / EDGE / TRADING — NOT AUTHORIZED
 ```
