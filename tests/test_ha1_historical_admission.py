@@ -55,11 +55,19 @@ def _obs(day: int, close: str, provenance: ProvenanceClass, symbol: str) -> Obse
 
 
 def _write_obs(path: Path, item: Observation) -> None:
+    """Write one observation file that strict non-FIXTURE intake accepts.
+
+    Payload values stay the decimal strings already on the observation.
+    Keys stay the OHLCV canonical set. payload_checksum is supplied so
+    HISTORICAL and LIVE rows are not refused as missing-checksum.
+    """
+    payload = item.payload.canonical_payload()
     path.write_text(
         json.dumps(
             {
                 "envelope": item.envelope.serialize(),
-                "payload": item.payload.canonical_payload(),
+                "payload": payload,
+                "payload_checksum": item.payload_checksum,
             }
         ),
         encoding="utf-8",

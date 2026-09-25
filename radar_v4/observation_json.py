@@ -6,12 +6,13 @@ invalid observations are quarantined with their validation issues.
 
 from __future__ import annotations
 
+from collections import Counter
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from json import JSONDecodeError, loads
 from typing import Any
 
-from radar_v4.evidence import EvidenceEnvelope
+from radar_v4.evidence import EvidenceEnvelope, format_canonical_timestamp
 from radar_v4.json_intake import UnreadableDocument
 from radar_v4.observation import Observation, ObservationPayload
 from radar_v4.observation_validation import validate_observation
@@ -43,8 +44,8 @@ class ObservationIntakeReport:
 def intake_observation_json(text: str) -> ObservationIntakeReport:
     """Parse one object or array of observation documents."""
     try:
-        raw = loads(text)
-    except JSONDecodeError as exc:
+        raw = loads(text, object_pairs_hook=_unique_keys)
+    except (JSONDecodeError, ValueError) as exc:
         return ObservationIntakeReport(
             accepted=(),
             quarantined=(),
@@ -53,7 +54,7 @@ def intake_observation_json(text: str) -> ObservationIntakeReport:
                     index=0,
                     raw=text,
                     code="UNREADABLE_JSON",
-                    reason=f"JSON could not be parsed: {exc.msg}",
+                    reason=f"JSON could not be parsed: {exc.msg if isinstance(exc, JSONDecodeError) else exc}",
                 ),
             ),
         )
@@ -115,6 +116,15 @@ def intake_observation_json(text: str) -> ObservationIntakeReport:
     )
 
 
+def _unique_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
+
+
 def _parse_document(item: Mapping[str, Any]) -> Observation | UnreadableDocument:
     if "envelope" not in item:
         return UnreadableDocument(
@@ -143,6 +153,35 @@ def _parse_document(item: Mapping[str, Any]) -> Observation | UnreadableDocument
             code="PAYLOAD_NOT_JSON_OBJECT",
             reason="payload must be a JSON object",
         )
+    # Preserve fixture shorthand; refuse missing checksums, numeric coercion,
+    # and discarded payload fields for non-fixture records.
+    strict = envelope.provenance_class not in {"FIXTURE", "SYNTHETIC"}
+    if strict:
+        extra = sorted(set(payload_raw) - {"close", "open", "high", "low", "volume"})
+        if extra:
+            return UnreadableDocument(
+                index=0,
+                raw=repr(payload_raw),
+                code="EXTRA_PAYLOAD_KEY",
+                reason=f"unsupported payload keys: {', '.join(extra)}",
+            )
+        for field in ("close", "open", "high", "low", "volume"):
+            value = payload_raw.get(field)
+            if value is not None and not isinstance(value, str):
+                number = isinstance(value, (int, float)) and not isinstance(value, bool)
+                return UnreadableDocument(
+                    index=0,
+                    raw=repr(payload_raw),
+                    code="JSON_NUMBER_NOT_STRING" if number else "UNREADABLE_ITEM",
+                    reason=f"{field} must be a decimal string",
+                )
+        if item.get("payload_checksum") is None:
+            return UnreadableDocument(
+                index=0,
+                raw=repr(item),
+                code="MISSING_PAYLOAD_CHECKSUM",
+                reason="non-fixture observation requires a supplied payload checksum",
+            )
     try:
         payload = ObservationPayload(
             close="" if payload_raw.get("close") is None else str(payload_raw.get("close")),
@@ -182,7 +221,10 @@ def _parse_envelope(raw: object) -> EvidenceEnvelope | UnreadableDocument:
             )
     if isinstance(raw, str):
         try:
-            return EvidenceEnvelope.deserialize(raw)
+            decoded = loads(raw, object_pairs_hook=_unique_keys)
+            if not isinstance(decoded, Mapping):
+                raise ValueError("serialized envelope must be a JSON object")
+            return EvidenceEnvelope.from_mapping(decoded)
         except (TypeError, ValueError) as exc:
             reason = str(exc)
             code = (
@@ -208,3 +250,66 @@ def _optional(value: object) -> str | None:
     if value is None:
         return None
     return str(value)
+
+
+def summarize_observation_intake(report: ObservationIntakeReport) -> dict[str, Any]:
+    """Read-only coverage and refusal summary. No calendar or freshness claim."""
+    groups: dict[tuple[str, ...], dict[str, Any]] = {}
+    for item in report.accepted:
+        envelope = item.envelope
+        key = (
+            envelope.provenance_class or "",
+            envelope.provider or "",
+            envelope.symbol_or_universe or "",
+            envelope.interval or "",
+            envelope.timezone or "",
+            envelope.transformation_version or "",
+        )
+        if key not in groups:
+            groups[key] = {
+                "provenance_class": key[0],
+                "provider": key[1],
+                "symbol_or_universe": key[2],
+                "interval": key[3],
+                "timezone": key[4],
+                "transformation_version": key[5],
+                "observations": 0,
+                "missing_fields": {"open": 0, "high": 0, "low": 0, "volume": 0},
+                "market_timestamps": [],
+            }
+        group = groups[key]
+        group["observations"] += 1
+        for field in ("open", "high", "low", "volume"):
+            if getattr(item.payload, field) is None:
+                group["missing_fields"][field] += 1
+        assert envelope.market_timestamp is not None  # accepted observations are valid
+        group["market_timestamps"].append(envelope.market_timestamp)
+
+    summaries = []
+    for key in sorted(groups):
+        group = groups[key]
+        timestamps = sorted(group["market_timestamps"])
+        group["market_timestamps"] = [
+            format_canonical_timestamp(timestamp) for timestamp in timestamps
+        ]
+        group["repeated_market_timestamps"] = len(timestamps) - len(set(timestamps))
+        summaries.append(group)
+
+    refusal_codes: Counter[str] = Counter()
+    for item in report.quarantined:
+        refusal_codes.update(item.validation.issue_codes())
+    refusal_codes.update(item.code for item in report.unreadable)
+    return {
+        "document_kind": "radar_v4.observation",
+        "accepted": report.accepted_count(),
+        "quarantined": report.quarantined_count(),
+        "unreadable": report.unreadable_count(),
+        "intake_clean": (
+            bool(report.accepted)
+            and not report.quarantined
+            and not report.unreadable
+            and all(group["repeated_market_timestamps"] == 0 for group in summaries)
+        ),
+        "groups": summaries,
+        "refusal_codes": dict(sorted(refusal_codes.items())),
+    }
