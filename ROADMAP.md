@@ -4,7 +4,7 @@
 
 **PHASE 5 UNITS 7–1300 COMPLETE WITHIN AUTHORIZED LOCAL-SOFTWARE SCOPE.**
 
-Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software on `main` through unit 1300. Vendor download, real historical-data admission, Phase 6 market-method research, and backtesting remain unauthorized.
+Radar V4 has a bounded evidence foundation plus Phase 5 dataset session software on `main` through unit 1300. Vendor download remains unauthorized. HA-1 authorizes only a private SPY/STOOQ HISTORICAL pack MEASURED exception via `session --allow-historical` (`docs/governance/2026-09-24-ha1-authorize-spy-stooq-TC.md`); that is not open historical access and not a vendor client in `radar_v4/`. Real historical-data admission beyond that exception, Phase 6 market-method research, and backtesting remain unauthorized.
 
 Todd retains final authority over activation, scope, architecture, data use, testing, build authorization, deployment, and any future operational role.
 
@@ -184,7 +184,7 @@ Build Unit 1 earned only a small evidence/provenance software foundation. It doe
 
 Objective:
 
-Local FIXTURE/SYNTHETIC dataset admission, ordinary close-to-close description, integrity, and inspectability. Real historical data access, vendor download, and method research remain a later class of work.
+Local FIXTURE/SYNTHETIC dataset admission, ordinary close-to-close description, integrity, and inspectability remain the Phase 5 local-software core. HA-1 additionally authorizes a narrow private HISTORICAL pack MEASURED path (SPY/STOOQ only; `session --allow-historical`; `docs/governance/2026-09-24-ha1-authorize-spy-stooq-TC.md` @ `a7451e4605ff…`). General historical access, vendor download inside `radar_v4/`, and method research remain a later class of work.
 
 This phase must not begin automatically after Build Unit 1.
 
@@ -280,7 +280,7 @@ Not authorized now:
 
 ## Immediate next action
 
-Vendor download, real HISTORICAL admission, paper trading, historical validation, backtesting, and Phase 6 still require separate named authorization. Do not buy an API, admit real market history, or open a paper account because Units 7–1300 exist. The in-repo fixture pack is SYNTHETIC and is not market evidence.
+Vendor download inside `radar_v4/`, general HISTORICAL admission beyond HA-1, paper trading, historical validation, backtesting, and Phase 6 still require separate named authorization. HA-1 (`docs/governance/2026-09-24-ha1-authorize-spy-stooq-TC.md`, `a7451e4605ff…`) is the only HISTORICAL pack MEASURED carve-out now in force (SPY/STOOQ; `--allow-historical` only; LIVE refused). Do not buy an API, admit unbounded market history, or open a paper account because Units 7–1300 exist. The in-repo fixture pack is SYNTHETIC and is not market evidence.
 
 ## Current roadmap status
 
