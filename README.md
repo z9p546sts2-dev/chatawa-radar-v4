@@ -6,6 +6,18 @@ Radar V4 has a bounded evidence foundation plus a local Phase 5 path: admit a de
 
 Vendor download, live capture, and method research are not authorized. This is not a trading system.
 
+### Private VTI daily description
+
+Todd authorized a narrow, manual, read-only date-based observation of a VTI
+capture held outside this repository. After a private Vanguard source capture,
+run `python -m radar_v4 observe-vti-date --capture <private-vti-session-directory>`.
+This command reads `receipt.json` and `vanguard-response.json`, checks source
+identity and the three latest dated prices, then prints one close-to-close
+price difference. It makes no network call and writes no files. Vanguard's
+`effectiveDate` remains a session date; no market timestamp is inferred.
+It does not admit a HISTORICAL dataset pack or change the `session` gate.
+Keep the source response, receipt, and any licensed bytes outside the repo.
+
 ## Intended future role
 
 Radar V4 may eventually become a human-controlled intelligence and opportunity-ranking system that preserves evidence, provenance, uncertainty, and human authority.

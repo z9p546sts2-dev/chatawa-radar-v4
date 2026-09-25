@@ -59,6 +59,14 @@ The existence of this repository, roadmap, methodology, proposal, audit, authori
 
 Phase 5 local FIXTURE/SYNTHETIC software is authorized. Phase 5 vendor/historical data access is not.
 
+Todd subsequently authorized one narrow VTI private daily observation: an
+offline command may read a manually captured Vanguard VTI source response and
+receipt outside the repository and print a LEVEL 0 date-based price difference.
+This exception authorizes neither network code nor real-data pack admission;
+`session` continues to refuse HISTORICAL and LIVE records. The source's
+session date may not be represented as an exact market timestamp. Raw vendor
+bytes and credentials remain outside the repository.
+
 `python -m radar_v4 status` is a workshop capability statement. It does not prove that a measurement occurred during that invocation.
 
 `LEVEL 0 — MEASURED` may appear only on a MEASURED baseline. Refusal statuses use claim_level NONE.
