@@ -11,7 +11,7 @@
 | Independent audit of paper and code | **Claude** |
 | Authorize, accept, reject, stop | **Todd** |
 
-This record is the working backlog. It does **not** by itself authorize code, vendors, HISTORICAL bytes, VTI land, HA-1 execution, Phase 6–9, or Q-011 data.
+This record is the working backlog. It does **not** by itself authorize code, vendors, HISTORICAL bytes, HA-1 execution, Phase 6–9, or Q-011 data. VTI date-observe authority is the separate memo named in Item 1, not this file.
 
 ---
 
@@ -34,21 +34,23 @@ This record is the working backlog. It does **not** by itself authorize code, ve
 
 **Decision (TC), 2026-09-24:** Proceed with Items 1+ under the Grok/Cursor/Claude/Todd split while the Sebastian gate remains unrecorded. Sebastian Protocol is still not displaced; this is a move-ahead precondition choice, not a claim that the gate is closed or satisfied.
 
-Cursor work on HA-1 or VTI still requires the later AUTHORIZE lines in Items 1 and 4 — Item 0 alone is not code authority.
+Cursor work on HA-1 still requires the AUTHORIZE line in Item 4. VTI after-the-fact AUTHORIZE is the separate memo named in Item 1 (signed; Claude audit still open). Item 0 alone is not code authority.
 
 ---
 
-## Item 1 — VTI custody (paper first)
+## Item 1 — VTI custody (after-the-fact AUTHORIZE)
 
-**Owner:** Grok Bot drafts after Todd describes scope; Todd signs; Claude audits memo vs patch; Cursor only after AUTHORIZE land.
+**Status:** AFTER-THE-FACT AUTHORIZE signed TC 2026-09-24. Memo banked at `docs/governance/2026-09-24-vti-private-date-observe-authorize-TC.md`. PR 45 already on `main` (`d47ad23d8ec680eaa1a9cf46e7f110aef765864a`).
 
-1. Todd describes in his words what he authorized (symbol, cadence, source, claim ceiling, outputs/store, stop/review with numbers, explicit non-allows, who authored the patch, relation to withdrawn SPY carve-out / Phase 9, side path vs later HA-1, `marketPrice` / retain entitlement status).  
-2. Grok Bot drafts the **VTI authorization memo** + vacatur already supersedes mistaken REJECT.  
-3. Claude audits memo ↔ `vti-date-observe.patch` (gate bypass, receipt dates, global statuses, source, price field).  
-4. Todd: `AUTHORIZE LAND` / `REVISE` / `HOLD` / `REJECT PATCH`.  
-5. Only then Cursor applies patch (or a revised patch) under that AUTHORIZE.
+**Owner:** Todd signed Accept as written; Claude still audits memo ↔ landed code. Scope description is no longer the blocker.
 
-**Blocked on:** Todd’s scope description (still waiting).
+1. Todd described the authorized scope and signed Accept as written — TC (2026-09-24): symbol, cadence, source, claim ceiling, outputs/store, stop/review, explicit non-allows, patch author, relation to the withdrawn SPY carve-out / Phase 9, side path vs HA-1, and `marketPrice` / retain entitlement.  
+2. The **VTI authorization memo** is banked at the path above (vacatur of the mistaken REJECT is in that memo).  
+3. Claude audits memo ↔ landed `vti_date_observe`. Open defects (receipt date check, global statuses) remain open until that audit.  
+4. Todd’s decision on this slice is the after-the-fact Accept as written, not a pre-land gate.  
+5. The observation path is already on `main` via PR 45. This backlog line does not reopen land.
+
+**Not blocked on scope.** Claude audit remains pending; known open defects stay open until that audit.
 
 ---
 
@@ -90,7 +92,7 @@ Only after Items 0 and 3 and a filled AUTHORIZE line.
 - Private pack for Todd-named symbol + source.  
 - Workshop session / baseline close-to-close **difference** only.  
 - Claude audits claim language and provenance.  
-- Not Q-011. Not daily observe unless Item 1 explicitly keeps VTI as a separate authorized side path.
+- Not Q-011. VTI date-only observe stays the separate authorized side path in Item 1; it is not this HA-1 MEASURED run.
 
 ---
 
@@ -109,9 +111,9 @@ Only after Items 0 and 3 and a filled AUTHORIZE line.
 | # | Action | Who |
 |---|---|---|
 | 0 | Sebastian proceed vs hold | **Todd — DONE 2026-09-24: proceed** |
-| 1a | Describe VTI authorization scope | **Todd — WAITING** |
-| 1b | Draft VTI memo | Grok Bot |
-| 1c | Audit memo ↔ patch | Claude |
+| 1a | Describe VTI authorization scope | **Todd — DONE 2026-09-24: Accept as written** |
+| 1b | Draft / bank VTI AUTHORIZE memo | **DONE 2026-09-24** — `docs/governance/2026-09-24-vti-private-date-observe-authorize-TC.md` |
+| 1c | Audit memo ↔ landed `vti_date_observe` | **Claude — PENDING** (receipt date check, global statuses remain open) |
 | 2 | Bank Q-011 contradiction finding | Todd (+ Claude skim) |
 | 3 | Revise HA-1 on four points | **Grok Bot — R1 DRAFTED 2026-09-24** → Claude audit → Todd |
 | 4 | AUTHORIZE HA-1 + Cursor implement | Todd → Cursor → Claude → Todd |
@@ -124,7 +126,7 @@ Only after Items 0 and 3 and a filled AUTHORIZE line.
 OPERATING SPLIT — GROK PLANS / CURSOR CODES / CLAUDE AUDITS / TODD AUTHORIZES-TC
 BACKLOG — RECORDED 2026-09-24
 CODE AUTHORITY — NONE FROM THIS DOCUMENT ALONE
-NEXT HUMAN INPUT — VTI SCOPE DESCRIPTION (ITEM 0 DONE: PROCEED)
+NEXT HUMAN INPUT — Q-011 FINDING BANK (ITEM 2); HA-1 AUTHORIZE NOT ON MAIN (ITEM 0 DONE: PROCEED)
 ```
 
 **Tools verify. Todd authorizes.**
