@@ -136,6 +136,10 @@ class HistoricalAdmissionTests(unittest.TestCase):
                         str(report_path),
                     ]
                 )
+            self.assertEqual(code, 0, stderr.getvalue())
+            self.assertFalse(repo in report_path.resolve().parents)
+            self.assertTrue(report_path.is_file())
+            written = json.loads(report_path.read_text(encoding="utf-8"))
         self.assertTrue(loaded.usable())
         self.assertEqual(loaded.observation_intake.accepted_count(), 2)
         self.assertIsNone(result.error_code)
@@ -143,10 +147,6 @@ class HistoricalAdmissionTests(unittest.TestCase):
         self.assertEqual(result.session.baseline.status, "MEASURED")
         self.assertEqual(result.session.baseline.claim_level, "LEVEL 0 — MEASURED")
         self.assertEqual(result.session.baseline.changes, ("2.00",))
-        self.assertEqual(code, 0, stderr.getvalue())
-        self.assertFalse(repo in report_path.resolve().parents)
-        self.assertTrue(report_path.is_file())
-        written = json.loads(report_path.read_text(encoding="utf-8"))
         self.assertEqual(written["session"]["baseline"]["status"], "MEASURED")
         self.assertEqual(written["session"]["baseline"]["changes"], ["2.00"])
 
