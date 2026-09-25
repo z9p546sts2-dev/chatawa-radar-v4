@@ -29,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TOOL = ROOT / "tools" / "stooq_to_strict_pack.py"
 FIXTURE = ROOT / "tests" / "fixtures" / "stooq_shaped" / "spy_synthetic_daily.csv"
 RETRIEVED_AT = "2026-12-01T16:30:00-05:00"
+SYNTHETIC_POLICY = "SYNTHETIC_TEST_POLICY"
 
 
 def load_converter():
@@ -66,7 +67,9 @@ class StooqStrictPackTests(unittest.TestCase):
             args.extend(["--retrieved-at", RETRIEVED_AT])
         elif overrides["retrieved_at"] is not None:
             args.extend(["--retrieved-at", overrides["retrieved_at"]])
-        if "adjustment_policy" in overrides:
+        if "adjustment_policy" not in overrides:
+            args.extend(["--adjustment-policy", SYNTHETIC_POLICY])
+        elif overrides["adjustment_policy"] is not None:
             args.extend(["--adjustment-policy", overrides["adjustment_policy"]])
         if "dataset_id" in overrides:
             args.extend(["--dataset-id", overrides["dataset_id"]])
@@ -108,10 +111,9 @@ class StooqStrictPackTests(unittest.TestCase):
                 declaration["locked_question"],
                 "ordinary close-to-close changes for one symbol",
             )
-            self.assertEqual(declaration["adjustment_policy"], "UNVERIFIED")
+            self.assertEqual(declaration["adjustment_policy"], SYNTHETIC_POLICY)
             self.assertEqual(declaration["dataset_id"], "spy-stooq-ha1-private")
             self.assertNotIn("max_staleness", declaration)
-            self.assertNotEqual(declaration["adjustment_policy"], "UNADJUSTED")
 
             loaded = load_dataset_pack(out, allow_historical=True)
             self.assertTrue(loaded.usable())
@@ -296,6 +298,8 @@ class StooqStrictPackTests(unittest.TestCase):
                     "STOOQ",
                     "--retrieved-at",
                     RETRIEVED_AT,
+                    "--adjustment-policy",
+                    SYNTHETIC_POLICY,
                 ],
                 cwd="/tmp",
                 capture_output=True,
@@ -311,6 +315,15 @@ class StooqStrictPackTests(unittest.TestCase):
             code = self.convert(out, retrieved_at=None)
             self.assertNotEqual(code, 0)
             self.assertFalse(out.exists())
+
+    def test_missing_adjustment_policy_refuses_without_a_pack(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            out = Path(raw) / "pack"
+            code = self.convert(out, adjustment_policy=None)
+            self.assertNotEqual(code, 0)
+            self.assertFalse(out.exists())
+            self.assertNotIn("UNVERIFIED", CONVERTER.__dict__)
+            self.assertFalse(hasattr(CONVERTER, "DEFAULT_ADJUSTMENT_POLICY"))
 
     def test_naive_retrieved_at_refuses(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
@@ -346,6 +359,8 @@ class StooqStrictPackTests(unittest.TestCase):
                     "STOOQ",
                     "--retrieved-at",
                     RETRIEVED_AT,
+                    "--adjustment-policy",
+                    SYNTHETIC_POLICY,
                     "--force",
                 ]
             )

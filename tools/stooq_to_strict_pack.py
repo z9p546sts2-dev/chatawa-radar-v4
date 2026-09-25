@@ -20,9 +20,11 @@ expressed in America/New_York so the declared timezone offset matches
 timezone_offset_matches. Aware datetime equality with the supplied instant
 is preserved.
 
-adjustment_policy is a declaration label only. The default UNVERIFIED does
-not mean UNADJUSTED was checked. Verify Stooq closes against official SPY
-closes and a dividend date before the first MEASURED acceptance (runbook).
+--adjustment-policy is required. There is no default label. Todd supplies
+the verified label for a real pack, or a provisional label for a synthetic
+test. This tool does not choose UNADJUSTED or any other policy. A real
+MEASURED run still requires the pre-run verification in the AUTHORIZE and
+the runbook.
 
 Accepted ticker column values, when a ticker column is present: SPY and the
 Stooq form SPY.US (case-sensitive, after strip).
@@ -33,7 +35,8 @@ Example:
     --out /PRIVATE/path/spy_stooq_pack \\
     --symbol SPY \\
     --provider STOOQ \\
-    --retrieved-at 2026-09-24T16:30:00-04:00
+    --retrieved-at 2026-09-24T16:30:00-04:00 \\
+    --adjustment-policy <TODD_LABEL>
 """
 
 from __future__ import annotations
@@ -68,7 +71,6 @@ TRANSFORMATION_VERSION = "stooq-daily-ohlcv-v1"
 LOCKED_QUESTION = "ordinary close-to-close changes for one symbol"
 PRIMARY_METRIC = "close-to-close difference"
 DEFAULT_DATASET_ID = "spy-stooq-ha1-private"
-DEFAULT_ADJUSTMENT_POLICY = "UNVERIFIED"
 ACCEPTED_TICKERS = frozenset({"SPY", "SPY.US"})
 REQUIRED_COLUMNS = ("date", "open", "high", "low", "close", "volume")
 COLUMN_ALIASES = {
@@ -111,10 +113,11 @@ def build_parser() -> argparse.ArgumentParser:
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
-            "adjustment_policy is a declaration label, not a verified claim.\n"
-            "The default UNVERIFIED does not mean UNADJUSTED was checked.\n"
-            "Before the first MEASURED acceptance, compare Stooq closes to\n"
-            "official SPY closes and a dividend date (see the runbook).\n"
+            "--adjustment-policy is required. Todd supplies the verified label\n"
+            "for a real pack, or a provisional label for synthetic tests.\n"
+            "This tool does not default the label to UNADJUSTED or anything\n"
+            "else. Omitting the flag refuses. A real MEASURED run still\n"
+            "requires the pre-run verification in the AUTHORIZE and runbook.\n"
             "\n"
             "Market timestamps are 16:00 America/New_York. The offset is the\n"
             "ZoneInfo DST offset for that date. --retrieved-at is required\n"
@@ -134,10 +137,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--adjustment-policy",
-        default=DEFAULT_ADJUSTMENT_POLICY,
+        required=True,
         help=(
-            "declaration adjustment_policy "
-            f"(default: {DEFAULT_ADJUSTMENT_POLICY}; not a verified UNADJUSTED claim)"
+            "required declaration label; Todd supplies the verified or "
+            "provisional value (no default; not a verified UNADJUSTED claim)"
         ),
     )
     parser.add_argument(
@@ -187,7 +190,7 @@ def convert(
     symbol: str,
     provider: str,
     retrieved_at: str,
-    adjustment_policy: str = DEFAULT_ADJUSTMENT_POLICY,
+    adjustment_policy: str,
     dataset_id: str = DEFAULT_DATASET_ID,
     max_staleness: str | None = None,
 ) -> int:
