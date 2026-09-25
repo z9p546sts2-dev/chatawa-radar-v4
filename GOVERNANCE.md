@@ -65,7 +65,9 @@ receipt outside the repository and print a LEVEL 0 date-based price difference.
 This exception authorizes neither network code nor real-data pack admission;
 `session` continues to refuse HISTORICAL and LIVE records. The source's
 session date may not be represented as an exact market timestamp. Raw vendor
-bytes and credentials remain outside the repository.
+bytes and credentials remain outside the repository. The durable
+AUTHORIZE memo is
+`docs/governance/2026-09-24-vti-private-date-observe-authorize-TC.md`.
 
 `python -m radar_v4 status` is a workshop capability statement. It does not prove that a measurement occurred during that invocation.
 
