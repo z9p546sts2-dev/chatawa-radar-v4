@@ -41,6 +41,7 @@ from radar_v4.snapshot_files import SnapshotFileError, read_snapshot_file, write
 from radar_v4.snapshot_verify import verify_snapshot_file
 from radar_v4.workshop_check import serialize_reason_catalog
 from radar_v4.workshop_cli import dispatch_workshop, register_workshop_commands
+from radar_v4.vti_date_observe import observe_vti_capture
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -49,6 +50,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         description="Radar V4 local evidence commands. No vendor. No method.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
+
+    vti_observe = sub.add_parser(
+        "observe-vti-date", help="describe one private VTI date-only capture (offline)"
+    )
+    vti_observe.add_argument("--capture", required=True, help="private capture directory")
 
     session = sub.add_parser("session", help="run a FIXTURE/SYNTHETIC pack session")
     session.add_argument("--pack", required=True, help="local dataset pack directory")
@@ -192,6 +198,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     register_workshop_commands(sub)
 
     args = parser.parse_args(list(argv) if argv is not None else None)
+    if args.command == "observe-vti-date":
+        try:
+            print(dumps(observe_vti_capture(args.capture), sort_keys=True))
+        except (OSError, ValueError) as exc:
+            print(f"VTI capture refused: {exc}", file=sys.stderr)
+            return 1
+        return 0
     if args.command == "session":
         return _run_session(
             args.pack,
