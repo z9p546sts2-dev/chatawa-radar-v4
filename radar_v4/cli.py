@@ -56,8 +56,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     vti_observe.add_argument("--capture", required=True, help="private capture directory")
 
-    session = sub.add_parser("session", help="run a FIXTURE/SYNTHETIC pack session")
+    session = sub.add_parser(
+        "session",
+        help="run a pack session; HISTORICAL only with --allow-historical",
+    )
     session.add_argument("--pack", required=True, help="local dataset pack directory")
+    session.add_argument(
+        "--allow-historical",
+        action="store_true",
+        help=(
+            "admit an identity-valid HISTORICAL pack; LIVE stays refused; "
+            "refused together with --snapshot or export"
+        ),
+    )
     session.add_argument("--snapshot", help="optional snapshot output path")
     session.add_argument("--report", help="optional session report output path")
     session.add_argument("--journal", help="optional quarantine journal output path")
@@ -215,6 +226,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.require_manifest,
             args.expect_ruler,
             args.replace,
+            args.allow_historical,
         )
     if args.command == "replay":
         return _run_replay(args.snapshot, args.report, args.expect_ruler, args.replace)
@@ -267,9 +279,21 @@ def _run_session(
     require_manifest: bool = False,
     expected_ruler: str | None = None,
     replace: bool = False,
+    allow_historical: bool = False,
 ) -> int:
+    # Snapshot files and pack export stay on the FIXTURE/SYNTHETIC locks.
+    # Do not widen snapshot_lock, export_lock, or pack_export to admit this flag.
+    if allow_historical and snapshot_path:
+        sys.stderr.write(
+            "SNAPSHOT_PROVENANCE_REFUSED: "
+            "--allow-historical cannot be combined with --snapshot\n"
+        )
+        return 2
     result = run_session_from_pack(
-        pack, require_manifest=require_manifest, expected_ruler=expected_ruler
+        pack,
+        require_manifest=require_manifest,
+        expected_ruler=expected_ruler,
+        allow_historical=allow_historical,
     )
     if result.session is None:
         sys.stderr.write(f"{result.error_code or 'PACK_NOT_USABLE'}\n")

@@ -46,9 +46,19 @@ def run_session_from_pack(
     require_manifest: bool = False,
     expected_ruler: str | None = None,
     measure: bool = True,
+    *,
+    allow_historical: bool = False,
 ) -> LocalSessionResult:
-    """Load a FIXTURE/SYNTHETIC pack and run a dataset session if usable."""
-    pack = load_dataset_pack(directory, require_manifest=require_manifest)
+    """Load a pack and run a dataset session when the pack is usable.
+
+    HISTORICAL packs load only when allow_historical is true. LIVE stays
+    refused. Other callers keep the default and do not admit HISTORICAL.
+    """
+    pack = load_dataset_pack(
+        directory,
+        require_manifest=require_manifest,
+        allow_historical=allow_historical,
+    )
     if not pack.usable():
         return LocalSessionResult(
             pack=pack,
