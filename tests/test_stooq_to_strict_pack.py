@@ -7,25 +7,28 @@ run and does not claim adjustment_policy was verified.
 from __future__ import annotations
 
 import importlib.util
+import io
 import json
 import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+from radar_v4.cli import main as workshop_main
 from radar_v4.dataset_pack import load_dataset_pack
 from radar_v4.evidence import format_canonical_timestamp
 from radar_v4.local_session import run_session_from_pack
-from radar_v4.observation import ObservationPayload
+from radar_v4.observation import Observation, ObservationPayload
 from radar_v4.record_check import inspect_unexpected_files
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOL = ROOT / "tools" / "stooq_to_strict_pack.py"
 FIXTURE = ROOT / "tests" / "fixtures" / "stooq_shaped" / "spy_synthetic_daily.csv"
-RETRIEVED_AT = "2026-09-24T16:30:00-04:00"
+RETRIEVED_AT = "2026-12-01T16:30:00-05:00"
 
 
 def load_converter():
@@ -82,7 +85,16 @@ class StooqStrictPackTests(unittest.TestCase):
             names = sorted(path.name for path in out.iterdir())
             self.assertEqual(
                 names,
-                ["declaration.json", "obs_0001.json", "obs_0002.json", "obs_0003.json"],
+                [
+                    "declaration.json",
+                    "obs_0001.json",
+                    "obs_0002.json",
+                    "obs_0003.json",
+                    "obs_0004.json",
+                    "obs_0005.json",
+                    "obs_0006.json",
+                    "obs_0007.json",
+                ],
             )
             declaration = json.loads((out / "declaration.json").read_text(encoding="utf-8"))
             self.assertEqual(declaration["provenance_class"], "HISTORICAL")
@@ -103,7 +115,7 @@ class StooqStrictPackTests(unittest.TestCase):
 
             loaded = load_dataset_pack(out, allow_historical=True)
             self.assertTrue(loaded.usable())
-            self.assertEqual(loaded.observation_intake.accepted_count(), 3)
+            self.assertEqual(loaded.observation_intake.accepted_count(), 7)
             self.assertEqual(loaded.observation_intake.quarantined_count(), 0)
             self.assertEqual(loaded.observation_intake.unreadable_count(), 0)
             unexpected = inspect_unexpected_files(out)
@@ -121,18 +133,23 @@ class StooqStrictPackTests(unittest.TestCase):
                     {"close", "high", "low", "open", "volume"},
                 )
                 self.assertTrue(all(isinstance(value, str) for value in payload.values()))
-                checksum = ObservationPayload(
+                library_payload = ObservationPayload(
                     close=payload["close"],
                     open=payload["open"],
                     high=payload["high"],
                     low=payload["low"],
                     volume=payload["volume"],
-                ).compute_checksum()
-                self.assertEqual(document["payload_checksum"], checksum)
+                )
+                self.assertEqual(
+                    document["payload_checksum"],
+                    library_payload.compute_checksum(),
+                )
                 raw_text = path.read_text(encoding="utf-8")
                 self.assertNotRegex(raw_text, r'"close":\s*-?\d')
             accepted = loaded.observation_intake.accepted
             for item in accepted:
+                created = Observation.create(item.envelope, item.payload)
+                self.assertEqual(item.payload_checksum, created.payload_checksum)
                 self.assertEqual(item.payload_checksum, item.payload.compute_checksum())
                 self.assertEqual(item.envelope.retrieval_timestamp, retrieved)
                 self.assertEqual(
@@ -152,25 +169,62 @@ class StooqStrictPackTests(unittest.TestCase):
                 [
                     expected_market("2026-01-15"),
                     expected_market("2026-01-16"),
+                    expected_market("2026-03-06"),
+                    expected_market("2026-03-09"),
                     expected_market("2026-07-15"),
+                    expected_market("2026-10-30"),
+                    expected_market("2026-11-02"),
                 ],
             )
-            january = accepted[0].envelope.market_timestamp
-            july = accepted[2].envelope.market_timestamp
-            assert january is not None and july is not None
-            self.assertEqual(january.utcoffset(), timedelta(hours=-5))
-            self.assertEqual(july.utcoffset(), timedelta(hours=-4))
-            self.assertNotEqual(january.utcoffset(), july.utcoffset())
+            by_day = {}
+            for item in accepted:
+                market = item.envelope.market_timestamp
+                assert market is not None
+                by_day[market.date().isoformat()] = market
+            # 2026-03-08 is the US spring-forward; 2026-11-01 is the fall-back.
+            # 16:00 local is after the 02:00 transition on those Sundays.
+            self.assertEqual(by_day["2026-03-06"].utcoffset(), timedelta(hours=-5))
+            self.assertEqual(by_day["2026-03-09"].utcoffset(), timedelta(hours=-4))
+            self.assertEqual(by_day["2026-10-30"].utcoffset(), timedelta(hours=-4))
+            self.assertEqual(by_day["2026-11-02"].utcoffset(), timedelta(hours=-5))
+            self.assertNotEqual(
+                by_day["2026-03-06"].utcoffset(),
+                by_day["2026-03-09"].utcoffset(),
+            )
+            self.assertNotEqual(
+                by_day["2026-10-30"].utcoffset(),
+                by_day["2026-11-02"].utcoffset(),
+            )
             self.assertNotIn("T14:00", stamps[0])
 
+            changes = ("1.75", "1.50", "1.50", "5.75", "-3.25", "1.50")
             session = run_session_from_pack(out, allow_historical=True)
             self.assertIsNone(session.error_code)
             assert session.session is not None and session.session.baseline is not None
             self.assertEqual(session.session.baseline.status, "MEASURED")
-            self.assertEqual(session.session.baseline.changes, ("1.75", "8.75"))
+            self.assertEqual(session.session.baseline.changes, changes)
+            report_path = Path(raw) / "session_report.json"
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+            with redirect_stdout(stdout), redirect_stderr(stderr):
+                cli_code = workshop_main(
+                    [
+                        "session",
+                        "--pack",
+                        str(out),
+                        "--allow-historical",
+                        "--report",
+                        str(report_path),
+                    ]
+                )
+            self.assertEqual(cli_code, 0, stderr.getvalue())
+            self.assertFalse(ROOT in report_path.resolve().parents)
+            written = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(written["session"]["baseline"]["status"], "MEASURED")
+            self.assertEqual(written["session"]["baseline"]["changes"], list(changes))
 
     def test_retrieved_at_other_offset_keeps_instant_and_loads(self) -> None:
-        supplied = "2026-09-24T15:30:00-05:00"
+        supplied = "2026-12-01T17:30:00-04:00"
         with tempfile.TemporaryDirectory() as raw:
             out = Path(raw) / "pack"
             code = self.convert(out, retrieved_at=supplied)
