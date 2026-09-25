@@ -1,4 +1,9 @@
-"""Load a local dataset pack. FIXTURE/SYNTHETIC only. No vendor."""
+"""Load a local dataset pack. No vendor.
+
+Default admission is FIXTURE/SYNTHETIC. HISTORICAL loads only when the
+caller passes allow_historical. LIVE stays refused. This module does not
+fetch market data and does not relabel records.
+"""
 
 from __future__ import annotations
 
@@ -16,6 +21,10 @@ from radar_v4.observation_json import (
     intake_observation_json,
 )
 from radar_v4.validation import ValidationIssue, ValidationResult
+
+# Used only when load_dataset_pack is called with allow_historical=True.
+# LIVE is intentionally absent. Fixture packs keep PACK_ALLOWED_PROVENANCE.
+DATASET_PACK_ALLOWED_PROVENANCE = frozenset({"FIXTURE", "SYNTHETIC", "HISTORICAL"})
 
 DECLARATION_FILENAME = "declaration.json"
 SKIP_FILENAMES = frozenset(
@@ -47,13 +56,32 @@ class DatasetPackReport:
 
 
 def load_dataset_pack(
-    directory: str | Path, require_manifest: bool = False
+    directory: str | Path,
+    require_manifest: bool = False,
+    *,
+    allow_historical: bool = False,
 ) -> DatasetPackReport:
     """Read declaration.json plus observation JSON files from one directory.
 
-    HISTORICAL and LIVE labels are quarantined here even if identity-valid.
-    This loader is not a market-data client and does not relabel records.
+    HISTORICAL loads only when allow_historical is true. LIVE stays refused
+    either way. This loader is not a market-data client and does not relabel
+    records. The default matches the previous FIXTURE/SYNTHETIC refusal.
     """
+    allowed = (
+        DATASET_PACK_ALLOWED_PROVENANCE
+        if allow_historical
+        else PACK_ALLOWED_PROVENANCE
+    )
+    declaration_reason = (
+        "dataset pack may declare only FIXTURE, SYNTHETIC, or HISTORICAL"
+        if allow_historical
+        else "dataset pack may declare only FIXTURE or SYNTHETIC"
+    )
+    observation_reason = (
+        "dataset pack may load only FIXTURE, SYNTHETIC, or HISTORICAL records"
+        if allow_historical
+        else "dataset pack may load only FIXTURE or SYNTHETIC records"
+    )
     root = Path(directory)
     if not root.is_dir():
         return DatasetPackReport(
@@ -101,11 +129,11 @@ def load_dataset_pack(
                 pack_issues.extend(parsed.validation.issues)
         else:
             declaration = parsed.declaration
-            if declaration.provenance_class not in PACK_ALLOWED_PROVENANCE:
+            if declaration.provenance_class not in allowed:
                 pack_issues.append(
                     ValidationIssue(
                         "PACK_PROVENANCE_NOT_ALLOWED",
-                        "dataset pack may declare only FIXTURE or SYNTHETIC",
+                        declaration_reason,
                         "provenance_class",
                     )
                 )
@@ -119,7 +147,7 @@ def load_dataset_pack(
         unreadable.extend(report.unreadable)
         quarantined.extend(report.quarantined)
         for item in report.accepted:
-            if item.envelope.provenance_class not in PACK_ALLOWED_PROVENANCE:
+            if item.envelope.provenance_class not in allowed:
                 quarantined.append(
                     ObservationIntakeRecord(
                         observation=item,
@@ -128,7 +156,7 @@ def load_dataset_pack(
                             issues=(
                                 ValidationIssue(
                                     "PACK_PROVENANCE_NOT_ALLOWED",
-                                    "dataset pack may load only FIXTURE or SYNTHETIC records",
+                                    observation_reason,
                                     "provenance_class",
                                 ),
                             ),
