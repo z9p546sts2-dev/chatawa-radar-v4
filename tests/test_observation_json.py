@@ -10,7 +10,10 @@ from py_compile import compile as py_compile
 
 from radar_v4.evidence import ProvenanceClass
 from radar_v4.observation import Observation, ObservationPayload
-from radar_v4.observation_json import intake_observation_json
+from radar_v4.observation_json import (
+    intake_observation_json,
+    summarize_observation_intake,
+)
 from tests.helpers import envelope
 
 
@@ -77,6 +80,30 @@ class ObservationJsonIntakeTests(unittest.TestCase):
         self.assertEqual(result.unreadable_count(), 1)
         self.assertEqual(result.unreadable[0].code, "UNREADABLE_JSON")
 
+    def test_duplicate_keys_are_refused_before_values_are_discarded(self) -> None:
+        for doc in (
+            '{"payload":{},"payload":{},"envelope":{}}',
+            '{"payload":{"close":"1","close":"2"},"envelope":{}}',
+            '{"payload":{},"envelope":{"provider":"A","provider":"B"}}',
+        ):
+            with self.subTest(doc=doc):
+                result = intake_observation_json(doc)
+                self.assertEqual(result.accepted_count(), 0)
+                self.assertEqual(result.unreadable[0].code, "UNREADABLE_JSON")
+                self.assertIn("duplicate JSON key", result.unreadable[0].reason)
+
+        serialized_envelope = self.obs.envelope.serialize().replace(
+            '"provider":', '"provider":"OTHER","provider":', 1
+        )
+        result = intake_observation_json(json.dumps({
+            "envelope": serialized_envelope,
+            "payload": self.obs.payload.canonical_payload(),
+            "payload_checksum": self.obs.payload_checksum,
+        }))
+        self.assertEqual(result.accepted_count(), 0)
+        self.assertEqual(result.unreadable[0].code, "UNREADABLE_ITEM")
+        self.assertIn("duplicate JSON key", result.unreadable[0].reason)
+
     def test_payload_checksum_mismatch_is_quarantined(self) -> None:
         doc = json.dumps(
             {
@@ -105,6 +132,121 @@ class ObservationJsonIntakeTests(unittest.TestCase):
         self.assertEqual(result.accepted_count(), 0)
         self.assertEqual(result.unreadable[0].code, "ENVELOPE_NOT_JSON_OBJECT")
 
+    def test_historical_record_with_supplied_checksum_is_shape_valid(self) -> None:
+        item = Observation.create(
+            envelope(provenance=ProvenanceClass.HISTORICAL),
+            ObservationPayload(close="10.50", volume="100"),
+        )
+        doc = json.dumps({
+            "envelope": item.envelope.serialize(),
+            "payload": item.payload.canonical_payload(),
+            "payload_checksum": item.payload_checksum,
+        })
+        result = intake_observation_json(doc)
+        self.assertEqual(result.accepted_count(), 1)
+        self.assertEqual(result.unreadable_count(), 0)
+
+    def test_nonfixture_missing_checksum_is_not_filled_in(self) -> None:
+        item = Observation.create(
+            envelope(provenance=ProvenanceClass.HISTORICAL),
+            ObservationPayload(close="10.50"),
+        )
+        doc = json.dumps({
+            "envelope": item.envelope.serialize(),
+            "payload": item.payload.canonical_payload(),
+        })
+        result = intake_observation_json(doc)
+        self.assertEqual(result.accepted_count(), 0)
+        self.assertEqual(result.unreadable[0].code, "MISSING_PAYLOAD_CHECKSUM")
+
+    def test_nonfixture_extra_payload_field_is_not_discarded(self) -> None:
+        item = Observation.create(
+            envelope(provenance=ProvenanceClass.HISTORICAL),
+            ObservationPayload(close="10.50"),
+        )
+        payload = {**item.payload.canonical_payload(), "signal": "buy"}
+        doc = json.dumps({
+            "envelope": item.envelope.serialize(),
+            "payload": payload,
+            "payload_checksum": item.payload_checksum,
+        })
+        result = intake_observation_json(doc)
+        self.assertEqual(result.accepted_count(), 0)
+        self.assertEqual(result.unreadable[0].code, "EXTRA_PAYLOAD_KEY")
+
+    def test_nonfixture_numeric_json_is_not_coerced(self) -> None:
+        item = Observation.create(
+            envelope(provenance=ProvenanceClass.LIVE),
+            ObservationPayload(close="10.50", volume="100"),
+        )
+        for field, value in (("close", 10.5), ("volume", 100)):
+            with self.subTest(field=field):
+                payload = {**item.payload.canonical_payload(), field: value}
+                doc = json.dumps({
+                    "envelope": item.envelope.serialize(),
+                    "payload": payload,
+                    "payload_checksum": item.payload_checksum,
+                })
+                result = intake_observation_json(doc)
+                self.assertEqual(result.accepted_count(), 0)
+                self.assertEqual(result.unreadable[0].code, "JSON_NUMBER_NOT_STRING")
+
+
+    def test_summary_groups_sources_and_reports_partial_refusal(self) -> None:
+        second = Observation.create(
+            envelope(provenance=ProvenanceClass.SYNTHETIC, symbol="SYN:BBB"),
+            ObservationPayload(close="4"),
+        )
+        valid = {
+            "envelope": self.obs.envelope.serialize(),
+            "payload": self.obs.payload.canonical_payload(),
+            "payload_checksum": self.obs.payload_checksum,
+        }
+        other = {
+            "envelope": second.envelope.serialize(),
+            "payload": second.payload.canonical_payload(),
+            "payload_checksum": second.payload_checksum,
+        }
+        invalid = {**valid, "payload": {**valid["payload"], "close": "oops"}}
+        invalid["payload_checksum"] = ObservationPayload(
+            close="oops", open="10.00", high="11.00", low="9.00", volume="100"
+        ).compute_checksum()
+        report = intake_observation_json(json.dumps([valid, valid, other, invalid, 17]))
+        summary = summarize_observation_intake(report)
+        self.assertEqual(
+            (summary["accepted"], summary["quarantined"], summary["unreadable"]),
+            (3, 1, 1),
+        )
+        self.assertFalse(summary["intake_clean"])
+        self.assertEqual(
+            summary["refusal_codes"], {"INVALID_CLOSE": 1, "UNREADABLE_ITEM": 1}
+        )
+        self.assertEqual(len(summary["groups"]), 2)
+        first = next(
+            group for group in summary["groups"]
+            if group["symbol_or_universe"] == "SYN:AAA"
+        )
+        self.assertEqual(first["repeated_market_timestamps"], 1)
+        self.assertEqual(first["observations"], 2)
+        self.assertEqual(len(first["market_timestamps"]), 2)
+        self.assertFalse(
+            summarize_observation_intake(
+                intake_observation_json(json.dumps([valid, valid]))
+            )["intake_clean"]
+        )
+        other_group = next(
+            group for group in summary["groups"]
+            if group["symbol_or_universe"] == "SYN:BBB"
+        )
+        self.assertEqual(
+            other_group["missing_fields"],
+            {"open": 1, "high": 1, "low": 1, "volume": 1},
+        )
+        self.assertTrue(
+            summarize_observation_intake(intake_observation_json(json.dumps(valid)))[
+                "intake_clean"
+            ]
+        )
 
 if __name__ == "__main__":
     unittest.main()

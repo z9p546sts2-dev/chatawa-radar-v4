@@ -18,7 +18,10 @@ def validate_observation(observation: Observation) -> ValidationResult:
     else:
         try:
             close = parse_decimal(payload.close, "close")
+            if not close.is_finite():
+                raise InvalidOperation("close must be finite")
         except InvalidOperation:
+            close = None
             issues.append(
                 ValidationIssue(
                     "INVALID_CLOSE", "close must be a decimal string", "close"
@@ -36,7 +39,10 @@ def validate_observation(observation: Observation) -> ValidationResult:
         if raw is None:
             continue
         try:
-            parsed[field] = parse_decimal(raw, field)
+            number = parse_decimal(raw, field)
+            if not number.is_finite() or (field == "volume" and number < 0):
+                raise InvalidOperation(f"{field} must be finite and volume nonnegative")
+            parsed[field] = number
         except InvalidOperation:
             issues.append(
                 ValidationIssue(
@@ -55,6 +61,20 @@ def validate_observation(observation: Observation) -> ValidationResult:
                 "OHLC_CONTRADICTION",
                 "high is below low",
                 "high",
+            )
+        )
+    opening = parsed.get("open")
+    if (
+        opening is not None
+        and high is not None
+        and low is not None
+        and (opening > high or opening < low)
+    ):
+        issues.append(
+            ValidationIssue(
+                "OHLC_CONTRADICTION",
+                "open is outside high/low",
+                "open",
             )
         )
     if (
