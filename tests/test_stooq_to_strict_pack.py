@@ -9,6 +9,7 @@ from __future__ import annotations
 import importlib.util
 import io
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -344,6 +345,121 @@ class StooqStrictPackTests(unittest.TestCase):
             self.assertFalse((out / "declaration.json").exists())
             self.assertEqual(list(out.iterdir()), [sentinel])
 
+    def test_git_work_tree_root_walks_from_the_given_path(self) -> None:
+        self.assertEqual(CONVERTER.git_work_tree_root(TOOL), ROOT)
+        with tempfile.TemporaryDirectory() as raw:
+            outside = Path(raw) / "tools" / "stooq_to_strict_pack.py"
+            self.assertIsNone(CONVERTER.git_work_tree_root(outside))
+            linked = Path(raw) / "linked"
+            linked.mkdir()
+            (linked / ".git").write_text("gitdir: /unused\n", encoding="utf-8")
+            self.assertEqual(
+                CONVERTER.git_work_tree_root(linked / "tools" / "tool.py"),
+                linked,
+            )
+
+    def test_out_inside_git_work_tree_refuses(self) -> None:
+        # Root is the nearest .git ancestor of this tool file, not cwd.
+        nested = ROOT / "_stooq_out_guard_pack"
+        relative_name = "_stooq_out_guard_relative"
+        from_tmp = ROOT / "_stooq_out_guard_from_tmp"
+        targets = (nested, ROOT / relative_name, from_tmp)
+        try:
+            stderr = io.StringIO()
+            with redirect_stderr(stderr):
+                code = self.convert(nested)
+            self.assertEqual(code, 2, stderr.getvalue())
+            self.assertIn("git work tree", stderr.getvalue())
+            self.assertFalse(nested.exists())
+
+            stderr = io.StringIO()
+            with redirect_stderr(stderr):
+                code = self.convert(ROOT)
+            self.assertEqual(code, 2, stderr.getvalue())
+            self.assertIn("git work tree", stderr.getvalue())
+            self.assertFalse((ROOT / "declaration.json").exists())
+
+            command = [
+                sys.executable,
+                str(TOOL),
+                "--csv",
+                str(FIXTURE),
+                "--symbol",
+                "SPY",
+                "--provider",
+                "STOOQ",
+                "--retrieved-at",
+                RETRIEVED_AT,
+                "--adjustment-policy",
+                SYNTHETIC_POLICY,
+            ]
+            from_other_cwd = subprocess.run(
+                [*command, "--out", str(from_tmp)],
+                cwd="/tmp",
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(from_other_cwd.returncode, 2, from_other_cwd.stderr)
+            self.assertIn("git work tree", from_other_cwd.stderr)
+            self.assertFalse(from_tmp.exists())
+
+            relative = subprocess.run(
+                [*command, "--out", relative_name],
+                cwd=str(ROOT),
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(relative.returncode, 2, relative.stderr)
+            self.assertIn("git work tree", relative.stderr)
+            self.assertFalse((ROOT / relative_name).exists())
+        finally:
+            for path in targets:
+                if path.exists():
+                    shutil.rmtree(path)
+
+    def test_out_outside_work_tree_succeeds_when_cwd_is_repo(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            out = Path(raw) / "pack"
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(TOOL),
+                    "--csv",
+                    str(FIXTURE),
+                    "--out",
+                    str(out),
+                    "--symbol",
+                    "SPY",
+                    "--provider",
+                    "STOOQ",
+                    "--retrieved-at",
+                    RETRIEVED_AT,
+                    "--adjustment-policy",
+                    SYNTHETIC_POLICY,
+                ],
+                cwd=str(ROOT),
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertTrue((out / "declaration.json").is_file())
+            self.assertFalse(ROOT in out.resolve().parents)
+
+    def test_missing_work_tree_skips_the_out_guard(self) -> None:
+        real = CONVERTER.git_work_tree_root
+        CONVERTER.git_work_tree_root = lambda start: None
+        try:
+            CONVERTER.require_out_outside_work_tree(ROOT)
+            CONVERTER.require_out_outside_work_tree(ROOT / "pack")
+        finally:
+            CONVERTER.git_work_tree_root = real
+        with self.assertRaises(CONVERTER.ConverterRefusal) as caught:
+            CONVERTER.require_out_outside_work_tree(ROOT / "pack")
+        self.assertIn("git work tree", str(caught.exception))
+
     def test_force_flag_is_not_accepted(self) -> None:
         with tempfile.TemporaryDirectory() as raw:
             out = Path(raw) / "pack"
@@ -407,6 +523,51 @@ class StooqStrictPackTests(unittest.TestCase):
                     out = root / "pack"
                     self.assertEqual(self.convert(out, csv_path), 2)
                     self.assertFalse(out.exists())
+
+    def test_nonpositive_ohlc_refuses_whole_file(self) -> None:
+        header = "Date,Open,High,Low,Close,Volume\n"
+        good = "2026-01-15,100.00,101.00,99.00,100.50,1000\n"
+        cases = {
+            "zero-low": "2026-01-16,100.00,101.00,0,100.50,1000\n",
+            "zero-close": "2026-01-16,100.00,101.00,0.00,0.00,1000\n",
+            "zero-open": "2026-01-16,0,1.00,0,0.50,1000\n",
+            "zero-high": "2026-01-16,0,0,0,0,1000\n",
+            "negative-low": "2026-01-16,100.00,101.00,-0.01,100.00,1000\n",
+            "negative-close": "2026-01-16,100.00,101.00,-1.00,-0.50,1000\n",
+            "negative-open": "2026-01-16,-1.00,2.00,-2.00,1.00,1000\n",
+            "negative-high": "2026-01-16,-3.00,-1.00,-4.00,-2.00,1000\n",
+        }
+        for name, row in cases.items():
+            with self.subTest(name=name):
+                text = header + good + row
+                with tempfile.TemporaryDirectory() as raw:
+                    root = Path(raw)
+                    csv_path = root / "bad.csv"
+                    csv_path.write_text(text, encoding="utf-8")
+                    out = root / "pack"
+                    stderr = io.StringIO()
+                    with redirect_stderr(stderr):
+                        code = self.convert(out, csv_path)
+                    self.assertEqual(code, 2, stderr.getvalue())
+                    self.assertFalse(out.exists())
+                    self.assertIn("nonpositive", stderr.getvalue())
+                    self.assertIn("2026-01-16", stderr.getvalue())
+
+    def test_zero_volume_still_converts(self) -> None:
+        text = (
+            "Date,Open,High,Low,Close,Volume\n"
+            "2026-01-15,100.00,101.00,99.00,100.50,0\n"
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            csv_path = root / "zero-volume.csv"
+            csv_path.write_text(text, encoding="utf-8")
+            out = root / "pack"
+            code = self.convert(out, csv_path)
+            self.assertEqual(code, 0)
+            document = json.loads((out / "obs_0001.json").read_text(encoding="utf-8"))
+            self.assertEqual(document["payload"]["volume"], "0")
+            self.assertEqual(document["payload"]["close"], "100.50")
 
     def test_missing_columns_empty_duplicate_bad_decimal_negative_volume(self) -> None:
         cases = {

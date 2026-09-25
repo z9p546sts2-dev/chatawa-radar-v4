@@ -26,6 +26,15 @@ test. This tool does not choose UNADJUSTED or any other policy. A real
 MEASURED run still requires the pre-run verification in the AUTHORIZE and
 the runbook.
 
+--out is refused when its resolved path is the git work tree that contains
+this file, or any path inside that tree. The work tree root is the nearest
+ancestor of this file that contains a .git entry (a directory in an
+ordinary clone, or a file in a linked work tree). The walk starts at this
+file, not at the process cwd, so the refusal still applies when the tool
+is launched from another directory. If this file is not inside a work
+tree, that check is skipped. The runbook already says keep packs outside
+the repo; this makes an accidental in-repo write fail closed.
+
 Accepted ticker column values, when a ticker column is present: SPY and the
 Stooq form SPY.US (case-sensitive, after strip).
 
@@ -123,11 +132,21 @@ def build_parser() -> argparse.ArgumentParser:
             "ZoneInfo DST offset for that date. --retrieved-at is required\n"
             "and is the private CSV capture time, not the converter clock.\n"
             "If America/New_York cannot be loaded, install tzdata. There is\n"
-            "no UTC fallback. A nonempty --out is refused. There is no --force."
+            "no UTC fallback. A nonempty --out is refused. There is no --force.\n"
+            "A resolved --out inside the git work tree that contains this file\n"
+            "is refused. That root is the nearest ancestor of this file with a\n"
+            ".git entry. The process cwd is not used for the walk."
         ),
     )
     parser.add_argument("--csv", required=True, help="private Stooq-shaped daily CSV")
-    parser.add_argument("--out", required=True, help="pack directory (empty or new)")
+    parser.add_argument(
+        "--out",
+        required=True,
+        help=(
+            "pack directory (empty or new) outside the git work tree "
+            "that contains this tool"
+        ),
+    )
     parser.add_argument("--symbol", required=True, help="must be SPY")
     parser.add_argument("--provider", required=True, help="must be STOOQ")
     parser.add_argument(
@@ -194,7 +213,11 @@ def convert(
     dataset_id: str = DEFAULT_DATASET_ID,
     max_staleness: str | None = None,
 ) -> int:
-    """Validate the CSV, then publish a pack. Refusals leave --out untouched."""
+    """Validate the CSV, then publish a pack. Refusals leave --out untouched.
+
+    A resolved --out inside the git work tree that contains this file is
+    refused before any pack bytes are written. See git_work_tree_root.
+    """
     if symbol.strip() != SYMBOL or provider.strip() != PROVIDER:
         raise ConverterRefusal(
             f"symbol/provider must be {SYMBOL}/{PROVIDER} under this AUTHORIZE"
@@ -355,6 +378,17 @@ def parse_bar(row: list[str], indexes: dict[str, int]) -> _Bar:
     high_number = Decimal(high)
     low_number = Decimal(low)
     close_number = Decimal(close)
+    # Volume may be zero. Open, high, low, and close must be > 0.
+    for field, number in (
+        ("open", open_number),
+        ("high", high_number),
+        ("low", low_number),
+        ("close", close_number),
+    ):
+        if number <= 0:
+            raise ConverterRefusal(
+                f"nonpositive {field} on {bar_date.isoformat()}"
+            )
     if high_number < low_number:
         raise ConverterRefusal(
             f"OHLC contradiction on {bar_date.isoformat()}: high is below low"
@@ -471,7 +505,38 @@ def _dump(document: dict[str, object]) -> str:
     return dumps(document, indent=2, sort_keys=True, ensure_ascii=True) + "\n"
 
 
+def git_work_tree_root(start: Path) -> Path | None:
+    """Nearest ancestor of start that contains a .git entry.
+
+    The walk starts at start, not at the process cwd. When start is a file,
+    it begins at that file's parent. A .git directory (ordinary clone) and
+    a .git file (linked work tree) both count. Returns None when no ancestor
+    has a .git entry, in which case the --out work-tree guard is skipped.
+    """
+    current = start.resolve()
+    if not current.is_dir():
+        current = current.parent
+    for candidate in (current, *current.parents):
+        if (candidate / ".git").exists():
+            return candidate
+    return None
+
+
+def require_out_outside_work_tree(out_path: Path) -> None:
+    """Refuse a resolved --out inside the work tree that contains this tool."""
+    root = git_work_tree_root(Path(__file__))
+    if root is None:
+        return
+    resolved = out_path.resolve()
+    if resolved == root or root in resolved.parents:
+        raise ConverterRefusal(
+            "--out resolves inside the git work tree that contains this "
+            f"tool ({root}); write the pack outside the repo"
+        )
+
+
 def publish(out: Path, documents: list[tuple[str, str]]) -> None:
+    require_out_outside_work_tree(out)
     if out.exists():
         if not out.is_dir() or any(out.iterdir()):
             raise ConverterRefusal("--out exists and is non-empty")
