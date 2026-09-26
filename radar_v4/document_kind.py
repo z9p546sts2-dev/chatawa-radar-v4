@@ -163,6 +163,7 @@ KNOWN_DOCUMENT_KINDS = frozenset(
         "radar_v4.kind_verify",
         "radar_v4.leading_hyphen",
         "radar_v4.member_align",
+        "radar_v4.manual_observation_receipt",
         "radar_v4.member_align_determinism",
         "radar_v4.member_align_status",
         "radar_v4.member_align_verify",
