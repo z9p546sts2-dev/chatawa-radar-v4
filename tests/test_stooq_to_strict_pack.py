@@ -1,7 +1,8 @@
 """Software conversion: synthetic Stooq-shaped CSV → strict HISTORICAL pack.
 
 Numbers in the fixture are fake. This file does not accept a MEASURED market
-run and does not claim adjustment_policy was verified.
+run and does not claim adjustment_policy was verified. QQQ and IWM cases use
+SYNTHETIC_TEST_POLICY and are allowlist checks only, not MEASURED custody.
 """
 
 from __future__ import annotations
@@ -484,14 +485,119 @@ class StooqStrictPackTests(unittest.TestCase):
             self.assertFalse(out.exists())
 
     def test_symbol_and_provider_must_match_authorize(self) -> None:
+        self.assertEqual(CONVERTER.ALLOWED_SYMBOLS, frozenset({"SPY", "QQQ", "IWM"}))
+        self.assertEqual(CONVERTER.PROVIDER, "STOOQ")
         with tempfile.TemporaryDirectory() as raw:
             root = Path(raw)
-            qqq = root / "qqq"
             yahoo = root / "yahoo"
-            self.assertEqual(self.convert(qqq, symbol="QQQ"), 2)
             self.assertEqual(self.convert(yahoo, provider="YAHOO"), 2)
-            self.assertFalse(qqq.exists())
             self.assertFalse(yahoo.exists())
+            for symbol in ("VTI", "DIA", "AAPL", "QQQQ", "spy", "SPY.US", "SPY,QQQ"):
+                out = root / f"refused-{symbol.replace(',', '-')}"
+                stderr = io.StringIO()
+                with redirect_stderr(stderr):
+                    code = self.convert(out, symbol=symbol)
+                self.assertEqual(code, 2, stderr.getvalue())
+                self.assertFalse(out.exists(), symbol)
+                self.assertIn("{SPY, QQQ, IWM}", stderr.getvalue())
+
+    def test_qqq_and_iwm_synthetic_allowlist(self) -> None:
+        # Fake decimals only. SYNTHETIC_TEST_POLICY is not a verified label
+        # and this is not a QQQ or IWM MEASURED custody.
+        for symbol in ("QQQ", "IWM"):
+            with self.subTest(symbol=symbol):
+                text = (
+                    "<TICKER>,<PER>,<DATE>,<OPEN>,<HIGH>,<LOW>,<CLOSE>,<VOL>\n"
+                    f"{symbol}.US,D,20260115,100.00,101.00,99.00,100.50,1000\n"
+                    f"{symbol}.US,D,2026-01-16,101.00,102.00,100.00,101.25,1100\n"
+                )
+                with tempfile.TemporaryDirectory() as raw:
+                    root = Path(raw)
+                    csv_path = root / "synthetic.csv"
+                    csv_path.write_text(text, encoding="utf-8")
+                    out = root / "pack"
+                    code = self.convert(
+                        out,
+                        csv_path,
+                        symbol=symbol,
+                        adjustment_policy="SYNTHETIC_TEST_POLICY",
+                    )
+                    self.assertEqual(code, 0)
+                    declaration = json.loads(
+                        (out / "declaration.json").read_text(encoding="utf-8")
+                    )
+                    self.assertEqual(declaration["universe"], symbol)
+                    self.assertEqual(declaration["provider"], "STOOQ")
+                    self.assertEqual(declaration["provenance_class"], "HISTORICAL")
+                    self.assertEqual(declaration["interval"], "1d")
+                    self.assertEqual(
+                        declaration["adjustment_policy"],
+                        "SYNTHETIC_TEST_POLICY",
+                    )
+                    self.assertEqual(
+                        declaration["dataset_id"],
+                        f"{symbol.lower()}-stooq-ha1-private",
+                    )
+                    loaded = load_dataset_pack(out, allow_historical=True)
+                    self.assertTrue(loaded.usable())
+                    self.assertEqual(loaded.observation_intake.accepted_count(), 2)
+                    self.assertEqual(loaded.observation_intake.quarantined_count(), 0)
+                    symbols = {
+                        item.envelope.symbol_or_universe
+                        for item in loaded.observation_intake.accepted
+                    }
+                    self.assertEqual(symbols, {symbol})
+                    session = run_session_from_pack(out, allow_historical=True)
+                    self.assertIsNone(session.error_code)
+                    assert (
+                        session.session is not None
+                        and session.session.baseline is not None
+                    )
+                    self.assertEqual(session.session.baseline.status, "MEASURED")
+                    self.assertEqual(session.session.baseline.symbol_or_universe, symbol)
+                    self.assertEqual(session.session.baseline.changes, ("0.75",))
+
+    def test_one_symbol_per_invocation_refuses_other_tickers(self) -> None:
+        mixed = (
+            "Date,Ticker,Open,High,Low,Close,Volume\n"
+            "2026-01-15,SPY,100.00,101.00,99.00,100.50,1000\n"
+            "2026-01-16,QQQ,101.00,102.00,100.00,101.25,1100\n"
+        )
+        qqq_only = (
+            "Date,Ticker,Open,High,Low,Close,Volume\n"
+            "2026-01-15,QQQ,100.00,101.00,99.00,100.50,1000\n"
+        )
+        with tempfile.TemporaryDirectory() as raw:
+            root = Path(raw)
+            mixed_path = root / "mixed.csv"
+            mixed_path.write_text(mixed, encoding="utf-8")
+            qqq_path = root / "qqq.csv"
+            qqq_path.write_text(qqq_only, encoding="utf-8")
+            for symbol in ("SPY", "QQQ", "IWM"):
+                out = root / f"mixed-{symbol}"
+                stderr = io.StringIO()
+                with redirect_stderr(stderr):
+                    code = self.convert(
+                        out,
+                        mixed_path,
+                        symbol=symbol,
+                        adjustment_policy="SYNTHETIC_TEST_POLICY",
+                    )
+                self.assertEqual(code, 2, stderr.getvalue())
+                self.assertFalse(out.exists(), symbol)
+            for symbol in ("SPY", "IWM"):
+                out = root / f"qqq-as-{symbol}"
+                stderr = io.StringIO()
+                with redirect_stderr(stderr):
+                    code = self.convert(
+                        out,
+                        qqq_path,
+                        symbol=symbol,
+                        adjustment_policy="SYNTHETIC_TEST_POLICY",
+                    )
+                self.assertEqual(code, 2, stderr.getvalue())
+                self.assertFalse(out.exists(), symbol)
+                self.assertIn("QQQ", stderr.getvalue())
 
     def test_ohlc_contradiction_refuses_whole_file(self) -> None:
         text = (

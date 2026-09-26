@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Offline Stooq SPY daily CSV → strict HISTORICAL workshop pack.
+"""Offline Stooq daily CSV → strict HISTORICAL workshop pack.
 
 Charter: docs/governance/2026-09-24-authorize-stooq-strict-converter-TC.md
 Design: docs/governance/2026-09-24-build-unit-stooq-strict-converter-TC.md
+Universe: docs/governance/2026-09-25-maine-leg1-authorize-TC.md
+          (amends the converter allowlist from SPY-only to SPY, QQQ, IWM)
 
 This script lives outside radar_v4/. It does not download, does not open a
 socket, and does not call a vendor. It may import pure radar_v4 types so
@@ -35,14 +37,19 @@ is launched from another directory. If this file is not inside a work
 tree, that check is skipped. The runbook already says keep packs outside
 the repo; this makes an accidental in-repo write fail closed.
 
-Accepted ticker column values, when a ticker column is present: SPY and the
-Stooq form SPY.US (case-sensitive, after strip).
+Named universe is exactly SPY, QQQ, and IWM. Provider remains STOOQ.
+One symbol per invocation. Any other symbol is refused.
+
+Accepted ticker column values, when a ticker column is present: the
+requested symbol and the Stooq form SYMBOL.US (case-sensitive, after
+strip). A row whose ticker does not match that one symbol refuses the
+file.
 
 Example:
   python tools/stooq_to_strict_pack.py \\
-    --csv /PRIVATE/path/spy_d.csv \\
-    --out /PRIVATE/path/spy_stooq_pack \\
-    --symbol SPY \\
+    --csv /PRIVATE/path/qqq_d.csv \\
+    --out /PRIVATE/path/qqq_stooq_pack \\
+    --symbol QQQ \\
     --provider STOOQ \\
     --retrieved-at 2026-09-24T16:30:00-04:00 \\
     --adjustment-policy <TODD_LABEL>
@@ -71,7 +78,7 @@ if str(_ROOT) not in sys.path:
 from radar_v4.evidence import EvidenceEnvelope, ProvenanceClass
 from radar_v4.observation import Observation, ObservationPayload
 
-SYMBOL = "SPY"
+ALLOWED_SYMBOLS = frozenset({"SPY", "QQQ", "IWM"})
 PROVIDER = "STOOQ"
 PROVENANCE = "HISTORICAL"
 INTERVAL = "1d"
@@ -79,8 +86,12 @@ TIMEZONE_NAME = "America/New_York"
 TRANSFORMATION_VERSION = "stooq-daily-ohlcv-v1"
 LOCKED_QUESTION = "ordinary close-to-close changes for one symbol"
 PRIMARY_METRIC = "close-to-close difference"
-DEFAULT_DATASET_ID = "spy-stooq-ha1-private"
-ACCEPTED_TICKERS = frozenset({"SPY", "SPY.US"})
+DEFAULT_DATASET_IDS = {
+    "SPY": "spy-stooq-ha1-private",
+    "QQQ": "qqq-stooq-ha1-private",
+    "IWM": "iwm-stooq-ha1-private",
+}
+DEFAULT_DATASET_ID = DEFAULT_DATASET_IDS["SPY"]
 REQUIRED_COLUMNS = ("date", "open", "high", "low", "close", "volume")
 COLUMN_ALIASES = {
     "date": "date",
@@ -117,8 +128,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="stooq_to_strict_pack",
         description=(
-            "Convert a private Stooq-shaped SPY daily CSV into a strict "
-            "HISTORICAL pack. No network. SPY and STOOQ only."
+            "Convert a private Stooq-shaped daily CSV for one of SPY, QQQ, "
+            "or IWM into a strict HISTORICAL pack. No network. Provider "
+            "STOOQ only. One symbol per invocation."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=(
@@ -147,7 +159,11 @@ def build_parser() -> argparse.ArgumentParser:
             "that contains this tool"
         ),
     )
-    parser.add_argument("--symbol", required=True, help="must be SPY")
+    parser.add_argument(
+        "--symbol",
+        required=True,
+        help="must be SPY, QQQ, or IWM (one symbol per invocation)",
+    )
     parser.add_argument("--provider", required=True, help="must be STOOQ")
     parser.add_argument(
         "--retrieved-at",
@@ -164,8 +180,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--dataset-id",
-        default=DEFAULT_DATASET_ID,
-        help=f"declaration dataset_id (default: {DEFAULT_DATASET_ID})",
+        default=None,
+        help=(
+            "declaration dataset_id (default depends on --symbol: "
+            "spy-stooq-ha1-private, qqq-stooq-ha1-private, or "
+            "iwm-stooq-ha1-private)"
+        ),
     )
     parser.add_argument(
         "--max-staleness",
@@ -210,7 +230,7 @@ def convert(
     provider: str,
     retrieved_at: str,
     adjustment_policy: str,
-    dataset_id: str = DEFAULT_DATASET_ID,
+    dataset_id: str | None = None,
     max_staleness: str | None = None,
 ) -> int:
     """Validate the CSV, then publish a pack. Refusals leave --out untouched.
@@ -218,17 +238,25 @@ def convert(
     A resolved --out inside the git work tree that contains this file is
     refused before any pack bytes are written. See git_work_tree_root.
     """
-    if symbol.strip() != SYMBOL or provider.strip() != PROVIDER:
+    symbol_name = symbol.strip()
+    if symbol_name not in ALLOWED_SYMBOLS or provider.strip() != PROVIDER:
         raise ConverterRefusal(
-            f"symbol/provider must be {SYMBOL}/{PROVIDER} under this AUTHORIZE"
+            "symbol/provider must be one of {SPY, QQQ, IWM}/STOOQ "
+            "under Maine Leg 1; one symbol per invocation"
         )
     zone = require_new_york()
     retrieved = parse_retrieved_at(retrieved_at, zone)
     policy = require_line(adjustment_policy, "--adjustment-policy")
-    identity = require_line(dataset_id, "--dataset-id")
+    identity = (
+        DEFAULT_DATASET_IDS[symbol_name]
+        if dataset_id is None
+        else require_line(dataset_id, "--dataset-id")
+    )
     staleness = None if max_staleness is None else require_line(max_staleness, "--max-staleness")
-    bars = parse_bars(read_csv_text(csv_path))
-    observations = [build_observation(bar, retrieved, zone) for bar in bars]
+    bars = parse_bars(read_csv_text(csv_path), symbol_name)
+    observations = [
+        build_observation(bar, retrieved, zone, symbol_name) for bar in bars
+    ]
     late = [
         item.envelope.market_timestamp.date().isoformat()
         for item in observations
@@ -239,7 +267,7 @@ def convert(
         raise ConverterRefusal(
             "--retrieved-at precedes market_timestamp for: " + ", ".join(late)
         )
-    documents = pack_documents(observations, identity, policy, staleness)
+    documents = pack_documents(observations, identity, policy, staleness, symbol_name)
     publish(out_path, documents)
     return len(observations)
 
@@ -294,7 +322,12 @@ def read_csv_text(path: Path) -> str:
         raise ConverterRefusal("CSV is not UTF-8") from exc
 
 
-def parse_bars(text: str) -> tuple[_Bar, ...]:
+def accepted_tickers(symbol: str) -> frozenset[str]:
+    """Ticker column values that match this invocation's one symbol."""
+    return frozenset({symbol, f"{symbol}.US"})
+
+
+def parse_bars(text: str, symbol: str) -> tuple[_Bar, ...]:
     try:
         rows = list(csv.reader(io.StringIO(text)))
     except csv.Error as exc:
@@ -309,7 +342,7 @@ def parse_bars(text: str) -> tuple[_Bar, ...]:
         if not row or all(cell.strip() == "" for cell in row):
             continue
         try:
-            bar = parse_bar(row, indexes)
+            bar = parse_bar(row, indexes, symbol)
         except ConverterRefusal as exc:
             problems.append(str(exc))
             continue
@@ -353,7 +386,7 @@ def normalize_header(name: str) -> str:
     return text.casefold()
 
 
-def parse_bar(row: list[str], indexes: dict[str, int]) -> _Bar:
+def parse_bar(row: list[str], indexes: dict[str, int], symbol: str) -> _Bar:
     def cell(name: str) -> str:
         index = indexes[name]
         if index >= len(row):
@@ -363,9 +396,11 @@ def parse_bar(row: list[str], indexes: dict[str, int]) -> _Bar:
     bar_date = parse_bar_date(cell("date"))
     if "ticker" in indexes:
         ticker = cell("ticker")
-        if ticker not in ACCEPTED_TICKERS:
+        allowed = accepted_tickers(symbol)
+        if ticker not in allowed:
+            shown = " or ".join(sorted(allowed))
             raise ConverterRefusal(
-                f"ticker {ticker!r} on {bar_date.isoformat()} is not SPY or SPY.US"
+                f"ticker {ticker!r} on {bar_date.isoformat()} is not {shown}"
             )
     open_ = require_decimal(cell("open"), "open", bar_date)
     high = require_decimal(cell("high"), "high", bar_date)
@@ -438,7 +473,12 @@ def require_decimal(value: str, field: str, bar_date: date) -> str:
     return value
 
 
-def build_observation(bar: _Bar, retrieved: datetime, zone: ZoneInfo) -> Observation:
+def build_observation(
+    bar: _Bar,
+    retrieved: datetime,
+    zone: ZoneInfo,
+    symbol: str,
+) -> Observation:
     market = datetime(
         bar.bar_date.year,
         bar.bar_date.month,
@@ -451,7 +491,7 @@ def build_observation(bar: _Bar, retrieved: datetime, zone: ZoneInfo) -> Observa
     envelope = EvidenceEnvelope.create(
         provenance_class=ProvenanceClass.HISTORICAL,
         provider=PROVIDER,
-        symbol_or_universe=SYMBOL,
+        symbol_or_universe=symbol,
         market_timestamp=market,
         retrieval_timestamp=retrieved,
         interval=INTERVAL,
@@ -473,6 +513,7 @@ def pack_documents(
     dataset_id: str,
     adjustment_policy: str,
     max_staleness: str | None,
+    symbol: str,
 ) -> list[tuple[str, str]]:
     declaration: dict[str, str] = {
         "adjustment_policy": adjustment_policy,
@@ -484,7 +525,7 @@ def pack_documents(
         "provider": PROVIDER,
         "timezone": TIMEZONE_NAME,
         "transformation_version": TRANSFORMATION_VERSION,
-        "universe": SYMBOL,
+        "universe": symbol,
     }
     if max_staleness is not None:
         declaration["max_staleness"] = max_staleness

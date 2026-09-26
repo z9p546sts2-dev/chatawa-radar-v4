@@ -99,6 +99,14 @@ Prior runbook steps (private pack → unexpected-files → session `--allow-hist
 
 ---
 
+## Item 6 — Maine Leg 1 (SPY, QQQ, IWM Stooq daily HISTORICAL)
+
+**Status:** AUTHORIZE IN FORCE — Accept as written — TC (2026-09-25). Memo: `docs/governance/2026-09-25-maine-leg1-authorize-TC.md`.
+
+Named universe SPY, QQQ, IWM; Stooq daily HISTORICAL. Converter allowlist expand is authorized (`tools/stooq_to_strict_pack.py` exactly `{SPY, QQQ, IWM}`; provider STOOQ). Private MEASURED runs are still required for QQQ and IWM (and for SPY if re-run). This item does not claim MEASURED complete for QQQ or IWM.
+
+---
+
 ## Explicitly not on this backlog yet
 
 - Q-011 metric change / group means (Phase 6-adjacent)  
@@ -121,6 +129,7 @@ Prior runbook steps (private pack → unexpected-files → session `--allow-hist
 | 3 | Revise HA-1 on four points | **Grok Bot — R1 DRAFTED 2026-09-24** → Claude audit → Todd |
 | 4 | AUTHORIZE HA-1 + Cursor implement | Todd → Cursor → Claude → Todd |
 | 5 | First MEASURED custody (Item 5) | **DONE 2026-09-25** — FIRST MEASURED CUSTODY CLOSED (private SHA only; no market series in git) |
+| 6 | Maine Leg 1 AUTHORIZE IN FORCE (SPY, QQQ, IWM Stooq daily HISTORICAL); converter allowlist expand; private MEASURED still required for QQQ/IWM (and SPY if re-run) | **Todd — DONE 2026-09-25** — `docs/governance/2026-09-25-maine-leg1-authorize-TC.md`; MEASURED not complete for QQQ/IWM |
 
 ---
 
@@ -131,6 +140,7 @@ OPERATING SPLIT — GROK PLANS / CURSOR CODES / CLAUDE AUDITS / TODD AUTHORIZES-
 BACKLOG — RECORDED 2026-09-24
 CODE AUTHORITY — NONE FROM THIS DOCUMENT ALONE
 NEXT HUMAN INPUT — MEASURED CUSTODY CLOSED 2026-09-25 (ITEM 5); NEXT BUILD WAITS ON A TODD-NAMED QUESTION (SEBASTIAN GATE STILL UNRECORDED PER ITEM 0)
+MAINE LEG 1 — AUTHORIZE IN FORCE 2026-09-25 — SPY,QQQ,IWM STOOQ DAILY HISTORICAL; CONVERTER ALLOWLIST EXPAND AUTHORIZED; PRIVATE MEASURED STILL REQUIRED FOR QQQ/IWM (AND SPY IF RE-RUN); MEMO docs/governance/2026-09-25-maine-leg1-authorize-TC.md; MEASURED NOT COMPLETE FOR QQQ/IWM
 ```
 
 **Tools verify. Todd authorizes.**
