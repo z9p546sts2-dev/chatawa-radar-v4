@@ -89,10 +89,13 @@ Only after Items 0 and 3 and a filled AUTHORIZE line.
 
 ## Item 5 — First real Phase 5 MEASURED run (after HA-1)
 
-- Private pack for Todd-named symbol + source.  
-- Workshop session / baseline close-to-close **difference** only.  
-- Claude audits claim language and provenance.  
-- Not Q-011. VTI date-only observe stays the separate authorized side path in Item 1; it is not this HA-1 MEASURED run.
+**Status (TC), 2026-09-25:** FIRST MEASURED CUSTODY CLOSED.
+
+- Private HA-1 SPY/STOOQ HISTORICAL session reached LEVEL 0 — MEASURED (182 daily bars, span 2026-01-06 through 2026-09-25; 181 close-to-close differences). Claude: PASS WITH NOTES. Todd: Accept as written — TC.
+- Private custody record SHA256: `00bd9d54accb0728a20c88445612307a0c79a6f563061a0b30ab95bcbb289ef1` (held privately under Todd’s PrivateRadar path; **not** banked in this repo; no market series, CSV, pack, or session report in public git).
+- Explicit non-claims: no method, signal, or trading decision is authorized or informed by this result; not LIVE; not Q-011; VTI date-only observe remains the separate Item 1 side path.
+
+Prior runbook steps (private pack → unexpected-files → session `--allow-historical` with report outside repo → Claude claim/provenance audit) are complete for this first SPY/STOOQ MEASURED.
 
 ---
 
@@ -117,6 +120,7 @@ Only after Items 0 and 3 and a filled AUTHORIZE line.
 | 2 | Bank Q-011 contradiction finding | Todd (+ Claude skim) |
 | 3 | Revise HA-1 on four points | **Grok Bot — R1 DRAFTED 2026-09-24** → Claude audit → Todd |
 | 4 | AUTHORIZE HA-1 + Cursor implement | Todd → Cursor → Claude → Todd |
+| 5 | First MEASURED custody (Item 5) | **DONE 2026-09-25** — FIRST MEASURED CUSTODY CLOSED (private SHA only; no market series in git) |
 
 ---
 
@@ -126,7 +130,7 @@ Only after Items 0 and 3 and a filled AUTHORIZE line.
 OPERATING SPLIT — GROK PLANS / CURSOR CODES / CLAUDE AUDITS / TODD AUTHORIZES-TC
 BACKLOG — RECORDED 2026-09-24
 CODE AUTHORITY — NONE FROM THIS DOCUMENT ALONE
-NEXT HUMAN INPUT — Q-011 FINDING BANK (ITEM 2); HA-1 AUTHORIZE NOT ON MAIN (ITEM 0 DONE: PROCEED)
+NEXT HUMAN INPUT — MEASURED CUSTODY CLOSED 2026-09-25 (ITEM 5); NEXT BUILD WAITS ON A TODD-NAMED QUESTION (SEBASTIAN GATE STILL UNRECORDED PER ITEM 0)
 ```
 
 **Tools verify. Todd authorizes.**
